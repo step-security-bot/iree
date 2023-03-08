@@ -195,6 +195,21 @@ iree_cc_library(
 
 iree_cc_library(
   NAME
+    trace_emitter
+  HDRS
+    "trace_emitter.h"
+  SRCS
+    "trace_emitter.c"
+  DEPS
+    iree::base
+    iree::hal
+    iree::modules::hal::types
+    iree::vm
+  PUBLIC
+)
+
+iree_cc_library(
+  NAME
     vm_util
   HDRS
     "vm_util.h"
