@@ -13,6 +13,7 @@
 #include "iree/compiler/Codegen/Utils/GPUUtils.h"
 #include "iree/compiler/Codegen/Utils/MarkerUtils.h"
 #include "iree/compiler/Codegen/Utils/Utils.h"
+#include "llvm/Support/Debug.h"
 #include "mlir/Conversion/VectorToGPU/VectorToGPU.h"
 #include "mlir/Dialect/NVGPU/Utils/MMAUtils.h"
 #include "mlir/Dialect/Vector/IR/VectorOps.h"
@@ -21,11 +22,53 @@
 #include "mlir/Transforms/GreedyPatternRewriteDriver.h"
 #include "mlir/Transforms/Passes.h"
 
+#define DEBUG_TYPE "iree-codegen-gpu-tensorcore-vectorization"
+
 using mlir::iree_compiler::IREE::LinalgExt::LinalgVectorizationPattern;
 using mlir::iree_compiler::IREE::LinalgExt::VectorizationPatterns;
 
 namespace mlir {
 namespace iree_compiler {
+
+/// Pattern to fold arithmetic extensions on floating point data types into
+/// vector contraction operations. linalg.matmul introduces arithmetic
+/// extensions on its operands. Please mlir snippets below for more details.
+/// ```mlir
+///   "linalg.matmul"(%lhs, %rhs, %acc) ({
+///      ^bb0(%arg1: f16, %arg2: f16, %arg3: f32):
+///        %lhs_f32 = "arith.extf"(%arg1) : (f16) -> f32
+///        %rhs_f32 = "arith.extf"(%arg2) : (f16) -> f32
+///        %mul = "arith.mulf"(%lhs_f32, %rhs_f32) : (f32, f32) -> f32
+///        %acc = "arith.addf"(%arg3, %mul) : (f32, f32) -> f32
+///        "linalg.yield"(%acc) : (f32) -> ()
+///     })
+/// ```
+/// This restricts the native usage of mixed precision NVIDIA Ampere Tensor
+/// Cores, i.e, `mma.sync.*.f32.f16.f16.f32` and `mma.sync.*.f32.bf16.bf16.f32`.
+/// This pattern folds the arithmetic extensions into the vector contraction and
+/// enables the usage of native mixed precision Tensor Core instructions.
+struct FoldArithExtIntoContractionOp
+    : public OpRewritePattern<vector::ContractionOp> {
+  using OpRewritePattern::OpRewritePattern;
+
+  LogicalResult matchAndRewrite(vector::ContractionOp contractOp,
+                                PatternRewriter &rewriter) const override {
+    auto lhsDefOp = contractOp.getLhs().getDefiningOp();
+    auto rhsDefOp = contractOp.getRhs().getDefiningOp();
+
+    if (!isa<arith::ExtFOp>(lhsDefOp) || !isa<arith::ExtFOp>(rhsDefOp)) {
+      return rewriter.notifyMatchFailure(
+          contractOp, "no arith::ExtFOp on contract operands");
+    }
+
+    rewriter.replaceOpWithNewOp<vector::ContractionOp>(
+        contractOp, lhsDefOp->getOperand(0), rhsDefOp->getOperand(0),
+        contractOp.getAcc(), contractOp.getIndexingMapsAttr(),
+        contractOp.getIteratorTypesAttr());
+
+    return success();
+  }
+};
 
 //====---------------------------------------------------------------------===//
 // Patterns for vectorization
@@ -72,13 +115,33 @@ struct LLVMGPUTensorCoreVectorizationPass
   }
   void runOnOperation() override {
     auto funcOp = getOperation();
+    LLVM_DEBUG({
+      llvm::dbgs() << "LLVMGPUTensorCoreVectorizationPass runOnOperation():\n";
+      funcOp->dump();
+    });
+
     MLIRContext *context = &getContext();
     {
-      // Step 1. Vectorize.
+      // Step 1(a). Vectorize.
       RewritePatternSet vectorizationPatterns(context);
       populateVectorizationPatterns(vectorizationPatterns);
       if (failed(applyPatternsAndFoldGreedily(
               funcOp, std::move(vectorizationPatterns)))) {
+        return signalPassFailure();
+      }
+      LLVM_DEBUG({
+        llvm::dbgs() << "\nAfter populateVectorizationPatterns:\n";
+        funcOp->dump();
+      });
+
+      // Step 1(b). Fold arithmetic extensions into vector contraction ops.
+      // Linalg to vector conversion introduces arithmetic extensions on the
+      // operands of vector contraction ops for mixed precision computation.
+      // This pattern folds the arithmetic extensions into the vector.contract.
+      RewritePatternSet foldArithExtPatterns(context);
+      foldArithExtPatterns.add<FoldArithExtIntoContractionOp>(context);
+      if (failed(applyPatternsAndFoldGreedily(
+              funcOp, std::move(foldArithExtPatterns)))) {
         return signalPassFailure();
       }
 
@@ -92,6 +155,11 @@ struct LLVMGPUTensorCoreVectorizationPass
               funcOp, std::move(canonicalizationPatterns)))) {
         return signalPassFailure();
       }
+      LLVM_DEBUG({
+        llvm::dbgs()
+            << "\nAfter populateCombineVectorTransferReadBroadcastPatterns:\n";
+        funcOp->dump();
+      });
 
       // Step 3. Prepare vector operations to be lowered to native tensor core
       // operations (nvgpu.mmasync, nvgpu.ldmatrix).
@@ -106,6 +174,13 @@ struct LLVMGPUTensorCoreVectorizationPass
           return signalPassFailure();
         }
       }
+      LLVM_DEBUG({
+        llvm::dbgs()
+            << "\nAfter populateCastAwayVectorLeadingOneDimPatterns and "
+               "populatePrepareVectorToMMAPatterns:\n";
+        funcOp->dump();
+      });
+
       bool useMmaSyncShape = tensorCoreType == GPUTensorCoreType::MMA_SYNC;
       // Step 4. Break and unroll warp tile size to native math and load sizes.
       RewritePatternSet vectorUnrollPatterns(context);
@@ -114,6 +189,10 @@ struct LLVMGPUTensorCoreVectorizationPass
               funcOp, std::move(vectorUnrollPatterns)))) {
         return signalPassFailure();
       }
+      LLVM_DEBUG({
+        llvm::dbgs() << "\nAfter populateVectorUnrollPattern:\n";
+        funcOp->dump();
+      });
     }
   }
 
