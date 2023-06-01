@@ -82,7 +82,7 @@ struct LLVMGPUTensorCoreVectorizationPass
 
     MLIRContext *context = &getContext();
     {
-      // Step 1(a). Vectorize.
+      // Step 1(a). Vectorize (linalg to vector).
       RewritePatternSet vectorizationPatterns(context);
       populateVectorizationPatterns(vectorizationPatterns);
       if (failed(applyPatternsAndFoldGreedily(
