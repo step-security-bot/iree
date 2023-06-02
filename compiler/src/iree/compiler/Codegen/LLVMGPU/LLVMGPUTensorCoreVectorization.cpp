@@ -99,7 +99,7 @@ struct LLVMGPUTensorCoreVectorizationPass
       // operands of vector contraction ops for mixed precision computation.
       // This pattern folds the arithmetic extensions into the vector.contract.
       RewritePatternSet foldArithExtPatterns(context);
-      vector::populateFoldAirthExtensionPatterns(foldArithExtPatterns);
+      vector::populateFoldArithExtensionPatterns(foldArithExtPatterns);
       if (failed(applyPatternsAndFoldGreedily(
               funcOp, std::move(foldArithExtPatterns)))) {
         return signalPassFailure();
