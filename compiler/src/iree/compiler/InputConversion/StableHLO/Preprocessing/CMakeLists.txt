@@ -62,6 +62,7 @@ iree_cc_library(
     "LowerComplex.cpp"
     "Passes.cpp"
     "StableHLOToStableHLO.cpp"
+    "StatefulRng.cpp"
     "UnfuseBatchNorm.cpp"
   DEPS
     ::ComplexLoweringPatterns
