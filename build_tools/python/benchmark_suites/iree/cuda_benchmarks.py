@@ -95,7 +95,7 @@ class Linux_CUDA_Benchmarks(object):
             presets=[benchmark_presets.CUDA],
         )
         large_module_configs = self._generate_configs(
-            model_groups.CUDA_MODELS_LONG,
+            model_groups.CUDA_MODELS_LARGE,
             self.SM_80_COMPILE_CONFIG,
             execution_config=module_execution_configs.CUDA_CONFIG,
             presets=[benchmark_presets.CUDA_LARGE],

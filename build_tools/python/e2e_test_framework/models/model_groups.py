@@ -134,7 +134,7 @@ X86_64_BENCHMARK_CONFIG_EXPERIMENTAL = [
     ),
 ]
 
-X86_64_BENCHMARK_CONFIG_LONG = [
+X86_64_BENCHMARK_CONFIG_LARGE = [
     common_definitions.CpuBenchmarkConfig(
         model=tf_models.BERT_LARGE_384_FP32_TF_BATCHES[1], threads=[8]
     ),
@@ -161,6 +161,69 @@ X86_64_BENCHMARK_CONFIG_LONG = [
     ),
     common_definitions.CpuBenchmarkConfig(
         model=tf_models.T5_LARGE_512_FP32_TF_BATCHES[32], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.BERT_LARGE_FP32_JAX_384XI32_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.BERT_LARGE_FP32_JAX_384XI32_BATCHES[32], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.BERT_LARGE_FP32_JAX_384XI32_BATCHES[64], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.RESNET50_FP32_JAX_3X224X224XF32_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.RESNET50_FP32_JAX_3X224X224XF32_BATCHES[64], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.RESNET50_FP32_JAX_3X224X224XF32_BATCHES[128], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[16], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[32], threads=[8]
+    ),
+]
+
+#X86_64_BENCHMARK_CONFIG_LARGE_MICROKERNEL = X86_64_BENCHMARK_CONFIG_LARGE
+
+# X86_64_BENCHMARK_CONFIG_LARGE_MICROKERNEL = [
+#     cpu_benchmark
+#     for cpu_benchmark in X86_64_BENCHMARK_CONFIG_LARGE if cpu_benchmark.model not in [
+#         # Disabled due to https://github.com/openxla/iree/issues/14414.
+#         jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[1],
+#         jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[16],
+#         jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[32],
+#         tf_models.T5_LARGE_512_FP32_TF_BATCHES[1],
+#         tf_models.T5_LARGE_512_FP32_TF_BATCHES[16],
+#         tf_models.T5_LARGE_512_FP32_TF_BATCHES[32],
+#     ]
+# ]
+
+X86_64_BENCHMARK_CONFIG_LARGE_MICROKERNEL = [
+    common_definitions.CpuBenchmarkConfig(
+        model=tf_models.T5_LARGE_512_FP32_TF_BATCHES[1], threads=[8, 13, 28]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=tf_models.T5_LARGE_512_FP32_TF_BATCHES[16], threads=[8, 13, 28]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=tf_models.T5_LARGE_512_FP32_TF_BATCHES[32], threads=[8, 13, 28]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[1], threads=[8, 13, 28]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[16], threads=[8, 13, 28]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[32], threads=[8, 13, 28]
     ),
 ]
 
@@ -271,7 +334,7 @@ CUDA_MODELS = [
     torch_models.EFFICIENTNET_V2_S_FP16_TORCH,
 ]
 
-CUDA_MODELS_LONG = (
+CUDA_MODELS_LARGE = (
     RESNET50_TF_BATCHES
     + BERT_LARGE_TF_BATCHES
     + T5_LARGE_TF_BATCHES
