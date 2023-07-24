@@ -1,28 +1,28 @@
-// RUN: iree-opt --split-input-file --iree-stream-encode-host-tensors --verify-diagnostics %s | FileCheck %s
+// RUN: iree-opt --split-input-file --mlir-print-local-scope --iree-stream-encode-host-tensors --verify-diagnostics %s | FileCheck %s
 
 // CHECK-LABEL: func.func @denseTensorConstantI2()
 func.func @denseTensorConstantI2() -> !stream.resource<constant> {
   // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 4 : index
-  // CHECK: %[[RET:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} =
+  // CHECK: %[[RESULT:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} =
   // CHECK-SAME: dense<[0, 1, -2, -1, 0, 1, -2, -1, 0, 1, -2, -1, 0, 1, -2, -1]> : tensor<16xi2>
   %0 = stream.tensor.constant : tensor<16xi2> in !stream.resource<constant> = dense<[
     0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3
   ]> : tensor<16xi2>
-  // CHECK: return %[[RET]]
+  // CHECK: return %[[RESULT]]
   return %0 : !stream.resource<constant>
 }
 
 // -----
 
-// Ensures that a non-power-of-two type (i3) constant is expanded to a full byte
-// because we don't currently do unaligned sub-byte packing.
+// Ensures that a non-power-of-two type (i3) constant is stored as packed values
+// in i8 that have 2 bits of zero padding per i8.
 
 // CHECK: func.func @denseTensorConstantI3()
 func.func @denseTensorConstantI3() -> !stream.resource<constant> {
-  // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 4 : index
-  // CHECK: %[[RET:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[0, 7, 2, 5]> : tensor<4xi8>
-  %0 = stream.tensor.constant : tensor<4xi3> in !stream.resource<constant> = dense<[0, 7, 2, 5]> : tensor<4xi3>
-  // CHECK: return %[[RET]]
+  // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 2 : index
+  // CHECK: %[[RESULT:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[0, -1, 2, -3]> : tensor<4xi3>
+  %0 = stream.tensor.constant : tensor<4xi3> in !stream.resource<constant> = dense<[0, -1, 2, -3]> : tensor<4xi3>
+  // CHECK: return %[[RESULT]]
   return %0 : !stream.resource<constant>
 }
 
@@ -31,19 +31,20 @@ func.func @denseTensorConstantI3() -> !stream.resource<constant> {
 // CHECK-LABEL: @denseTensorConstantI4
 func.func @denseTensorConstantI4() -> !stream.resource<constant> {
   // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 4 : index
-  // CHECK: %[[RET:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[5, -1, 0, 3, 1, 7, -8, 4]> : tensor<8xi4>
+  // CHECK: %[[RESULT:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[5, -1, 0, 3, 1, 7, -8, 4]> : tensor<8xi4>
   %0 = stream.tensor.constant : tensor<8xi4> in !stream.resource<constant> = dense<[5, 15, 0, 3, 1, 7, 8, 4]> : tensor<8xi4>
-  // CHECK: return %[[RET]]
+  // CHECK: return %[[RESULT]]
   return %0 : !stream.resource<constant>
 }
 
 // -----
 
-// Checks that non-byte-aligned total size is not supported for constant.
-
-func.func @denseTensorConstantI4() -> !stream.resource<constant> {
-  // expected-error @+1 {{failed to calculate total byte count: 'tensor<5xi4>' does not have integral number of total bytes}}
-  %0 = stream.tensor.constant : tensor<5xi4> in !stream.resource<constant> = dense<[5, 15, 0, 3, 1]> : tensor<5xi4>
+// CHECK-LABEL: @denseTensorConstantPaddedI4
+func.func @denseTensorConstantPaddedI4() -> !stream.resource<constant> {
+  // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 3 : index
+  // CHECK: %[[RESULT:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[5, -1, 0, 3, 1]> : tensor<5xi4>
+  %0 = stream.tensor.constant : tensor<5xi4> in !stream.resource<constant> = dense<[5, -1, 0, 3, 1]> : tensor<5xi4>
+  // CHECK: return %[[RESULT]]
   return %0 : !stream.resource<constant>
 }
 
@@ -52,9 +53,9 @@ func.func @denseTensorConstantI4() -> !stream.resource<constant> {
 // CHECK-LABEL: @denseTensorConstantI8
 func.func @denseTensorConstantI8() -> !stream.resource<constant> {
   // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 8 : index
-  // CHECK: %[[RET:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[5, 15, 0, 3, 1, 7, 8, 4]> : tensor<8xi8>
+  // CHECK: %[[RESULT:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[5, 15, 0, 3, 1, 7, 8, 4]> : tensor<8xi8>
   %0 = stream.tensor.constant : tensor<8xi8> in !stream.resource<constant> = dense<[5, 15, 0, 3, 1, 7, 8, 4]> : tensor<8xi8>
-  // CHECK: return %[[RET]]
+  // CHECK: return %[[RESULT]]
   return %0 : !stream.resource<constant>
 }
 
@@ -62,19 +63,19 @@ func.func @denseTensorConstantI8() -> !stream.resource<constant> {
 
 // CHECK-LABEL: @denseTensorSizeOfStatic
 func.func @denseTensorSizeOfStatic() -> index {
-  // CHECK-DAG: %[[C6:.+]] = arith.constant 6 : index
+  // CHECK-DAG: %[[STATIC_SIZE:.+]] = arith.constant 6 : index
   %0 = stream.tensor.sizeof tensor<12xi4> : index
-  // CHECK: return %[[C6]]
+  // CHECK: return %[[STATIC_SIZE]]
   return %0 : index
 }
 
 // -----
 
-// Checks that non-byte-aligned total size is not supported for sizeof.
-
-func.func @denseTensorSizeOfStatic() -> index {
-  // expected-error @+1 {{failed to calculate total byte count: 'tensor<11xi4>' does not have integral number of total bytes}}
+// CHECK-LABEL: @denseTensorSizeOfStaticPadded
+func.func @denseTensorSizeOfStaticPadded() -> index {
+  // CHECK-DAG: %[[STATIC_SIZE:.+]] = arith.constant 6 : index
   %0 = stream.tensor.sizeof tensor<11xi4> : index
+  // CHECK: return %[[STATIC_SIZE]]
   return %0 : index
 }
 
@@ -82,12 +83,9 @@ func.func @denseTensorSizeOfStatic() -> index {
 
 // CHECK-LABEL: @denseTensorSizeOfDynamic
 func.func @denseTensorSizeOfDynamic(%arg0: index) -> index {
-  // CHECK-DAG: %[[C5:.+]] = arith.constant 5 : index
-  // CHECK-DAG: %[[C2:.+]] = arith.constant 2 : index
-  // CHECK: %[[MUL:.+]] = arith.muli %arg0, %[[C5]] : index
-  // CHECK: %[[DIV:.+]] = arith.divui %[[MUL]], %[[C2]] : index
+  // CHECK: %[[DYNAMIC_SIZE:.+]] = affine.apply affine_map<()[s0] -> ((s0 * 5) ceildiv 2)>()[%arg0]
   %0 = stream.tensor.sizeof tensor<?x5xi4>{%arg0} : index
-  // CHECK: return %[[DIV]]
+  // CHECK: return %[[DYNAMIC_SIZE]]
   return %0 : index
 }
 
@@ -119,14 +117,16 @@ func.func @denseTensorStore(%arg0: !stream.resource<staging>, %arg1: index, %arg
 
 // CHECK-LABEL: @denseTensorSplatI2
 func.func @denseTensorSplatI2(%arg0: i2, %arg1: index, %arg2: index) -> !stream.resource<*> {
-  // CHECK: %[[C2:.+]] = arith.constant 2 : i8
+  // CHECK-DAG: %[[C2:.+]] = arith.constant 2 : i8
+  // CHECK-DAG: %[[C4:.+]] = arith.constant 4 : i8
+  // CHECK-DAG: %[[C6:.+]] = arith.constant 6 : i8
   // CHECK: %[[PART:.+]] = arith.extui %arg0 : i2 to i8
   // CHECK: %[[SHL0:.+]] = arith.shli %[[PART]], %[[C2]] : i8
-  // CHECK: %[[OR0:.+]] = arith.ori %[[SHL0]], %[[PART]] : i8
-  // CHECK: %[[SHL1:.+]] = arith.shli %[[OR0]], %[[C2]] : i8
-  // CHECK: %[[OR1:.+]] = arith.ori %[[SHL1]], %[[PART]] : i8
-  // CHECK: %[[SH2:.+]] = arith.shli %[[OR1]], %[[C2]] : i8
-  // CHECK: %[[FULL:.+]] = arith.ori %[[SH2]], %[[PART]] : i8
+  // CHECK: %[[OR0:.+]] = arith.ori %[[PART]], %[[SHL0]] : i8
+  // CHECK: %[[SHL1:.+]] = arith.shli %[[PART]], %[[C4]] : i8
+  // CHECK: %[[OR1:.+]] = arith.ori %[[OR0]], %[[SHL1]] : i8
+  // CHECK: %[[SH2:.+]] = arith.shli %[[PART]], %[[C6]] : i8
+  // CHECK: %[[FULL:.+]] = arith.ori %[[OR1]], %[[SH2]] : i8
   // CHECK: %[[SPLAT:.+]] = stream.async.splat %[[FULL]] : i8 -> !stream.resource<*>{%arg2}
   %0 = stream.tensor.splat %arg0 : i2 -> tensor<?x1x16xi2>{%arg1} in !stream.resource<*>{%arg2}
   // CHECK: return %[[SPLAT]] : !stream.resource<*>
@@ -137,20 +137,14 @@ func.func @denseTensorSplatI2(%arg0: i2, %arg1: index, %arg2: index) -> !stream.
 
 // CHECK-LABEL: @denseTensorFillI4
 func.func @denseTensorFillI4(%arg0: i4, %arg1: !stream.resource<*>, %arg2: index, %arg3: index, %arg4: index, %arg5: index, %arg6: index, %arg7: index) -> !stream.resource<*> {
-  // CHECK-DAG: %[[C2:.+]] = arith.constant 2 : index
   // CHECK-DAG: %[[C4:.+]] = arith.constant 4 : i8
-  // CHECK-DAG: %[[C16:.+]] = arith.constant 16 : index
   // CHECK: %[[PART:.+]] = arith.extui %arg0 : i4 to i8
   // CHECK: %[[SHL:.+]] = arith.shli %[[PART]], %[[C4]] : i8
-  // CHECK: %[[FULL:.+]] = arith.ori %[[SHL]], %[[PART]] : i8
-  // CHECK: %[[MUL0:.+]] = arith.muli %arg4, %[[C16]] : index
-  // CHECK: %[[ADD0:.+]] = arith.addi %[[MUL0]], %arg5 : index
-  // CHECK: %[[OFFSET:.+]] = arith.divui %[[ADD0]], %[[C2]] : index
-  // CHECK: %[[MUL1:.+]] = arith.muli %arg6, %[[C16]] : index
-  // CHECK: %[[ADD1:.+]] = arith.addi %[[MUL1]], %arg7 : index
-  // CHECK: %[[LEN:.+]] = arith.divui %[[ADD1]], %[[C2]] : index
-  // CHECK: %[[END:.+]] = arith.addi %[[OFFSET]], %[[LEN]] : index
-  // CHECK: %[[FILL:.+]] = stream.async.fill %[[FULL]], %arg1[%[[OFFSET]] to %[[END]] for %[[LEN]]] : i8 -> %arg1 as !stream.resource<*>{%arg3}
+  // CHECK: %[[FULL:.+]] = arith.ori %[[PART]], %[[SHL]] : i8
+  // CHECK: %[[OFFSET:.+]] = affine.apply affine_map<()[s0, s1] -> ((s0 + s1 * 16) ceildiv 2)>()[%arg5, %arg4]
+  // CHECK: %[[LENGTH:.+]] = affine.apply affine_map<()[s0, s1] -> ((s0 + s1 * 16) ceildiv 2)>()[%arg7, %arg6]
+  // CHECK: %[[END:.+]] = affine.apply affine_map<()[s0, s1, s2, s3] -> ((s0 + s1 * 16) ceildiv 2 + (s2 + s3 * 16) ceildiv 2)>()[%arg5, %arg4, %arg7, %arg6]
+  // CHECK: %[[FILL:.+]] = stream.async.fill %[[FULL]], %arg1[%[[OFFSET]] to %[[END]] for %[[LENGTH]]] : i8 -> %arg1 as !stream.resource<*>{%arg3}
   %0 = stream.tensor.fill %arg0, %arg1[%arg4, %arg5 for %arg6, %arg7] : i4 -> tensor<?x16xi4>{%arg2} in %arg1 as !stream.resource<*>{%arg3}
   // CHECK: return %[[FILL]]
   return %0 : !stream.resource<*>
@@ -161,13 +155,9 @@ func.func @denseTensorFillI4(%arg0: i4, %arg1: !stream.resource<*>, %arg2: index
 // CHECK-LABEL: @denseTensorSliceI2
 func.func @denseTensorSliceI2(%arg0: !stream.resource<*>, %arg1: index, %arg2: index, %arg3: index, %arg4: index, %arg5: index, %arg6: index) -> !stream.resource<*> {
   %c2 = arith.constant 2 : index
-  // CHECK-DAG: %[[C4:.+]] = arith.constant 4 : index
-  // CHECK-DAG: %[[C8:.+]] = arith.constant 8 : index
-  // CHECK: %[[MUL:.+]] = arith.muli %arg5, %[[C8]] : index
-  // CHECK: %[[ADD:.+]] = arith.addi %[[MUL]], %arg6 : index
-  // CHECK: %[[OFFSET:.+]] = arith.divui %[[ADD]], %[[C4]] : index
-  // CHECK: %[[LEN:.+]] = arith.addi %[[OFFSET]], %arg4 : index
-  // CHECK: %[[SLICE:.+]] = stream.async.slice %arg0[%[[OFFSET]] to %[[LEN]]] : !stream.resource<*>{%arg2} -> !stream.resource<*>{%arg4}
+  // CHECK: %[[OFFSET:.+]] = affine.apply affine_map<()[s0, s1] -> ((s0 + s1 * 8) ceildiv 4)>()[%arg6, %arg5]
+  // CHECK: %[[LENGTH:.+]] = affine.apply affine_map<()[s0, s1, s2] -> (s0 + (s1 + s2 * 8) ceildiv 4)>()[%arg4, %arg6, %arg5]
+  // CHECK: %[[SLICE:.+]] = stream.async.slice %arg0[%[[OFFSET]] to %[[LENGTH]]] : !stream.resource<*>{%arg2} -> !stream.resource<*>{%arg4}
   %0 = stream.tensor.slice %arg0[%arg5, %arg6 for %arg3, %c2] : tensor<?x8xi2>{%arg1} in !stream.resource<*>{%arg2} -> tensor<?x2xi2>{%arg3} in !stream.resource<*>{%arg4}
   // CHECK: return %[[SLICE]] : !stream.resource<*>
   return %0 : !stream.resource<*>
@@ -181,11 +171,9 @@ func.func @denseTensorSliceI2(%arg0: !stream.resource<*>, %arg1: index, %arg2: i
 // CHECK-LABEL: @denseTensorSliceI3
 func.func @denseTensorSliceI3(%arg0: !stream.resource<*>, %arg1: index, %arg2: index, %arg3: index, %arg4: index, %arg5: index, %arg6: index) -> !stream.resource<*> {
   %c2 = arith.constant 2 : index
-  // CHECK: %[[C8:.+]] = arith.constant 8 : index
-  // CHECK: %[[MUL:.+]] = arith.muli %arg5, %[[C8]] : index
-  // CHECK: %[[OFFSET:.+]] = arith.addi %[[MUL]], %arg6 : index
-  // CHECK: %[[LEN:.+]] = arith.addi %[[OFFSET]], %arg4 : index
-  // CHECK: %[[SLICE:.+]] = stream.async.slice %arg0[%[[OFFSET]] to %[[LEN]]] : !stream.resource<*>{%arg2} -> !stream.resource<*>{%arg4}
+  // CHECK: %[[OFFSET:.+]] = affine.apply affine_map<()[s0, s1] -> ((s0 + s1 * 8) ceildiv 2)>()[%arg6, %arg5]
+  // CHECK: %[[LENGTH:.+]] = affine.apply affine_map<()[s0, s1, s2] -> (s0 + (s1 + s2 * 8) ceildiv 2)>()[%arg4, %arg6, %arg5]
+  // CHECK: %[[SLICE:.+]] = stream.async.slice %arg0[%[[OFFSET]] to %[[LENGTH]]] : !stream.resource<*>{%arg2} -> !stream.resource<*>{%arg4}
   %0 = stream.tensor.slice %arg0[%arg5, %arg6 for %arg3, %c2] : tensor<?x8xi3>{%arg1} in !stream.resource<*>{%arg2} -> tensor<?x2xi3>{%arg3} in !stream.resource<*>{%arg4}
   // CHECK: return %[[SLICE]] : !stream.resource<*>
   return %0 : !stream.resource<*>
@@ -193,17 +181,11 @@ func.func @denseTensorSliceI3(%arg0: !stream.resource<*>, %arg1: index, %arg2: i
 
 // -----
 
-// Ensures that a non-power-of-two type (i3) update is expanded to a full byte
-// because we don't currently do unaligned sub-byte packing.
-
 // CHECK-LABEL: @denseTensorUpdateI3
 func.func @denseTensorUpdateI3(%arg0: !stream.resource<*>, %arg1: index, %arg2: !stream.resource<*>, %arg3: index, %arg4: index, %arg5: index, %arg6: index) -> !stream.resource<*> {
-  // CHECK: %[[C4:.+]] = arith.constant 4 : index
-  // CHECK: %[[MUL:.+]] = arith.muli %arg5, %[[C4]] : index
-  // CHECK: %[[OFFSET:.+]] = arith.addi %[[MUL]], %arg6 : index
-  // CHECK: %[[LEN:.+]] = arith.addi %[[OFFSET]], %arg1 : index
-  // CHECK: %[[UPDATE:.+]] = stream.async.update %arg0, %arg2[%[[OFFSET]] to %[[LEN]]] : !stream.resource<*>{%arg1} -> %arg2 as !stream.resource<*>{%arg4}
-
+  // CHECK: %[[OFFSET:.+]] = affine.apply affine_map<()[s0, s1] -> ((s0 + s1 * 4) ceildiv 2)>()[%arg6, %arg5]
+  // CHECK: %[[LENGTH:.+]] = affine.apply affine_map<()[s0, s1, s2] -> (s0 + (s1 + s2 * 4) ceildiv 2)>()[%arg1, %arg6, %arg5]
+  // CHECK: %[[UPDATE:.+]] = stream.async.update %arg0, %arg2[%[[OFFSET]] to %[[LENGTH]]] : !stream.resource<*>{%arg1} -> %arg2 as !stream.resource<*>{%arg4}
   %0 = stream.tensor.update %arg0, %arg2[%arg5, %arg6] : tensor<8x4xi3> in !stream.resource<*>{%arg1} -> tensor<?x4xi3>{%arg3} in %arg2 as !stream.resource<*>{%arg4}
   // CHECK: return %[[UPDATE]] : !stream.resource<*>
   return %0 : !stream.resource<*>
@@ -213,13 +195,9 @@ func.func @denseTensorUpdateI3(%arg0: !stream.resource<*>, %arg1: index, %arg2: 
 
 // CHECK-LABEL: @denseTensorUpdateI4
 func.func @denseTensorUpdateI4(%arg0: !stream.resource<*>, %arg1: index, %arg2: !stream.resource<*>, %arg3: index, %arg4: index, %arg5: index, %arg6: index) -> !stream.resource<*> {
-  // CHECK-DAG: %[[C4:.+]] = arith.constant 4 : index
-  // CHECK-DAG: %[[C2:.+]] = arith.constant 2 : index
-  // CHECK: %[[MUL:.+]] = arith.muli %arg5, %[[C4]] : index
-  // CHECK: %[[ADD:.+]] = arith.addi %[[MUL]], %arg6 : index
-  // CHECK: %[[OFFSET:.+]] = arith.divui %[[ADD]], %[[C2]] : index
-  // CHECK: %[[LEN:.+]] = arith.addi %[[OFFSET]], %arg1 : index
-  // CHECK: %[[UPDATE:.+]] = stream.async.update %arg0, %arg2[%[[OFFSET]] to %[[LEN]]] : !stream.resource<*>{%arg1} -> %arg2 as !stream.resource<*>{%arg4}
+  // CHECK: %[[OFFSET:.+]] = affine.apply affine_map<()[s0, s1] -> ((s0 + s1 * 4) ceildiv 2)>()[%arg6, %arg5]
+  // CHECK: %[[LENGTH:.+]] = affine.apply affine_map<()[s0, s1, s2] -> (s0 + (s1 + s2 * 4) ceildiv 2)>()[%arg1, %arg6, %arg5]
+  // CHECK: %[[UPDATE:.+]] = stream.async.update %arg0, %arg2[%[[OFFSET]] to %[[LENGTH]]] : !stream.resource<*>{%arg1} -> %arg2 as !stream.resource<*>{%arg4}
   %0 = stream.tensor.update %arg0, %arg2[%arg5, %arg6] : tensor<8x4xi4> in !stream.resource<*>{%arg1} -> tensor<?x4xi4>{%arg3} in %arg2 as !stream.resource<*>{%arg4}
   // CHECK: return %[[UPDATE]] : !stream.resource<*>
   return %0 : !stream.resource<*>

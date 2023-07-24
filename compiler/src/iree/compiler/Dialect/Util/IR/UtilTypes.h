@@ -267,12 +267,13 @@ static inline int64_t getRoundedPhysicalStorageSize(int64_t elementCount,
   // 8-bit aligned logical bit width.
   const unsigned physicalBitWidth = getTypePhysicalStorageBitWidth(elementType);
   const unsigned elementsPerPhysicalWord = physicalBitWidth / logicalBitWidth;
-  const int64_t unalignedBitCount =
-      llvm::divideCeil(elementCount, elementsPerPhysicalWord) *
-      physicalBitWidth;
-  return llvm::divideCeil(align(unalignedBitCount, physicalBitWidth), 8);
+  return llvm::divideCeil(elementCount, elementsPerPhysicalWord) *
+         (physicalBitWidth / 8);
 }
-static inline int64_t getRoundedPhysicalStorageSize(ShapedType type) {
+static inline std::optional<int64_t>
+getRoundedPhysicalStorageSize(ShapedType type) {
+  if (!type.hasStaticShape())
+    return std::nullopt;
   return getRoundedPhysicalStorageSize(type.getNumElements(),
                                        type.getElementType());
 }

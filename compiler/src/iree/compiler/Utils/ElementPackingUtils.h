@@ -14,14 +14,6 @@
 namespace mlir {
 namespace iree_compiler {
 
-/// Returns true if the given |bitWidth|, if appearing at runtime-kernel
-/// interface, is less than a byte that should be tightly packed together.
-bool needToPackSubByteElementBitWidth(unsigned bitWidth);
-/// Returns true if the given |shapedType|, if appearing at runtime-kernel
-/// interface, has sub-byte element types that should be tightly packed
-/// together.
-bool needToPackSubByteElements(RankedTensorType shapedType);
-
 /// Legalizes the given |elementType| for storage.
 ///
 /// In IREE, if compiling from the same source model, we control both the
@@ -29,22 +21,6 @@ bool needToPackSubByteElements(RankedTensorType shapedType);
 /// sub-byte elements, and expand to the next power-of-two bit width for other
 /// cases.
 Type legalizeStorageElementType(Type elementType);
-
-/// Emits IR with the given |builder| to calculate the total number of bytes
-/// required for the given |shapedType| in storage. Returns the value for the
-/// final count on success; returns nullptr on failure. Dynamic dimensions in
-/// |shapedType| have corresponding values in |dynamicDims|.
-Value calculateStorageElementCountInBytes(Location loc,
-                                          RankedTensorType shapedType,
-                                          ValueRange dynamicDims,
-                                          OpBuilder &builder);
-
-/// Emits IR with the given |builder| to calculate the byte offset for the
-/// element at the given |linearizedIndex|.
-Value calculateStorageElementOffsetInBytes(Location loc,
-                                           RankedTensorType originalType,
-                                           Value linearizedIndex,
-                                           OpBuilder &builder);
 
 } // namespace iree_compiler
 } // namespace mlir

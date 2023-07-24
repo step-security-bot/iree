@@ -1,9 +1,8 @@
-// RUN: iree-opt --split-input-file --iree-stream-encode-host-tensors %s | FileCheck %s
+// RUN: iree-opt --split-input-file --mlir-print-local-scope --iree-stream-encode-host-tensors %s | FileCheck %s
 
 // CHECK-LABEL: @denseTensorSizeOf
 func.func @denseTensorSizeOf(%arg0: index) -> index {
-  // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 20 : index
-  // CHECK: %[[DYNAMIC_SIZE:.+]] = arith.muli %arg0, %[[STATIC_SIZE]] : index
+  // CHECK: %[[DYNAMIC_SIZE:.+]] = affine.apply affine_map<()[s0] -> (s0 * 20)>()[%arg0]
   %0 = stream.tensor.sizeof tensor<?x5xf32>{%arg0} : index
   // CHECK: return %[[DYNAMIC_SIZE]]
   return %0 : index
@@ -33,8 +32,7 @@ func.func @denseTensorEmpty(%arg0: index, %arg1: index) -> !stream.resource<*> {
 
 // CHECK-LABEL: @denseTensorConstant
 func.func @denseTensorConstant(%arg0: index) -> !stream.resource<constant> {
-  // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 1280 : index
-  // CHECK: %[[DYNAMIC_SIZE:.+]] = arith.muli %arg0, %[[STATIC_SIZE]] : index
+  // CHECK: %[[DYNAMIC_SIZE:.+]] = affine.apply affine_map<()[s0] -> (s0 * 1280)>()[%arg0]
   // CHECK: %[[RET:.+]] = stream.async.constant : !stream.resource<constant>{%[[DYNAMIC_SIZE]]} = dense<0.000000e+00> : tensor<1x5x64xf32>
   %0 = stream.tensor.constant : tensor<?x5x64xf32>{%arg0} in !stream.resource<constant> = dense<0.000000e+00> : tensor<1x5x64xf32>
   // CHECK: return %[[RET]]
@@ -48,7 +46,7 @@ func.func @denseTensorConstant(%arg0: index) -> !stream.resource<constant> {
 // CHECK-LABEL: @denseTensorConstantI1
 func.func @denseTensorConstantI1() -> !stream.resource<constant> {
   // CHECK: %[[STATIC_SIZE:.+]] = arith.constant 4 : index
-  // CHECK: %[[RET:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[1, 1, 0, 1]> : tensor<4xi8>
+  // CHECK: %[[RET:.+]] = stream.async.constant : !stream.resource<constant>{%[[STATIC_SIZE]]} = dense<[true, true, false, true]> : tensor<4xi1>
   %0 = stream.tensor.constant : tensor<4xi1> in !stream.resource<constant> = dense<[true, true, false, true]> : tensor<4xi1>
   // CHECK: return %[[RET]]
   return %0 : !stream.resource<constant>
@@ -114,7 +112,7 @@ func.func @denseTensorSplatConstantComplexF32(%arg0: !stream.resource<*>) -> (!s
   %cst = complex.constant [3.000000e+00 : f32, 1.000000e+01 : f32] : complex<f32>
   %0 = stream.tensor.sizeof tensor<6xcomplex<f32>> : index
   // CHECK: %[[I64NUMBER:.+]] = complex.constant [3.000000e+00 : f32, 1.000000e+01 : f32] : complex<f32>
-  // CHECK: %[[BITCAST:.+]] = complex.bitcast %[[I64NUMBER]] : complex<f32> to i64 
+  // CHECK: %[[BITCAST:.+]] = complex.bitcast %[[I64NUMBER]] : complex<f32> to i64
   // CHECK: %[[SPLAT_RES:.+]] = stream.async.splat %[[BITCAST]]
   %1 = stream.tensor.splat %cst : complex<f32> -> tensor<6xcomplex<f32>> in !stream.resource<*>{%0}
   // CHECK: return %[[SPLAT_RES]]
@@ -126,7 +124,7 @@ func.func @denseTensorSplatConstantComplexF32(%arg0: !stream.resource<*>) -> (!s
 // CHECK-LABEL: @denseTensorSplatDynamicComplexF32
 func.func @denseTensorSplatDynamicComplexF32(%arg0: !stream.resource<*>, %arg1: complex<f32>) -> (!stream.resource<*>) {
   %0 = stream.tensor.sizeof tensor<6xcomplex<f32>> : index
-  // CHECK: %[[BITCAST:.+]] = complex.bitcast %arg1 : complex<f32> to i64 
+  // CHECK: %[[BITCAST:.+]] = complex.bitcast %arg1 : complex<f32> to i64
   // CHECK: %[[SPLAT_RES:.+]] = stream.async.splat %[[BITCAST]]
   %1 = stream.tensor.splat %arg1 : complex<f32> -> tensor<6xcomplex<f32>> in !stream.resource<*>{%0}
   // CHECK: return %[[SPLAT_RES]]
@@ -154,7 +152,7 @@ func.func @denseTensorSlice(%arg0: !stream.resource<*>, %arg1: index, %arg2: ind
   %c0 = arith.constant 0 : index
   %c1 = arith.constant 1 : index
   // CHECK: %[[OFFSET:.+]] = arith.constant 4 : index
-  // CHECK: %[[END:.+]] = arith.addi %arg4, %[[OFFSET]] : index
+  // CHECK: %[[END:.+]] = affine.apply affine_map<()[s0] -> (s0 + 4)>()[%arg4]
   // CHECK: %[[RET:.+]] = stream.async.slice %arg0[%[[OFFSET]] to %[[END]]] : !stream.resource<*>{%arg2} -> !stream.resource<*>{%arg4}
   %0 = stream.tensor.slice %arg0[%c0, %c1 for %arg3, %c1] : tensor<?x4xf32>{%arg1} in !stream.resource<*>{%arg2} -> tensor<?x1xf32>{%arg3} in !stream.resource<*>{%arg4}
   // CHECK: return %[[RET]]

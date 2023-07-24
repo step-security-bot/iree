@@ -16,8 +16,8 @@
 #include "iree/compiler/Dialect/Util/IR/UtilDialect.h"
 #include "iree/compiler/Dialect/Util/IR/UtilOps.h"
 #include "iree/compiler/Dialect/Util/IR/UtilTypes.h"
-#include "iree/compiler/Utils/ElementPackingUtils.h"
 #include "llvm/Support/FormatVariadic.h"
+#include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Arith/IR/Arith.h"
 #include "mlir/Dialect/Complex/IR/Complex.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
@@ -30,6 +30,11 @@
 #include "mlir/Pass/Pass.h"
 #include "mlir/Transforms/GreedyPatternRewriteDriver.h"
 
+// TODO(#13520): remove dispatch type manipulation from here and move to
+// codegen. This file should only be dealing with host types based on the
+// declared encodings.
+#include "iree/compiler/Utils/ElementPackingUtils.h"
+
 namespace mlir {
 namespace iree_compiler {
 namespace IREE {
@@ -40,13 +45,31 @@ namespace {
 // Encoding utilities
 //===----------------------------------------------------------------------===//
 
+// Returns an SSA Value from |valueOrAttr|.
+static Value buildIndexValue(Location loc, OpFoldResult valueOrAttr,
+                             OpBuilder &builder) {
+  if (auto value = valueOrAttr.dyn_cast<Value>())
+    return value;
+  return builder.create<arith::ConstantOp>(
+      loc, valueOrAttr.get<Attribute>().cast<TypedAttr>());
+}
+
+static OpFoldResult buildAffineAdd(Location loc, OpFoldResult lhs,
+                                   OpFoldResult rhs, OpBuilder &builder) {
+  return affine::makeComposedFoldedAffineApply(
+      builder, loc,
+      builder.getAffineSymbolExpr(0) + builder.getAffineSymbolExpr(1),
+      {lhs, rhs});
+}
+
 // Asserts that the given encoding is supported by this code right now.
 // Non-trivial dense tensor encodings need special handling.
-static LogicalResult checkEncoding(Operation *op, RankedTensorType encodingType,
-                                   ValueRange encodingDims,
-                                   PatternRewriter &rewriter) {
+static LogicalResult checkDenseEncoding(Operation *op,
+                                        RankedTensorType encodingType,
+                                        ValueRange encodingDims,
+                                        PatternRewriter &rewriter) {
   auto encoding = encodingType.getEncoding();
-  if (encoding && !llvm::isa<IREE::LinalgExt::EncodingAttr>(encoding)) {
+  if (encoding) {
     return rewriter.notifyMatchFailure(op, [=](Diagnostic &d) {
       d << "unsupported tensor encoding: " << encodingType;
     });
@@ -54,26 +77,47 @@ static LogicalResult checkEncoding(Operation *op, RankedTensorType encodingType,
   return success();
 }
 
-// Aligns the element type of a tensor<> to a byte-aligned power of 2 bit width.
-static RankedTensorType alignTensorType(RankedTensorType originalType) {
-  Type elementType = originalType.getElementType();
-  Type alignedType = legalizeStorageElementType(elementType);
-  if (alignedType == elementType)
-    return originalType;
-  return RankedTensorType::get(originalType.getShape(), alignedType,
-                               originalType.getEncoding());
-}
+// TODO(#13520): move to an encoding interface/utility. In a namespace now to
+// make it clear these are related.
 
-// Returns a ConstantIndexOp with the value of the given dimension.
-static Value makeTensorDim(Location loc, RankedTensorType tensorType,
-                           ValueRange dynamicDims, unsigned i,
-                           PatternRewriter &rewriter) {
-  // Static dimension early-out:
-  if (!tensorType.isDynamicDim(i)) {
-    return rewriter.create<arith::ConstantIndexOp>(loc,
-                                                   tensorType.getDimSize(i));
+namespace Encoding {
+
+// Returns the total number of elements in |encodedType|. Any dynamic dimensions
+// used are provided in |dynamicDims|.
+static OpFoldResult calculateElementCount(Location loc,
+                                          RankedTensorType encodedType,
+                                          ValueRange dynamicDims,
+                                          OpBuilder &builder) {
+  // Calculate all static dims first, if any.
+  int64_t staticCount = 1;
+  for (unsigned i = 0; i < encodedType.getRank(); ++i) {
+    if (!encodedType.isDynamicDim(i))
+      staticCount *= encodedType.getDimSize(i);
+  }
+  llvm::errs() << "STATIC COUNT " << staticCount << "\n";
+  if (dynamicDims.empty()) {
+    // Fast-path for completely static shape.
+    return builder.getIndexAttr(staticCount);
   }
 
+  // Scale by dynamic dims, if present.
+  auto expr = builder.getAffineConstantExpr(staticCount);
+  SmallVector<OpFoldResult> symbols;
+  for (auto [i, dim] : llvm::enumerate(dynamicDims)) {
+    expr = expr * builder.getAffineSymbolExpr(i);
+    symbols.push_back(dim);
+  }
+  return affine::makeComposedFoldedAffineApply(builder, loc, expr, symbols);
+}
+
+// Returns a value or attribute with the value of the given dimension.
+static OpFoldResult getTensorDim(Location loc, RankedTensorType tensorType,
+                                 ValueRange dynamicDims, unsigned i,
+                                 OpBuilder &builder) {
+  // Static dimension early-out:
+  if (!tensorType.isDynamicDim(i)) {
+    return builder.getIndexAttr(tensorType.getDimSize(i));
+  }
   // Map from absolute dimension index to the compact dynamic index.
   unsigned di = 0;
   for (unsigned j = 0; j < i; ++j) {
@@ -83,38 +127,77 @@ static Value makeTensorDim(Location loc, RankedTensorType tensorType,
   return dynamicDims[di];
 }
 
-// Returns an element offset within a dense tensor based on indices.
+// Returns a linearized element offset within a dense tensor based on indices.
 // TODO(benvanik): when partially static try to avoid emitting so much IR.
-static Value calculateElementOffset(Location loc, RankedTensorType tensorType,
-                                    ValueRange dynamicDims, ValueRange indices,
-                                    PatternRewriter &rewriter) {
-  assert(indices.size() == tensorType.getRank());
-  auto offset = rewriter.createOrFold<arith::ConstantIndexOp>(loc, 0);
+static OpFoldResult
+calculateLinearizedElementOffset(Location loc, RankedTensorType encodedType,
+                                 ValueRange dynamicDims, ValueRange indices,
+                                 OpBuilder &builder) {
+  assert(indices.size() == encodedType.getRank());
+  SmallVector<OpFoldResult> axisAdds;
+  AffineExpr axisAddExpr = builder.getAffineConstantExpr(0);
   for (size_t i = 0; i < indices.size(); ++i) {
-    auto axisOffset = indices[i];
-    for (size_t j = i + 1; j < tensorType.getRank(); ++j) {
-      auto axisDim = makeTensorDim(loc, tensorType, dynamicDims, j, rewriter);
-      axisOffset =
-          rewriter.createOrFold<arith::MulIOp>(loc, axisOffset, axisDim);
+    AffineExpr axisMulExpr = builder.getAffineSymbolExpr(0);
+    SmallVector<OpFoldResult> axisMuls;
+    axisMuls.push_back(indices[i]);
+    for (size_t j = i + 1, k = 0; j < encodedType.getRank(); ++j, ++k) {
+      axisMulExpr = axisMulExpr * builder.getAffineSymbolExpr(1 + k);
+      axisMuls.push_back(
+          getTensorDim(loc, encodedType, dynamicDims, j, builder));
     }
-    offset = rewriter.createOrFold<arith::AddIOp>(loc, offset, axisOffset);
+    axisAddExpr = axisAddExpr + builder.getAffineSymbolExpr(i);
+    axisAdds.push_back(affine::makeComposedFoldedAffineApply(
+        builder, loc, axisMulExpr, axisMuls));
   }
-  return offset;
+  return affine::makeComposedFoldedAffineApply(builder, loc, axisAddExpr,
+                                               axisAdds);
 }
 
-// Returns an element offset within a dense tensor based on indices, in bytes.
-static Value calculateElementByteOffset(Location loc,
-                                        RankedTensorType tensorType,
-                                        ValueRange dynamicDims,
-                                        ValueRange indices,
-                                        PatternRewriter &rewriter) {
-  Value linearizedIndex =
-      calculateElementOffset(loc, tensorType, dynamicDims, indices, rewriter);
-  return calculateStorageElementOffsetInBytes(loc, tensorType, linearizedIndex,
-                                              rewriter);
+// Returns true if the given |shapedType| requires additional encoding-specific
+// logic (packing/unpacking, layout changes, etc).
+bool accessRequiresEncoding(RankedTensorType shapedType) {
+  // Require the original bit width to be some power of two for now to avoid
+  // trickiness and weirdness of packing and cross-byte access.
+  // Also disallow boolean values for now--they may require separate interface
+  // choices.
+  unsigned bitWidth = IREE::Util::getTypeBitWidth(shapedType.getElementType());
+  switch (bitWidth) {
+  case 1:
+    // TODO(benvanik): drop our special i1 handling and treat it as encoded.
+    return false;
+  case 8:
+  case 16:
+  case 32:
+  case 64:
+    return false;
+  default:
+    return true;
+  }
 }
 
-// Canonicalizes a fill pattern into a power of 2 byte-aligned integer type.
+// Returns |unencodedAttr| encoded into its byte-aligned storage format using
+// the encoding specified in |encodedType|.
+// Returns nullptr if encoding is not supported.
+ElementsAttr encodeAttrStorage(ElementsAttr unencodedAttr,
+                               RankedTensorType encodedType) {
+  auto encodingAttr = encodedType.getEncoding();
+  if (encodingAttr) {
+    // Not yet implemented for non-dense encodings.
+    return nullptr;
+  }
+
+  // Today we just pass-through and let the final program serialization perform
+  // the dense encoding. Other encodings will need additional logic and may even
+  // require runtime support (such that we return a new value here calculated
+  // by some set of ops instead of an attr).
+  return unencodedAttr;
+}
+
+// Returns |unencodedPattern| encoded to |encodedType|. Any dynamic dimensions
+// used are provided in |dynamicDims|.
+// Returns nullptr if encoding is not supported.
+//
+// Fill patterns are encoded as a power of 2 byte-aligned integer type.
 // The stream dialect splat/fill ops require one of I8, I16, or I32 - any other
 // type must be converted to one of those here. This prevents encoding policy
 // such as what to do with i1 or float types from leaking into lower levels of
@@ -131,63 +214,184 @@ static Value calculateElementByteOffset(Location loc,
 //
 // Returns the pattern converted to one of [i8, i16, i32, i64] (with i64 needing
 // to be handled via emulation) or nullptr if the type is unsupported.
-static Value canonicalizeFillPattern(Value pattern, OpBuilder &builder) {
-  auto loc = pattern.getLoc();
+Value encodeFillPatternStorage(Location loc, Value unencodedPattern,
+                               RankedTensorType encodedType,
+                               ValueRange dynamicDims, OpBuilder &builder) {
+  auto encodingAttr = encodedType.getEncoding();
+  if (encodingAttr) {
+    // Not yet implemented for non-dense encodings.
+    return nullptr;
+  }
 
   // Decompose complex numbers into the real/imag components and pack into an
   // int. Note that this only works for 32-bit complex types today.
-  if (auto complexType = dyn_cast<ComplexType>(pattern.getType())) {
+  if (auto complexType = dyn_cast<ComplexType>(unencodedPattern.getType())) {
     unsigned elementBitWidth =
         complexType.getElementType().getIntOrFloatBitWidth();
     assert(elementBitWidth <= 32 && "unsupported complex<f64>");
-    Type bwType = builder.getIntegerType(elementBitWidth * 2);
-    return builder.create<complex::BitcastOp>(loc, bwType, pattern);
+    return builder.create<complex::BitcastOp>(
+        loc, builder.getIntegerType(elementBitWidth * 2), unencodedPattern);
   }
 
-  // Get floats into integer form first; may need additional processing below.
+  Value pattern = unencodedPattern;
+
+  // Cast floats into integer form first; may need additional processing below
+  // but that's easier on integers than floats.
   if (auto floatType = dyn_cast<FloatType>(pattern.getType())) {
     pattern = builder.createOrFold<arith::BitcastOp>(
         loc, builder.getIntegerType(floatType.getIntOrFloatBitWidth()),
         pattern);
   }
 
-  // HACK: extend i1 to i8. This is really not something we should be doing here
-  // in optimized programs as this is a super shady operation.
-  unsigned elementBitWidth = IREE::Util::getTypeBitWidth(pattern.getType());
-  if (elementBitWidth == 1) {
+  // Check for well-known logical bit widths that map to specific physical bit
+  // widths we support.
+  unsigned logicalBitWidth = IREE::Util::getTypeBitWidth(pattern.getType());
+  switch (logicalBitWidth) {
+  case 1:
+    // HACK: extend i1 to i8. This is really not something we should be doing
+    // here in optimized programs as this is a super shady operation.
     return builder.createOrFold<arith::ExtUIOp>(loc, builder.getI8Type(),
                                                 pattern);
+  case 8:
+  case 16:
+  case 32:
+  case 64:
+    // Natively supported pattern width.
+    return pattern;
+  default:
+    // Sub-byte handling below.
+    break;
   }
 
-  // For packed sub-byte patterns, duplicate the sub-byte parts into a full
-  // byte. We first extend the sub-byte parts into full bytes, and then keep
-  // shifting left and bitwise or the sub-byte parts. For example, to create an
-  // i8 pattern from i2 parts, we generate the following sequence:
-  //   %i8_val = arith.extui %i2_val
-  //   %i8_val = (%i8_val << 2) | %i2_val
-  //   %i8_val = (%i8_val << 2) | %i2_val
-  //   %i8_val = (%i8_val << 2) | %i2_val
-  if (needToPackSubByteElementBitWidth(elementBitWidth)) {
-    Type i8Type = builder.getI8Type();
-    Value bitwidth = builder.createOrFold<arith::ConstantOp>(
-        loc, i8Type, builder.getIntegerAttr(i8Type, elementBitWidth));
-    Value subByteVal =
-        builder.createOrFold<arith::ExtUIOp>(loc, i8Type, pattern);
-    Value i8Val = subByteVal;
-    for (unsigned i = 1, e = 8 / elementBitWidth; i < e; ++i) {
-      Value shifted = builder.createOrFold<arith::ShLIOp>(loc, i8Val, bitwidth);
-      i8Val = builder.createOrFold<arith::OrIOp>(loc, shifted, subByteVal);
-    }
-    return i8Val;
+  // For packed sub-byte patterns duplicate the sub-byte parts into a full
+  // physical word. We first extend the sub-byte parts into their full physical
+  // storage words and then shifting left and bitwise OR to create the final
+  // physical word.
+  // For example to create an i8 pattern from i2 parts we do:
+  //   %i8_val = zext %i2_val
+  //   %i8_val |= (%i8_val << 2)
+  //   %i8_val |= (%i8_val << 4)
+  //   %i8_val |= (%i8_val << 6)
+  // For types that don't evenly divide additional zero padding will be left in
+  // the most-significant bits of the physical storage word.
+  const unsigned physicalBitWidth =
+      IREE::Util::getTypePhysicalStorageBitWidth(pattern.getType());
+  const unsigned elementsPerPhysicalWord = physicalBitWidth / logicalBitWidth;
+  Type physicalType = builder.getIntegerType(physicalBitWidth);
+  Value extendedPattern =
+      builder.createOrFold<arith::ExtUIOp>(loc, physicalType, pattern);
+  Value packedPattern = extendedPattern;
+  for (unsigned i = 1; i < elementsPerPhysicalWord; ++i) {
+    unsigned bitOffset = i * logicalBitWidth;
+    packedPattern = builder.createOrFold<arith::OrIOp>(
+        loc, packedPattern,
+        builder.createOrFold<arith::ShLIOp>(
+            loc, extendedPattern,
+            builder.create<arith::ConstantOp>(
+                loc, physicalType,
+                builder.getIntegerAttr(physicalType, bitOffset))));
   }
-  if ((elementBitWidth % 8) != 0) {
-    // We'd need some policy to determine how to handle non-byte-aligned widths.
-    return {};
-  }
-
-  // 8/16/32/64-bit value pass through (possibly after a bitcast).
-  return pattern;
+  return packedPattern;
 }
+
+// Returns the offset, in bytes, of the physical storage location of the given
+// linearized index within a dense tensor of |encodedType|. Any dynamic
+// dimensions used are provided in |dynamicDims|.
+static OpFoldResult
+calculateDenseLinearStorageOffsetInBytes(Location loc, Type elementType,
+                                         OpFoldResult linearizedIndex,
+                                         OpBuilder &builder) {
+  const unsigned logicalBitWidth = IREE::Util::getTypeBitWidth(elementType);
+  switch (logicalBitWidth) {
+  case 1:
+    // i1 is currently extended into i8.
+    return linearizedIndex;
+  case 8:
+  case 16:
+  case 32:
+  case 64:
+    // Natively supported width.
+    return affine::makeComposedFoldedAffineApply(
+        builder, loc,
+        builder.getAffineSymbolExpr(0) *
+            builder.getAffineConstantExpr(logicalBitWidth / 8),
+        {linearizedIndex});
+  default:
+    break; // sub-byte handling below
+  }
+
+  // Round up to the next power of two (unless already a power of two) of the
+  // 8-bit aligned logical bit width and then convert to bytes.
+  const unsigned physicalBitWidth =
+      IREE::Util::getTypePhysicalStorageBitWidth(elementType);
+  assert(logicalBitWidth <= physicalBitWidth &&
+         "logical bits must fit into physical storage");
+  const unsigned elementsPerPhysicalWord = physicalBitWidth / logicalBitWidth;
+  llvm::errs() << "ELE " << physicalBitWidth << " / " << logicalBitWidth
+               << " = " << elementsPerPhysicalWord << "\n";
+  return affine::makeComposedFoldedAffineApply(
+      builder, loc,
+      builder.getAffineSymbolExpr(0).ceilDiv(
+          builder.getAffineConstantExpr(elementsPerPhysicalWord)) *
+          builder.getAffineConstantExpr(physicalBitWidth / 8),
+      {linearizedIndex});
+}
+
+// Returns the size, in bytes, of the physical storage required to hold
+// |encodedType|. Any dynamic dimensions used are provided in |dynamicDims|.
+// The returned size will include any additional padding required to round out
+// the type to the next power-of-two machine word size.
+// Returns nullptr if encoding is not supported.
+//
+// Examples:
+//   calculate(1 elements, i2) = 1 (1-byte aligned packed)
+//   calculate(3 elements, i3) = 2 (1-byte aligned packed)
+//   calculate(4 elements, i32) = 16 (4-byte aligned native)
+//   calculate(4 elements, i33) = 32 (8-byte aligned packed)
+OpFoldResult calculateRoundedStorageSizeInBytes(Location loc,
+                                                RankedTensorType encodedType,
+                                                ValueRange dynamicDims,
+                                                OpBuilder &builder) {
+  auto encodingAttr = encodedType.getEncoding();
+  if (encodingAttr) {
+    // Not yet implemented for non-dense encodings.
+    return nullptr;
+  }
+
+  // In dense encodings the element count treated as a linearized index is the
+  // end of the storage once rounded up.
+  auto elementCount =
+      calculateElementCount(loc, encodedType, dynamicDims, builder);
+
+  // Compute packed offset based on the linearized index.
+  return calculateDenseLinearStorageOffsetInBytes(
+      loc, encodedType.getElementType(), elementCount, builder);
+}
+
+// Returns the offset, in bytes, of the physical storage location of the element
+// at the given |indices| within a tensor of |encodedType|. Any dynamic
+// dimensions used are provided in |dynamicDims|.
+// Returns nullptr if encoding is not supported.
+OpFoldResult calculateRoundedStorageElementOffsetInBytes(
+    Location loc, RankedTensorType encodedType, ValueRange dynamicDims,
+    ValueRange indices, OpBuilder &builder) {
+  auto encodingAttr = encodedType.getEncoding();
+  if (encodingAttr) {
+    // Not yet implemented for non-dense encodings.
+    return nullptr;
+  }
+
+  // Calculate the element offset's linearized index. This is only valid for
+  // dense encodings where linearization is possible.
+  auto linearizedIndex = calculateLinearizedElementOffset(
+      loc, encodedType, dynamicDims, indices, builder);
+
+  // Compute packed offset based on the linearized index.
+  return calculateDenseLinearStorageOffsetInBytes(
+      loc, encodedType.getElementType(), linearizedIndex, builder);
+}
+
+} // namespace Encoding
 
 //===----------------------------------------------------------------------===//
 // stream.tensor.import
@@ -200,7 +404,7 @@ struct EncodeTensorImportOp
                                 PatternRewriter &rewriter) const override {
     auto resultType = llvm::cast<RankedTensorType>(op.getResultEncoding());
     auto resultDims = op.getResultEncodingDims();
-    if (failed(checkEncoding(op, resultType, resultDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, resultType, resultDims, rewriter))) {
       return failure();
     }
 
@@ -223,7 +427,7 @@ struct EncodeTensorExportOp
                                 PatternRewriter &rewriter) const override {
     auto sourceType = llvm::cast<RankedTensorType>(op.getSourceEncoding());
     auto sourceDims = op.getSourceEncodingDims();
-    if (failed(checkEncoding(op, sourceType, sourceDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, sourceType, sourceDims, rewriter))) {
       return failure();
     }
 
@@ -246,18 +450,17 @@ struct EncodeTensorSizeOfOp
                                 PatternRewriter &rewriter) const override {
     auto encodingType = llvm::cast<RankedTensorType>(op.getEncoding());
     auto encodingDims = op.getEncodingDims();
-    if (failed(checkEncoding(op, encodingType, encodingDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, encodingType, encodingDims, rewriter))) {
       return failure();
     }
 
-    // Dense: element count * element size.
-    Value totalSize = calculateStorageElementCountInBytes(
+    auto totalSize = Encoding::calculateRoundedStorageSizeInBytes(
         op.getLoc(), encodingType, encodingDims, rewriter);
     if (!totalSize) {
       return op.emitOpError("failed to calculate total byte count: ")
              << encodingType << " does not have integral number of total bytes";
     }
-    rewriter.replaceOp(op, totalSize);
+    rewriter.replaceOp(op, buildIndexValue(op.getLoc(), totalSize, rewriter));
 
     return success();
   }
@@ -274,11 +477,10 @@ struct EncodeTensorEmptyOp
                                 PatternRewriter &rewriter) const override {
     auto resultType = llvm::cast<RankedTensorType>(op.getResultEncoding());
     auto resultDims = op.getResultEncodingDims();
-    if (failed(checkEncoding(op, resultType, resultDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, resultType, resultDims, rewriter))) {
       return failure();
     }
 
-    // Dense:
     rewriter.replaceOpWithNewOp<IREE::Stream::AsyncAllocaOp>(
         op, op.getResult().getType(), op.getResultSize(), op.getAffinityAttr());
 
@@ -297,7 +499,7 @@ struct EncodeTensorConstantOp
                                 PatternRewriter &rewriter) const override {
     auto resultType = llvm::cast<RankedTensorType>(op.getResultEncoding());
     auto resultDims = op.getResultEncodingDims();
-    if (failed(checkEncoding(op, resultType, resultDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, resultType, resultDims, rewriter))) {
       return failure();
     }
 
@@ -307,37 +509,23 @@ struct EncodeTensorConstantOp
     // are very low entropy and instead of a compression algorithm a simple RLE
     // may be enough - even if just for the suffix.
 
-    // TODO(benvanik): bit pack and emit a __builtin_zext_i1_i8 builtin.
-    // Really we should be doing bitpacking at the flow/linalg level - doing it
-    // here only saves us file size as we'd have to allocate the extended memory
-    // and keep it around. If we see models with large unaligned constants we
-    // can make the tradeoff for minimizing file size vs minimizing startup
-    // cost.
-
-    // Sub-byte aligned constants, if not explicitly allowed, need to be
-    // expanded to a power of 2 byte-aligned width. This is unfortunate: it's
-    // wasted bits in the final binary that we could otherwise use productively.
-    RankedTensorType alignedType = alignTensorType(resultType);
-    ElementsAttr encodedAttr = op.getValue();
-    if (alignedType != resultType) {
-      if (auto sourceAttr = llvm::dyn_cast<DenseIntElementsAttr>(encodedAttr)) {
-        auto alignedBitWidth = alignedType.getElementTypeBitWidth();
-        encodedAttr = sourceAttr.mapValues(
-            alignedType.getElementType(), [=](APInt sourceValue) {
-              // NOTE: this is super slow! We should be doing a conversion in
-              // a loop ourselves - don't want to be mapping for millions of
-              // elements.
-              return sourceValue.zext(alignedBitWidth);
-            });
-      }
+    ElementsAttr encodedAttr =
+        Encoding::encodeAttrStorage(op.getValue(), resultType);
+    if (!encodedAttr) {
+      return op.emitOpError("failed to encode attribute storage: ")
+             << resultType
+             << " does not have an integral number of total "
+                "bytes or has no known encoding";
     }
 
-    // Dense:
-    Value resultSize = calculateStorageElementCountInBytes(
-        op.getLoc(), alignedType, resultDims, rewriter);
+    auto resultSize =
+        buildIndexValue(op.getLoc(),
+                        Encoding::calculateRoundedStorageSizeInBytes(
+                            op.getLoc(), resultType, resultDims, rewriter),
+                        rewriter);
     if (!resultSize) {
       return op.emitOpError("failed to calculate total byte count: ")
-             << alignedType << " does not have integral number of total bytes";
+             << resultType << " does not have integral number of total bytes";
     }
     rewriter.replaceOpWithNewOp<IREE::Stream::AsyncConstantOp>(
         op, op.getResult().getType(), encodedAttr, resultSize,
@@ -358,12 +546,13 @@ struct EncodeTensorSplatOp
                                 PatternRewriter &rewriter) const override {
     auto resultType = llvm::cast<RankedTensorType>(op.getResultEncoding());
     auto resultDims = op.getResultEncodingDims();
-    if (failed(checkEncoding(op, resultType, resultDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, resultType, resultDims, rewriter))) {
       return failure();
     }
 
-    // Canonicalize the fill pattern into an integer type [i8, i16, i32, i64].
-    auto pattern = canonicalizeFillPattern(op.getValue(), rewriter);
+    // Encode the fill pattern into an integer type [i8, i16, i32, i64].
+    auto pattern = Encoding::encodeFillPatternStorage(
+        op.getLoc(), op.getValue(), resultType, resultDims, rewriter);
     if (!pattern) {
       return op.emitOpError()
              << "has unsupported pattern type " << op.getValue().getType()
@@ -371,7 +560,6 @@ struct EncodeTensorSplatOp
                 "required";
     }
 
-    // Dense:
     rewriter.replaceOpWithNewOp<IREE::Stream::AsyncSplatOp>(
         op, op.getResult().getType(), pattern, op.getResultSize(),
         op.getAffinityAttr());
@@ -391,16 +579,15 @@ struct EncodeTensorCloneOp
                                 PatternRewriter &rewriter) const override {
     auto sourceType = llvm::cast<RankedTensorType>(op.getSourceEncoding());
     auto sourceDims = op.getSourceEncodingDims();
-    if (failed(checkEncoding(op, sourceType, sourceDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, sourceType, sourceDims, rewriter))) {
       return failure();
     }
     auto resultType = llvm::cast<RankedTensorType>(op.getResultEncoding());
     auto resultDims = op.getResultEncodingDims();
-    if (failed(checkEncoding(op, resultType, resultDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, resultType, resultDims, rewriter))) {
       return failure();
     }
 
-    // Dense:
     rewriter.replaceOpWithNewOp<IREE::Stream::AsyncCloneOp>(
         op, op.getResult().getType(), op.getSource(), op.getSourceSize(),
         op.getResultSize(), op.getAffinityAttr());
@@ -420,23 +607,27 @@ struct EncodeTensorSliceOp
                                 PatternRewriter &rewriter) const override {
     auto sourceType = llvm::cast<RankedTensorType>(op.getSourceEncoding());
     auto sourceDims = op.getSourceEncodingDims();
-    if (failed(checkEncoding(op, sourceType, sourceDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, sourceType, sourceDims, rewriter))) {
       return failure();
     }
     auto resultType = llvm::cast<RankedTensorType>(op.getResultEncoding());
     auto resultDims = op.getResultEncodingDims();
-    if (failed(checkEncoding(op, resultType, resultDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, resultType, resultDims, rewriter))) {
       return failure();
     }
 
-    // Dense:
-    auto sourceOffset = calculateElementByteOffset(
+    auto sourceOffset = Encoding::calculateRoundedStorageElementOffsetInBytes(
         op.getLoc(), sourceType, sourceDims, op.getStartIndices(), rewriter);
-    auto sourceEnd = rewriter.createOrFold<arith::AddIOp>(
-        op.getLoc(), sourceOffset, op.getResultSize());
+    if (!sourceOffset) {
+      return rewriter.notifyMatchFailure(op, "unsupported source encoding");
+    }
+    auto sourceEnd =
+        buildAffineAdd(op.getLoc(), sourceOffset, op.getResultSize(), rewriter);
     rewriter.replaceOpWithNewOp<IREE::Stream::AsyncSliceOp>(
         op, op.getResult().getType(), op.getSource(), op.getSourceSize(),
-        sourceOffset, sourceEnd, op.getResultSize(), op.getAffinityAttr());
+        buildIndexValue(op.getLoc(), sourceOffset, rewriter),
+        buildIndexValue(op.getLoc(), sourceEnd, rewriter), op.getResultSize(),
+        op.getAffinityAttr());
 
     return success();
   }
@@ -453,12 +644,13 @@ struct EncodeTensorFillOp
                                 PatternRewriter &rewriter) const override {
     auto targetType = llvm::cast<RankedTensorType>(op.getTargetEncoding());
     auto targetDims = op.getTargetEncodingDims();
-    if (failed(checkEncoding(op, targetType, targetDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, targetType, targetDims, rewriter))) {
       return failure();
     }
 
-    // Canonicalize the fill pattern into an integer type [i8, i16, i32, i64].
-    auto pattern = canonicalizeFillPattern(op.getValue(), rewriter);
+    // Encode the fill pattern into an integer type [i8, i16, i32, i64].
+    auto pattern = Encoding::encodeFillPatternStorage(
+        op.getLoc(), op.getValue(), targetType, targetDims, rewriter);
     if (!pattern) {
       return op.emitOpError()
              << "has unsupported pattern type " << op.getValue().getType()
@@ -466,16 +658,24 @@ struct EncodeTensorFillOp
                 "required";
     }
 
-    // Dense:
-    auto targetOffset = calculateElementByteOffset(
+    auto targetOffset = Encoding::calculateRoundedStorageElementOffsetInBytes(
         op.getLoc(), targetType, targetDims, op.getStartIndices(), rewriter);
-    auto targetLength = calculateElementByteOffset(
+    if (!targetOffset) {
+      return rewriter.notifyMatchFailure(op, "unsupported target encoding");
+    }
+    auto targetLength = Encoding::calculateRoundedStorageElementOffsetInBytes(
         op.getLoc(), targetType, targetDims, op.getLengths(), rewriter);
-    auto targetEnd = rewriter.createOrFold<arith::AddIOp>(
-        op.getLoc(), targetOffset, targetLength);
+    if (!targetLength) {
+      return rewriter.notifyMatchFailure(op, "unsupported target encoding");
+    }
+    auto targetEnd =
+        buildAffineAdd(op.getLoc(), targetOffset, targetLength, rewriter);
     rewriter.replaceOpWithNewOp<IREE::Stream::AsyncFillOp>(
         op, op.getResult().getType(), op.getTarget(), op.getTargetSize(),
-        targetOffset, targetEnd, targetLength, pattern, op.getAffinityAttr());
+        buildIndexValue(op.getLoc(), targetOffset, rewriter),
+        buildIndexValue(op.getLoc(), targetEnd, rewriter),
+        buildIndexValue(op.getLoc(), targetLength, rewriter), pattern,
+        op.getAffinityAttr());
 
     return success();
   }
@@ -492,24 +692,27 @@ struct EncodeTensorUpdateOp
                                 PatternRewriter &rewriter) const override {
     auto updateType = llvm::cast<RankedTensorType>(op.getUpdateEncoding());
     auto updateDims = op.getUpdateEncodingDims();
-    if (failed(checkEncoding(op, updateType, updateDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, updateType, updateDims, rewriter))) {
       return failure();
     }
     auto targetType = llvm::cast<RankedTensorType>(op.getTargetEncoding());
     auto targetDims = op.getTargetEncodingDims();
-    if (failed(checkEncoding(op, targetType, targetDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, targetType, targetDims, rewriter))) {
       return failure();
     }
 
-    // Dense:
-    auto targetOffset = calculateElementByteOffset(
+    auto targetOffset = Encoding::calculateRoundedStorageElementOffsetInBytes(
         op.getLoc(), targetType, targetDims, op.getStartIndices(), rewriter);
-    auto targetEnd = rewriter.createOrFold<arith::AddIOp>(
-        op.getLoc(), targetOffset, op.getUpdateSize());
+    if (!targetOffset) {
+      return rewriter.notifyMatchFailure(op, "unsupported target encoding");
+    }
+    auto targetEnd =
+        buildAffineAdd(op.getLoc(), targetOffset, op.getUpdateSize(), rewriter);
     rewriter.replaceOpWithNewOp<IREE::Stream::AsyncUpdateOp>(
         op, op.getResult().getType(), op.getTarget(), op.getTargetSize(),
-        targetOffset, targetEnd, op.getUpdate(), op.getUpdateSize(),
-        op.getAffinityAttr());
+        buildIndexValue(op.getLoc(), targetOffset, rewriter),
+        buildIndexValue(op.getLoc(), targetEnd, rewriter), op.getUpdate(),
+        op.getUpdateSize(), op.getAffinityAttr());
 
     return success();
   }
@@ -526,34 +729,39 @@ struct EncodeTensorLoadOp
                                 PatternRewriter &rewriter) const override {
     auto sourceType = llvm::cast<RankedTensorType>(op.getSourceEncoding());
     auto sourceDims = op.getSourceEncodingDims();
-    auto loadType = op.getResult().getType();
-    if (auto complexTy = dyn_cast<ComplexType>(loadType)) {
-      loadType = IntegerType::get(
-          loadType.getContext(),
-          complexTy.getElementType().getIntOrFloatBitWidth() * 2);
-    }
-    if (failed(checkEncoding(op, sourceType, sourceDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, sourceType, sourceDims, rewriter))) {
       return failure();
     }
 
-    if (needToPackSubByteElements(sourceType)) {
+    if (Encoding::accessRequiresEncoding(sourceType)) {
+      // TODO(benvanik): support extracting elements (i1 -> i8, etc).
       return rewriter.notifyMatchFailure(
           op, "unsupported load with sub-byte elements");
     }
 
-    // Dense:
-    auto sourceOffset = calculateElementByteOffset(
-        op.getLoc(), sourceType, sourceDims, op.getIndices(), rewriter);
-    Value load = rewriter.create<IREE::Stream::AsyncLoadOp>(
-        op.getLoc(), loadType, op.getSource(), op.getSourceSize(),
-        sourceOffset);
-
-    if (loadType != op.getType()) {
-      load =
-          rewriter.create<complex::BitcastOp>(op.getLoc(), op.getType(), load);
+    Value sourceOffset = buildIndexValue(
+        op.getLoc(),
+        Encoding::calculateRoundedStorageElementOffsetInBytes(
+            op.getLoc(), sourceType, sourceDims, op.getIndices(), rewriter),
+        rewriter);
+    if (!sourceOffset) {
+      return rewriter.notifyMatchFailure(op, "unsupported source encoding");
     }
 
-    rewriter.replaceOp(op, load);
+    Type loadType = op.getResult().getType();
+    if (auto complexType = dyn_cast<ComplexType>(loadType)) {
+      loadType = rewriter.getIntegerType(
+          complexType.getElementType().getIntOrFloatBitWidth() * 2);
+    }
+    Value loadedValue = rewriter.create<IREE::Stream::AsyncLoadOp>(
+        op.getLoc(), loadType, op.getSource(), op.getSourceSize(),
+        sourceOffset);
+    if (loadType != op.getType()) {
+      loadedValue = rewriter.create<complex::BitcastOp>(
+          op.getLoc(), op.getType(), loadedValue);
+    }
+
+    rewriter.replaceOp(op, loadedValue);
     return success();
   }
 };
@@ -569,20 +777,39 @@ struct EncodeTensorStoreOp
                                 PatternRewriter &rewriter) const override {
     auto targetType = llvm::cast<RankedTensorType>(op.getTargetEncoding());
     auto targetDims = op.getTargetEncodingDims();
-    if (failed(checkEncoding(op, targetType, targetDims, rewriter))) {
+    if (failed(checkDenseEncoding(op, targetType, targetDims, rewriter))) {
       return failure();
     }
 
-    if (needToPackSubByteElements(targetType)) {
+    if (Encoding::accessRequiresEncoding(targetType)) {
+      // TODO(benvanik): support inserting elements (i1 -> i8, etc).
+      // Note that this may require fetching the previous value first in order
+      // to combine and we'd want to be able to coalesce/avoid the loads if we
+      // were storing over the entire storage element (we may need a dedicated
+      // pass to do that).
       return rewriter.notifyMatchFailure(
           op, "unsupported store with sub-byte elements");
     }
 
-    // Dense:
-    auto targetOffset = calculateElementByteOffset(
-        op.getLoc(), targetType, targetDims, op.getIndices(), rewriter);
+    Value targetOffset = buildIndexValue(
+        op.getLoc(),
+        Encoding::calculateRoundedStorageElementOffsetInBytes(
+            op.getLoc(), targetType, targetDims, op.getIndices(), rewriter),
+        rewriter);
+    if (!targetOffset) {
+      return rewriter.notifyMatchFailure(op, "unsupported target encoding");
+    }
+
+    Value storeValue = op.getValue();
+    if (auto complexType = dyn_cast<ComplexType>(storeValue.getType())) {
+      storeValue = rewriter.create<complex::BitcastOp>(
+          op.getLoc(),
+          rewriter.getIntegerType(
+              complexType.getElementType().getIntOrFloatBitWidth() * 2),
+          storeValue);
+    }
     rewriter.replaceOpWithNewOp<IREE::Stream::AsyncStoreOp>(
-        op, op.getTarget(), op.getTargetSize(), targetOffset, op.getValue());
+        op, op.getTarget(), op.getTargetSize(), targetOffset, storeValue);
 
     return success();
   }
@@ -597,6 +824,7 @@ class EncodeHostTensorsPass
 public:
   void getDependentDialects(DialectRegistry &registry) const override {
     registry.insert<mlir::func::FuncDialect>();
+    registry.insert<mlir::affine::AffineDialect>();
     registry.insert<mlir::arith::ArithDialect>();
     registry.insert<mlir::complex::ComplexDialect>();
     registry.insert<IREE::Stream::StreamDialect>();
@@ -670,6 +898,16 @@ struct EncodeBindingSubspanOp
 //===----------------------------------------------------------------------===//
 // flow.dispatch.tensor.load
 //===----------------------------------------------------------------------===//
+
+// Aligns the element type of a tensor<> to a byte-aligned power of 2 bit width.
+static RankedTensorType alignTensorType(RankedTensorType originalType) {
+  Type elementType = originalType.getElementType();
+  Type alignedType = legalizeStorageElementType(elementType);
+  if (alignedType == elementType)
+    return originalType;
+  return RankedTensorType::get(originalType.getShape(), alignedType,
+                               originalType.getEncoding());
+}
 
 struct EncodeDispatchTensorLoadOp
     : public OpRewritePattern<IREE::Flow::DispatchTensorLoadOp> {

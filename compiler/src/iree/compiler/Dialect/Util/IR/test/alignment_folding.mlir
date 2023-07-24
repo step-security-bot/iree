@@ -1,4 +1,4 @@
-// RUN: iree-opt --split-input-file --canonicalize %s | iree-opt --split-input-file | FileCheck %s
+// RUN: iree-opt --split-input-file --canonicalize --mlir-print-local-scope %s | iree-opt --split-input-file | FileCheck %s
 
 // CHECK-LABEL: @foldSameAlignment
 // CHECK-SAME: (%[[VALUE:.+]]: index, %[[ALIGNMENT:.+]]: index)
@@ -38,6 +38,21 @@ func.func @dontFoldLesserAlignment(%value: index) -> index {
   // CHECK: %[[ALIGN8:.+]] = util.align %[[ALIGN16]], %c16
   %1 = util.align %0, %c16 : index
   // CHECK: return %[[ALIGN8]]
+  return %1 : index
+}
+
+// -----
+
+// CHECK-LABEL: @dontFoldMixedAlignment
+// CHECK-SAME: (%[[VALUE:.+]]: index)
+func.func @dontFoldMixedAlignment(%value: index) -> index {
+  %c9 = arith.constant 9 : index
+  %c16 = arith.constant 16 : index
+  // CHECK: %[[ALIGN16:.+]] = util.align %[[VALUE]], %c16
+  %0 = util.align %value, %c16 : index
+  // CHECK: %[[ALIGN9:.+]] = util.align %[[ALIGN16]], %c9
+  %1 = util.align %0, %c9 : index
+  // CHECK: return %[[ALIGN9]]
   return %1 : index
 }
 
@@ -107,6 +122,23 @@ func.func @foldConstantAlign() -> (index, index, index) {
   // CHECK: return %c0, %c8, %c16
   return %0, %1, %2 : index, index, index
 }
+
+// -----
+
+// CHECK-LABEL: @foldAffineAlign
+func.func @foldAffineAlign(%arg0: index) -> (index, index) {
+  // CHECK: %[[A0:.+]] = affine.apply affine_map<()[s0] -> (s0 * 16384)>()[%arg0]
+  %a0 = affine.apply affine_map<()[s0] -> (s0 * 16384)>()[%arg0]
+  %c64 = arith.constant 64 : index
+  %a1 = util.align %a0, %c64 : index
+  // CHECK: %[[B0:.+]] = affine.apply affine_map<()[s0] -> ((s0 * s0) * 4)>()[%arg0]
+  %b0 = affine.apply affine_map<()[s0] -> ((s0 * s0) * 4)>()[%arg0]
+  %c4 = arith.constant 4 : index
+  %b1 = util.align %b0, %c4 : index
+  // CHECK: return %[[A0]], %[[B0]]
+  return %a1, %b1 : index, index
+}
+
 
 // -----
 

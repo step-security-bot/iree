@@ -138,10 +138,11 @@ static bool isConstantInlinable(const ClosureOptimizationOptions &options,
                  llvm::dyn_cast<DenseElementsAttr>(constantValueAttr)) {
     // Smallish constants are worth moving inside.
     auto shapedType = llvm::cast<ShapedType>(constantType);
-    uint64_t estimatedByteLength =
+    auto estimatedByteLength =
         IREE::Util::getRoundedPhysicalStorageSize(shapedType);
     return denseAttr.isSplat() ||
-           estimatedByteLength <= maxInlinedConstantBytes;
+           (estimatedByteLength &&
+            estimatedByteLength.value() <= maxInlinedConstantBytes);
   } else if (constantType.isIntOrIndexOrFloat()) {
     // Primitives can always go in.
     return true;

@@ -48,6 +48,7 @@ iree_cc_library(
     IREELinalgExtDialect
     LLVMSupport
     MLIRAffineDialect
+    MLIRAffineToStandard
     MLIRAnalysis
     MLIRArithDialect
     MLIRComplexDialect

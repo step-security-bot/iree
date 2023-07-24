@@ -351,6 +351,11 @@ serializeGenericElementData(DenseElementsAttr elementsAttr,
     // element type is not integer or floating-point.
     unsigned bitWidth = attr.getType().getElementTypeBitWidth();
     switch (bitWidth) {
+    case 1:
+      // NOTE: i1 is treated as i8 in a lot of places in MLIR/IREE and will need
+      // a larger cleanup to serialize as a sub-byte value.
+      // TODO(benvanik): support packed i1 serialization.
+      return serializeGenericIntegerElements<uint8_t>(attr, endian, os);
     case 8:
       return serializeRawData(attr, os);
     case 16:
@@ -360,9 +365,7 @@ serializeGenericElementData(DenseElementsAttr elementsAttr,
     case 64:
       return serializeGenericIntegerElements<uint64_t>(attr, endian, os);
     default:
-      // NOTE: i1 is treated as i8 in a lot of places in MLIR/IREE and will need
-      // a larger cleanup to serialize as a sub-byte value.
-      if (bitWidth != 1 && bitWidth < 64) {
+      if (bitWidth < 64) {
         // Special case for bit-packing of sub-byte aligned types.
         // This could be extended to handle larger widths (i33, etc) but they
         // are rare today.

@@ -10,6 +10,7 @@
 
 #include "iree/compiler/Dialect/Util/Transforms/Passes.h"
 #include "iree/compiler/Utils/PassUtils.h"
+#include "mlir/Conversion/AffineToStandard/AffineToStandard.h"
 #include "mlir/Conversion/SCFToControlFlow/SCFToControlFlow.h"
 #include "mlir/Pass/PassOptions.h"
 #include "mlir/Pass/PassRegistry.h"
@@ -119,6 +120,11 @@ void buildStreamAsyncPassPipeline(OpPassManager &passManager,
       .addPass(IREE::Stream::createEncodeHostTensorsPass);
   passManager.addNestedPass<IREE::Stream::ExecutableOp>(
       IREE::Stream::createEncodeDeviceTensorsPass());
+
+  // Lower any affine ops created during tensor encoding.
+  // We may want to preserve these longer for analysis purposes but today we
+  // aren't utilizing them and it's easier to drop them in the IR.
+  passManager.addPass(mlir::createLowerAffinePass());
 
   addCleanupPatterns(passManager);
 
