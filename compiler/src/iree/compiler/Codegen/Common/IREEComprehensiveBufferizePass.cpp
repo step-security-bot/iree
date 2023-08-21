@@ -25,6 +25,7 @@
 #include "mlir/Dialect/Bufferization/Transforms/Transforms.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Dialect/Linalg/IR/Linalg.h"
+#include "mlir/Dialect/Linalg/Passes.h"
 #include "mlir/Dialect/Linalg/Transforms/Transforms.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
 #include "mlir/Dialect/MemRef/Transforms/Passes.h"
@@ -128,6 +129,9 @@ static LogicalResult defaultMemCpyFn(OpBuilder &builder, Location loc,
 
 static IREEOneShotBufferizationOptions getBufferizationOptions() {
   IREEOneShotBufferizationOptions options;
+  options.bufferizeFunctionBoundaries = true;
+  options.allowReturnAllocs = true;
+  options.createDeallocs = false;
 
   // bufferization.to_memref is used to bufferize constants in IREE. IREE has
   // it's own logic to handle constants. We'd like to leave the arith.constant
@@ -267,6 +271,7 @@ void addIREEComprehensiveBufferizePasses(
     std::optional<BufferizationOptions::AllocationFn> allocationFn,
     std::optional<BufferizationOptions::DeallocationFn> deallocationFn,
     std::optional<BufferizationOptions::MemCpyFn> memCpyFn) {
+  passManager.addNestedPass<func::FuncOp>(createLinalgDetensorizePass());
   passManager.addPass(createEliminateEmptyTensorsPass());
   passManager.addPass(bufferization::createEmptyTensorToAllocTensorPass());
   passManager.addPass(createIREEComprehensiveBufferizePass(

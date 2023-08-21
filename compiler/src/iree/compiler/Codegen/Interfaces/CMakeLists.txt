@@ -28,6 +28,7 @@ iree_cc_library(
     MLIRAffineTransformOps
     MLIRArithValueBoundsOpInterfaceImpl
     MLIRBufferizationTransformOps
+    MLIRControlFlowTransforms
     MLIRGPUTransformOps
     MLIRIR
     MLIRLinalgDialect

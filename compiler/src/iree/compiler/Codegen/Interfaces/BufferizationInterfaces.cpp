@@ -18,6 +18,7 @@
 #include "mlir/Dialect/Bufferization/Transforms/FuncBufferizableOpInterfaceImpl.h"
 #include "mlir/Dialect/Bufferization/Transforms/OneShotAnalysis.h"
 #include "mlir/Dialect/Bufferization/Transforms/Transforms.h"
+#include "mlir/Dialect/ControlFlow/Transforms/BufferizableOpInterfaceImpl.h"
 #include "mlir/Dialect/Linalg/Transforms/BufferizableOpInterfaceImpl.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
 #include "mlir/Dialect/SCF/Transforms/BufferizableOpInterfaceImpl.h"
@@ -624,6 +625,7 @@ LogicalResult storeTensorOpAnchoredEmptyTensorEliminationStep(
 
 void registerBufferizationInterfaces(DialectRegistry &registry) {
   arith::registerBufferizableOpInterfaceExternalModels(registry);
+  cf::registerBufferizableOpInterfaceExternalModels(registry);
   linalg::registerBufferizableOpInterfaceExternalModels(registry);
   scf::registerBufferizableOpInterfaceExternalModels(registry);
   bufferization::func_ext::registerBufferizableOpInterfaceExternalModels(
