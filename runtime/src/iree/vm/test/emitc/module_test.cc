@@ -150,7 +150,8 @@ class VMCModuleTest : public ::testing::Test,
 
     return iree_vm_invoke(context_, function, IREE_VM_INVOCATION_FLAG_NONE,
                           /*policy=*/nullptr, /*inputs=*/nullptr,
-                          /*outputs=*/nullptr, iree_allocator_system());
+                          /*outputs=*/nullptr, iree_allocator_system(),
+                          nullptr);
   }
 
   iree_vm_instance_t* instance_ = nullptr;

@@ -299,7 +299,7 @@ IREE_API_EXPORT iree_status_t iree_runtime_session_call(
       iree_vm_invoke(iree_runtime_session_context(session), *function,
                      IREE_VM_INVOCATION_FLAG_NONE,
                      /*policy=*/NULL, input_list, output_list,
-                     iree_runtime_session_host_allocator(session));
+                     iree_runtime_session_host_allocator(session), NULL);
 
   IREE_TRACE_ZONE_END(z0);
   return status;
@@ -327,8 +327,8 @@ IREE_API_EXPORT iree_status_t iree_runtime_session_call_direct(
                                   iree_runtime_session_host_allocator(session));
 
   // Issue the call.
-  iree_status_t status =
-      call.function.module->begin_call(call.function.module->self, stack, call);
+  iree_status_t status = call.function.module->begin_call(
+      call.function.module->self, stack, call, NULL);
 
   // Cleanup the stack.
   iree_vm_stack_deinitialize(stack);

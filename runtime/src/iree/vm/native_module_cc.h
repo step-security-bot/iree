@@ -251,7 +251,8 @@ class NativeModule {
   }
 
   static iree_status_t ModuleBeginCall(void* self, iree_vm_stack_t* stack,
-                                       iree_vm_function_call_t call) {
+                                       iree_vm_function_call_t call,
+                                       c_benchmark_state_t* benchmark_state) {
     auto* module = FromModulePointer(self);
     if (IREE_UNLIKELY(call.function.ordinal >=
                       module->dispatch_table_.size())) {

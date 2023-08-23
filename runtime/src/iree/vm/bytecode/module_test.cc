@@ -157,7 +157,7 @@ class VMBytecodeModuleTest : public ::testing::Test {
     IREE_RETURN_IF_ERROR(
         iree_vm_invoke(context_, function, IREE_VM_INVOCATION_FLAG_NONE,
                        /*policy=*/nullptr, input_list.get(), output_list.get(),
-                       iree_allocator_system()));
+                       iree_allocator_system(), nullptr));
 
     std::vector<iree_vm_value_t> outputs;
     outputs.resize(iree_vm_list_size(output_list.get()));
@@ -192,7 +192,7 @@ class VMBytecodeModuleTest : public ::testing::Test {
     IREE_RETURN_IF_ERROR(
         iree_vm_invoke(context_, function, IREE_VM_INVOCATION_FLAG_NONE,
                        /*policy=*/nullptr, input_list.get(), output_list.get(),
-                       iree_allocator_system()));
+                       iree_allocator_system(), nullptr));
 
     std::vector<iree_vm_ref_t> outputs;
     outputs.resize(iree_vm_list_size(output_list.get()));

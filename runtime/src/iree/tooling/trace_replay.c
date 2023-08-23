@@ -1321,7 +1321,7 @@ iree_status_t iree_trace_replay_event_call(
   if (iree_status_is_ok(status)) {
     call_status = iree_vm_invoke(
         replay->context, function, IREE_VM_INVOCATION_FLAG_NONE,
-        /*policy=*/NULL, input_list, output_list, replay->host_allocator);
+        /*policy=*/NULL, input_list, output_list, replay->host_allocator, NULL);
   }
 
   if (!iree_status_is_ok(call_status)) {

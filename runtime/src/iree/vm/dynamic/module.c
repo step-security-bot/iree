@@ -175,10 +175,11 @@ static iree_status_t IREE_API_PTR iree_vm_dynamic_module_notify(
 }
 
 static iree_status_t IREE_API_PTR iree_vm_dynamic_module_begin_call(
-    void* self, iree_vm_stack_t* stack, iree_vm_function_call_t call) {
+    void* self, iree_vm_stack_t* stack, iree_vm_function_call_t call,
+    c_benchmark_state_t* benchmark_state) {
   iree_vm_dynamic_module_t* module = (iree_vm_dynamic_module_t*)self;
   return module->user_module->begin_call(module->user_module->self, stack,
-                                         call);
+                                         call, NULL);
 }
 
 static iree_status_t IREE_API_PTR iree_vm_dynamic_module_resume_call(

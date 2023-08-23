@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
   // are not needed.
   IREE_CHECK_OK(iree_vm_invoke(context, function, IREE_VM_INVOCATION_FLAG_NONE,
                                /*policy=*/NULL, /*inputs=*/NULL,
-                               /*outputs=*/NULL, allocator));
+                               /*outputs=*/NULL, allocator, NULL));
 
   fprintf(stdout, "INVOKE END\n");
   fflush(stdout);

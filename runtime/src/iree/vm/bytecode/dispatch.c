@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "benchmark/benchmark_c_api.h"
 #include "iree/base/api.h"
 #include "iree/base/internal/math.h"
 #include "iree/vm/api.h"
@@ -449,7 +450,7 @@ static iree_status_t iree_vm_bytecode_issue_import_call(
     iree_vm_registers_t* out_caller_registers) {
   // Call external function.
   iree_status_t call_status =
-      call.function.module->begin_call(call.function.module->self, stack, call);
+      call.function.module->begin_call(call.function.module->self, stack, call, NULL);
   if (iree_status_is_deferred(call_status)) {
     if (!iree_byte_span_is_empty(call.results)) {
       iree_status_ignore(call_status);
@@ -623,7 +624,7 @@ static iree_status_t iree_vm_bytecode_dispatch(
 iree_status_t iree_vm_bytecode_dispatch_begin(
     iree_vm_stack_t* stack, iree_vm_bytecode_module_t* module,
     const iree_vm_function_call_t call, iree_string_view_t cconv_arguments,
-    iree_string_view_t cconv_results) {
+    iree_string_view_t cconv_results, c_benchmark_state_t* benchmark_state) {
   // Enter function (as this is the initial call).
   // The callee's return will take care of storing the output registers when it
   // actually does return, either immediately or in the future via a resume.
@@ -633,8 +634,12 @@ iree_status_t iree_vm_bytecode_dispatch_begin(
       stack, call.function, cconv_arguments, call.arguments, cconv_results,
       &current_frame, &regs));
 
-  return iree_vm_bytecode_dispatch(stack, module, current_frame, regs,
-                                   call.results);
+  c_resume_timing(benchmark_state);
+
+  iree_status_t status = iree_vm_bytecode_dispatch(stack, module, current_frame,
+                                                   regs, call.results);
+  c_pause_timing(benchmark_state);
+  return status;
 }
 
 iree_status_t iree_vm_bytecode_dispatch_resume(

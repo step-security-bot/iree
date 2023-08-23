@@ -158,7 +158,7 @@ static iree_status_t _TfLiteInterpreterShapeFrameApply(
   return iree_vm_invoke(interpreter->context, apply_fn,
                         IREE_VM_INVOCATION_FLAG_NONE,
                         /*policy=*/NULL, frame->arg_list, /*outputs=*/NULL,
-                        interpreter->allocator);
+                        interpreter->allocator, NULL);
 }
 
 //===----------------------------------------------------------------------===//
@@ -448,7 +448,7 @@ TFL_CAPI_EXPORT extern TfLiteStatus TfLiteInterpreterResetVariableTensors(
     status = iree_vm_invoke(interpreter->context, reset_variables_fn,
                             IREE_VM_INVOCATION_FLAG_NONE,
                             /*policy=*/NULL, /*inputs=*/NULL, /*outputs=*/NULL,
-                            interpreter->allocator);
+                            interpreter->allocator, NULL);
   }
 
   IREE_TRACE_ZONE_END(z0);
@@ -577,7 +577,7 @@ static iree_status_t _TfLiteInterpreterInvoke(TfLiteInterpreter* interpreter) {
       iree_vm_invoke(interpreter->context, interpreter->model->exports._main,
                      IREE_VM_INVOCATION_FLAG_NONE,
                      /*policy=*/NULL, interpreter->input_list,
-                     interpreter->output_list, interpreter->allocator));
+                     interpreter->output_list, interpreter->allocator, NULL));
 
   // Refresh output shapes.
   // TODO(#3975): just use buffer view results or at least just refresh outputs.

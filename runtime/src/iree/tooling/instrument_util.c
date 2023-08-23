@@ -106,7 +106,7 @@ iree_status_t iree_tooling_process_instrument_data(
       IREE_TRACE_ZONE_APPEND_TEXT(z1, iree_vm_module_name(module).data,
                                   iree_vm_module_name(module).size);
       status = iree_vm_invoke(context, query_func, IREE_VM_INVOCATION_FLAG_NONE,
-                              NULL, input_list, NULL, host_allocator);
+                              NULL, input_list, NULL, host_allocator, NULL);
       IREE_TRACE_ZONE_END(z1);
       if (!iree_status_is_ok(status)) break;
     }

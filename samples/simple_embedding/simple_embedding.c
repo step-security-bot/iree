@@ -122,7 +122,7 @@ iree_status_t Run() {
   // Synchronously invoke the function.
   IREE_RETURN_IF_ERROR(iree_vm_invoke(
       context, main_function, IREE_VM_INVOCATION_FLAG_NONE,
-      /*policy=*/NULL, inputs, outputs, iree_allocator_system()));
+      /*policy=*/NULL, inputs, outputs, iree_allocator_system(), NULL));
 
   // Get the result buffers from the invocation.
   iree_hal_buffer_view_t* ret_buffer_view =

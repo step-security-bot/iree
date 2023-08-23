@@ -219,7 +219,7 @@ static iree_status_t iree_tooling_run_function(
   if (iree_status_is_ok(status)) {
     status = iree_status_annotate_f(
         iree_vm_invoke(context, function, IREE_VM_INVOCATION_FLAG_NONE,
-                       /*policy=*/NULL, inputs, outputs, host_allocator),
+                       /*policy=*/NULL, inputs, outputs, host_allocator, NULL),
         "invoking function '%.*s'", (int)function_name.size,
         function_name.data);
   }
