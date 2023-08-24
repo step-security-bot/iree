@@ -22,7 +22,6 @@ extern "C" {
 typedef struct iree_vm_module_t iree_vm_module_t;
 typedef struct iree_vm_stack_t iree_vm_stack_t;
 typedef struct iree_vm_stack_frame_t iree_vm_stack_frame_t;
-typedef void c_benchmark_state_t;
 
 //===----------------------------------------------------------------------===//
 // Module / function reflection
@@ -440,8 +439,7 @@ typedef struct iree_vm_module_t {
   // resumed. Depending on the program it may be unsafe to begin any other calls
   // without first completing prior ones.
   iree_status_t(IREE_API_PTR* begin_call)(void* self, iree_vm_stack_t* stack,
-                                          iree_vm_function_call_t call,
-                                          c_benchmark_state_t* benchmark_state);
+                                          iree_vm_function_call_t call);
 
   // Resumes execution of a previously-yielded call.
   //

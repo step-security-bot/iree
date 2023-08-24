@@ -1005,10 +1005,9 @@ static iree_status_t do_matmul_and_check_results(
   IREE_CHECK_OK(iree_vm_list_create(iree_vm_make_undefined_type_def(),
                                     /*initial_capacity=*/8,
                                     replay->host_allocator, &device_outputs));
-  IREE_CHECK_OK(iree_vm_invoke(replay->context, function,
-                               IREE_VM_INVOCATION_FLAG_NONE,
-                               /*policy=*/NULL, device_inputs, device_outputs,
-                               replay->host_allocator, NULL));
+  IREE_CHECK_OK(iree_vm_invoke(
+      replay->context, function, IREE_VM_INVOCATION_FLAG_NONE,
+      /*policy=*/NULL, device_inputs, device_outputs, replay->host_allocator));
   iree_vm_list_release(device_inputs);
 
   // Get the device_actual_result from the device_outputs.

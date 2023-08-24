@@ -62,7 +62,7 @@ class VMAddModuleTest : public ::testing::Test {
     IREE_RETURN_IF_ERROR(
         iree_vm_invoke(context_, function, IREE_VM_INVOCATION_FLAG_NONE,
                        /*policy=*/nullptr, input_list.get(), output_list.get(),
-                       iree_allocator_system(), nullptr));
+                       iree_allocator_system()));
 
     // Load the output result.
     iree_vm_value_t ret_value;
@@ -101,7 +101,7 @@ class VMAddModuleTest : public ::testing::Test {
     IREE_RETURN_IF_ERROR(
         iree_vm_invoke(context_, function, IREE_VM_INVOCATION_FLAG_NONE,
                        /*policy=*/nullptr, input_list.get(), output_list.get(),
-                       iree_allocator_system(), nullptr));
+                       iree_allocator_system()));
 
     // Load the output result.
     iree_vm_value_t ret_value;

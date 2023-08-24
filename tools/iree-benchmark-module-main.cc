@@ -61,7 +61,6 @@
 #include <vector>
 
 #include "benchmark/benchmark.h"
-#include "benchmark/benchmark_c_api.h"
 #include "iree/base/api.h"
 #include "iree/base/internal/flags.h"
 #include "iree/hal/api.h"
@@ -173,16 +172,13 @@ static void BenchmarkGenericFunction(const std::string& benchmark_name,
 
   // Benchmarking loop.
   while (state.KeepRunningBatch(batch_size)) {
-    state.PauseTiming();
     IREE_TRACE_ZONE_BEGIN_NAMED(z1, "BenchmarkIteration");
     IREE_TRACE_FRAME_MARK_NAMED("Iteration");
     IREE_CHECK_OK(iree_vm_invoke(
         context, function, IREE_VM_INVOCATION_FLAG_NONE, /*policy=*/nullptr,
-        inputs, outputs.get(), iree_allocator_system(),
-        static_cast<c_benchmark_state_t*>(&state)));
+        inputs, outputs.get(), iree_allocator_system()));
     IREE_CHECK_OK(iree_vm_list_resize(outputs.get(), 0));
     IREE_TRACE_ZONE_END(z1);
-    state.ResumeTiming();
   }
   state.SetItemsProcessed(state.iterations());
 
@@ -313,8 +309,7 @@ static void BenchmarkAsyncFunction(
         IREE_CHECK_OK(
             iree_vm_invoke(context, function, IREE_VM_INVOCATION_FLAG_NONE,
                            /*policy=*/nullptr, invocation_inputs[i].get(),
-                           invocation_outputs[i].get(), host_allocator,
-                           static_cast<c_benchmark_state_t*>(&state)));
+                           invocation_outputs[i].get(), host_allocator));
       }
       IREE_CHECK_OK(
           iree_hal_fence_wait(completion_fence.get(), iree_infinite_timeout()));
@@ -389,8 +384,7 @@ static void BenchmarkDispatchFunction(const std::string& benchmark_name,
     IREE_TRACE_FRAME_MARK_NAMED("Iteration");
     IREE_CHECK_OK(iree_vm_invoke(
         context, function, IREE_VM_INVOCATION_FLAG_NONE, /*policy=*/nullptr,
-        inputs.get(), outputs.get(), iree_allocator_system(),
-        static_cast<c_benchmark_state_t*>(&state)));
+        inputs.get(), outputs.get(), iree_allocator_system()));
     IREE_CHECK_OK(iree_vm_list_resize(outputs.get(), 0));
     IREE_TRACE_ZONE_END(z1);
   }

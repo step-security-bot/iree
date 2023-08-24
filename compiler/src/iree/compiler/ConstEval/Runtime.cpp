@@ -337,7 +337,7 @@ LogicalResult FunctionCall::invoke(Location loc, StringRef name) {
                                                 IREE_VM_INVOCATION_FLAG_NONE,
                                                 /*policy=*/nullptr,
                                                 inputs.get(), outputs.get(),
-                                                iree_allocator_system(), nullptr));
+                                                iree_allocator_system()));
 }
 
 LogicalResult FunctionCall::getResultAsAttr(Location loc, size_t index,

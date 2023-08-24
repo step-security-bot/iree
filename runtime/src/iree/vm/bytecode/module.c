@@ -10,7 +10,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "benchmark/benchmark_c_api.h"
 #include "iree/vm/bytecode/archive.h"
 #include "iree/vm/bytecode/module_impl.h"
 #include "iree/vm/bytecode/verifier.h"
@@ -737,8 +736,7 @@ static iree_status_t IREE_API_PTR iree_vm_bytecode_module_notify(
 }
 
 static iree_status_t iree_vm_bytecode_module_begin_call(
-    void* self, iree_vm_stack_t* stack, iree_vm_function_call_t call,
-    c_benchmark_state_t* benchmark_state) {
+    void* self, iree_vm_stack_t* stack, iree_vm_function_call_t call) {
   // NOTE: any work here adds directly to the invocation time. Avoid doing too
   // much work or touching too many unlikely-to-be-cached structures (such as
   // walking the FlatBuffer, which may cause page faults).
@@ -777,11 +775,10 @@ static iree_status_t iree_vm_bytecode_module_begin_call(
   IREE_RETURN_IF_ERROR(iree_vm_function_call_get_cconv_fragments(
       &signature, &cconv_arguments, &cconv_results));
 
-    // Jump into the dispatch routine to execute bytecode until the function
+  // Jump into the dispatch routine to execute bytecode until the function
   // either returns (synchronous) or yields (asynchronous).
   return iree_vm_bytecode_dispatch_begin(stack, module, call, cconv_arguments,
-                                         cconv_results,
-                                         benchmark_state);  // tail
+                                         cconv_results);  // tail
 }
 
 static iree_status_t iree_vm_bytecode_module_resume_call(

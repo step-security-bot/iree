@@ -171,9 +171,8 @@ class PyModuleInterface {
                             "ModuleNotify not implemented");
   }
 
-  static iree_status_t ModuleBeginCall(
-      void* vself, iree_vm_stack_t* stack, iree_vm_function_call_t call,
-      c_benchmark_state_t* c_benchmark_state_t) {
+  static iree_status_t ModuleBeginCall(void* vself, iree_vm_stack_t* stack,
+                                       iree_vm_function_call_t call) {
     auto self = AsSelf(vself);
     if (IREE_UNLIKELY(call.function.ordinal >=
                       self->export_functions_.size())) {

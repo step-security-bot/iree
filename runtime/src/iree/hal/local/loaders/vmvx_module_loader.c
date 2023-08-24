@@ -89,7 +89,7 @@ static iree_status_t iree_hal_vmvx_executable_set_constants(
     status = iree_vm_invoke(context, set_function,
                             IREE_VM_INVOCATION_FLAG_TRACE_INLINE,
                             /*policy=*/NULL, inputs,
-                            /*outputs=*/NULL, host_allocator, NULL);
+                            /*outputs=*/NULL, host_allocator);
   }
 
   // Inputs *must* be released here as we allocated it on the stack.
@@ -523,8 +523,7 @@ static iree_status_t iree_hal_vmvx_executable_issue_call(
   call.function = entry_fn;
   call.arguments = iree_make_byte_span(&call_args, sizeof(call_args));
   call.results = iree_make_byte_span(NULL, 0);
-  status =
-      entry_fn.module->begin_call(entry_fn.module->self, stack, call, NULL);
+  status = entry_fn.module->begin_call(entry_fn.module->self, stack, call);
 
   // Clean up the stack if needed, such as when the call fails.
   iree_vm_stack_deinitialize(stack);

@@ -367,8 +367,7 @@ static iree_status_t iree_vm_native_module_issue_call(
 }
 
 static iree_status_t IREE_API_PTR iree_vm_native_module_begin_call(
-    void* self, iree_vm_stack_t* stack, iree_vm_function_call_t call,
-    c_benchmark_state_t* benchmark_state) {
+    void* self, iree_vm_stack_t* stack, iree_vm_function_call_t call) {
   iree_vm_native_module_t* module = (iree_vm_native_module_t*)self;
   if (IREE_UNLIKELY(call.function.linkage != IREE_VM_FUNCTION_LINKAGE_EXPORT) ||
       IREE_UNLIKELY(call.function.ordinal >=
@@ -379,7 +378,7 @@ static iree_status_t IREE_API_PTR iree_vm_native_module_begin_call(
                             module->descriptor->export_count);
   }
   if (module->user_interface.begin_call) {
-    return module->user_interface.begin_call(module->self, stack, call, NULL);
+    return module->user_interface.begin_call(module->self, stack, call);
   }
 
   // NOTE: VM stack is currently unused. We could stash things here for the

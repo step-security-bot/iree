@@ -109,8 +109,7 @@ class VMBytecodeDispatchTest
     // flags |= IREE_VM_INVOCATION_FLAG_TRACE_EXECUTION;
     return iree_vm_invoke(context_, function, flags,
                           /*policy=*/nullptr, /*inputs=*/nullptr,
-                          /*outputs=*/nullptr, iree_allocator_system(),
-                          nullptr);
+                          /*outputs=*/nullptr, iree_allocator_system());
   }
 
   iree_vm_instance_t* instance_ = nullptr;

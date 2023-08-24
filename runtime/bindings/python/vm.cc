@@ -200,7 +200,7 @@ void VmContext::Invoke(iree_vm_function_t f, VmVariantList& inputs,
     py::gil_scoped_release release;
     status = iree_vm_invoke(raw_ptr(), f, IREE_VM_INVOCATION_FLAG_NONE, nullptr,
                             inputs.raw_ptr(), outputs.raw_ptr(),
-                            iree_allocator_system(), nullptr);
+                            iree_allocator_system());
   }
   CheckApiStatus(status, "Error invoking function");
 }

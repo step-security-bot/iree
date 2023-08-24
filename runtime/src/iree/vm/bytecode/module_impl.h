@@ -101,7 +101,7 @@ typedef struct iree_vm_bytecode_module_state_t {
 iree_status_t iree_vm_bytecode_dispatch_begin(
     iree_vm_stack_t* stack, iree_vm_bytecode_module_t* module,
     const iree_vm_function_call_t call, iree_string_view_t cconv_arguments,
-    iree_string_view_t cconv_results, c_benchmark_state_t* benchmark_state);
+    iree_string_view_t cconv_results);
 
 // Resumes execution of an in-progress frame and continues until either a yield
 // or return.

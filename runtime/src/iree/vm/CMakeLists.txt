@@ -67,7 +67,6 @@ iree_cc_library(
     iree::base
     iree::base::internal
     iree::base::internal::synchronization
-    benchmark
   PUBLIC
 )
 

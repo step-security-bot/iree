@@ -36,7 +36,7 @@ extern "C" int main(int argc, char** argv) {
 
   iree_vm_invoke(context, function, IREE_VM_INVOCATION_FLAG_NONE,
                  /*policy=*/nullptr, /*inputs=*/nullptr,
-                 /*outputs=*/nullptr, iree_allocator_system(), nullptr);
+                 /*outputs=*/nullptr, iree_allocator_system());
 
   iree_vm_module_release(module);
   iree_vm_context_release(context);

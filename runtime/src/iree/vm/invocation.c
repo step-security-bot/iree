@@ -6,12 +6,10 @@
 
 #include "iree/vm/invocation.h"
 
-
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
-#include "benchmark/benchmark_c_api.h"
 #include "iree/base/api.h"
 #include "iree/base/internal/debugging.h"
 #include "iree/vm/ref.h"
@@ -275,7 +273,7 @@ IREE_API_EXPORT iree_status_t iree_vm_invoke(
     iree_vm_context_t* context, iree_vm_function_t function,
     iree_vm_invocation_flags_t flags, const iree_vm_invocation_policy_t* policy,
     const iree_vm_list_t* inputs, iree_vm_list_t* outputs,
-    iree_allocator_t host_allocator, c_benchmark_state_t *benchmark_state) {
+    iree_allocator_t host_allocator) {
   IREE_TRACE_ZONE_BEGIN(z0);
 
   // Bound the synchronous invocation to the timeout specified by the user
@@ -301,12 +299,9 @@ IREE_API_EXPORT iree_status_t iree_vm_invoke(
   // complete the invocation before returning. If it yields we'll need to resume
   // it, possibly after taking care of pending waits.
   iree_vm_invoke_state_t state = {0};
-  iree_status_t status =
-      iree_vm_begin_invoke(&state, context, function, flags, policy, inputs,
-                           host_allocator, benchmark_state);
+  iree_status_t status = iree_vm_begin_invoke(&state, context, function, flags,
+                                              policy, inputs, host_allocator);
   while (iree_status_is_deferred(status)) {
-    assert(false && "IREE_STATUS_DEFERRED");
-
     // Grab the wait frame from the stack holding the wait parameters.
     // This is optional: if an invocation yields for cooperative scheduling
     // purposes there will not be a wait frame on the stack and we'll just
@@ -386,7 +381,7 @@ IREE_API_EXPORT iree_status_t iree_vm_begin_invoke(
     iree_vm_invoke_state_t* state, iree_vm_context_t* context,
     iree_vm_function_t function, iree_vm_invocation_flags_t flags,
     const iree_vm_invocation_policy_t* policy, const iree_vm_list_t* inputs,
-    iree_allocator_t host_allocator, c_benchmark_state_t* benchmark_state) {
+    iree_allocator_t host_allocator) {
   IREE_ASSERT_ARGUMENT(context);
   IREE_TRACE_ZONE_BEGIN(z0);
 
@@ -505,9 +500,8 @@ IREE_API_EXPORT iree_status_t iree_vm_begin_invoke(
       .arguments = arguments,
       .results = results,
   };
-
-  state->status = function.module->begin_call(function.module->self, stack,
-                                              call, benchmark_state);
+  state->status =
+      function.module->begin_call(function.module->self, stack, call);
 
   // Arguments should no longer be required - they were either consumed by the
   // begin_call or need to be cleaned up before we return.
@@ -818,7 +812,7 @@ static iree_status_t iree_vm_async_begin_invoke(void* user_data,
   IREE_TRACE(iree_vm_invoke_fiber_enter(state->invocation_id));
   iree_status_t status =
       iree_vm_begin_invoke(&state->base, context, function, flags, policy,
-                           inputs, state->host_allocator, NULL);
+                           inputs, state->host_allocator);
   if (iree_status_is_ok(status) || iree_status_is_deferred(status)) {
     // Ownership transferred.
     iree_vm_list_release(inputs);

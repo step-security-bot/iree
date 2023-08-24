@@ -21,7 +21,6 @@ extern "C" {
 
 typedef struct iree_vm_invocation_t iree_vm_invocation_t;
 typedef struct iree_vm_invocation_policy_t iree_vm_invocation_policy_t;
-typedef void c_benchmark_state_t;
 
 //===----------------------------------------------------------------------===//
 // Synchronous invocation
@@ -47,7 +46,7 @@ IREE_API_EXPORT iree_status_t iree_vm_invoke(
     iree_vm_context_t* context, iree_vm_function_t function,
     iree_vm_invocation_flags_t flags, const iree_vm_invocation_policy_t* policy,
     const iree_vm_list_t* inputs, iree_vm_list_t* outputs,
-    iree_allocator_t host_allocator, c_benchmark_state_t* benchmark_state);
+    iree_allocator_t host_allocator);
 
 //===----------------------------------------------------------------------===//
 // Asynchronous invocation
@@ -119,7 +118,7 @@ IREE_API_EXPORT iree_status_t iree_vm_begin_invoke(
     iree_vm_invoke_state_t* state, iree_vm_context_t* context,
     iree_vm_function_t function, iree_vm_invocation_flags_t flags,
     const iree_vm_invocation_policy_t* policy, const iree_vm_list_t* inputs,
-    iree_allocator_t host_allocator, c_benchmark_state_t *benchmark_state);
+    iree_allocator_t host_allocator);
 
 // Resumes an invocation previously began with iree_vm_begin_invoke.
 // Only valid to call if a prior call to iree_vm_begin_invoke or

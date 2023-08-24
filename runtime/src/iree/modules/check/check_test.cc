@@ -178,8 +178,7 @@ class CheckTest : public ::testing::Test {
     // TODO(#2075): don't directly invoke native functions like this.
     return iree_vm_invoke(context_, function, IREE_VM_INVOCATION_FLAG_NONE,
                           /*policy=*/nullptr, inputs_.get(),
-                          /*outputs=*/nullptr, iree_allocator_system(),
-                          nullptr);
+                          /*outputs=*/nullptr, iree_allocator_system());
   }
 
   iree_status_t InvokeValue(const char* function_name,
