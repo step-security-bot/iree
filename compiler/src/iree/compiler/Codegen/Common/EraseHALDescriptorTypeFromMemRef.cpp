@@ -103,6 +103,8 @@ LogicalResult EraseMemorySpacePattern::matchAndRewrite(
     TypeConverter::SignatureConversion result(newRegion->getNumArguments());
     (void)getTypeConverter()->convertSignatureArgs(
         newRegion->getArgumentTypes(), result);
+    for (Block& block : region)
+      (void)getTypeConverter()->convertBlockSignature(&block);
     rewriter.applySignatureConversion(newRegion, result);
   }
 
