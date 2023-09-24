@@ -9,7 +9,7 @@ from e2e_test_framework.definitions import common_definitions
 from e2e_test_framework.models import (
     matmul,
     tflite_models,
-    # torch_models,
+    torch_models,
     tf_models,
     jax_models,
 )
@@ -231,18 +231,18 @@ X86_64_BENCHMARK_CONFIG_LONG = [
     common_definitions.CpuBenchmarkConfig(
         model=torch_models.BERT_LARGE_384_FP32_TORCH_BATCHES[32], threads=[8]
     ),
-    common_definitions.CpuBenchmarkConfig(
-        model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[1], threads=[8]
-    ),
-    common_definitions.CpuBenchmarkConfig(
-        model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[8], threads=[8]
-    ),
-    common_definitions.CpuBenchmarkConfig(
-        model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[64], threads=[8]
-    ),
-    common_definitions.CpuBenchmarkConfig(
-        model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[128], threads=[8]
-    ),
+    # common_definitions.CpuBenchmarkConfig(
+    #     model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[1], threads=[8]
+    # ),
+    # common_definitions.CpuBenchmarkConfig(
+    #     model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[8], threads=[8]
+    # ),
+    # common_definitions.CpuBenchmarkConfig(
+    #     model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[64], threads=[8]
+    # ),
+    # common_definitions.CpuBenchmarkConfig(
+    #     model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[128], threads=[8]
+    # ),
 ]
 
 # Microkernels.
