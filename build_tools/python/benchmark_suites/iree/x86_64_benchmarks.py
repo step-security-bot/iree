@@ -109,8 +109,14 @@ class Linux_x86_64_Benchmarks(object):
             cascadelake_devices,
             presets=[benchmark_presets.X86_64_LARGE],
         )
+        large_experimental_run_configs = self._generate(
+            model_groups.X86_64_BENCHMARK_CONFIG_LONG,
+            self.CASCADELAKE_DATA_TILING_COMPILE_CONFIG,
+            cascadelake_devices,
+            presets=[benchmark_presets.X86_64_LARGE],
+        )
 
-        return default_run_configs + experimental_run_configs + large_run_configs
+        return default_run_configs + experimental_run_configs + large_run_configs + large_experimental_run_configs
 
 
 def generate() -> List[iree_definitions.E2EModelRunConfig]:

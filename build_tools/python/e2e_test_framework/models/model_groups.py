@@ -135,17 +135,24 @@ X86_64_BENCHMARK_CONFIG_EXPERIMENTAL = [
 ]
 
 X86_64_BENCHMARK_CONFIG_LONG = [
+    # TF Models.
     common_definitions.CpuBenchmarkConfig(
         model=tf_models.BERT_LARGE_384_FP32_TF_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=tf_models.BERT_LARGE_384_FP32_TF_BATCHES[16], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=tf_models.BERT_LARGE_384_FP32_TF_BATCHES[24], threads=[8]
     ),
     common_definitions.CpuBenchmarkConfig(
         model=tf_models.BERT_LARGE_384_FP32_TF_BATCHES[32], threads=[8]
     ),
     common_definitions.CpuBenchmarkConfig(
-        model=tf_models.BERT_LARGE_384_FP32_TF_BATCHES[64], threads=[8]
+        model=tf_models.RESNET50_3X224X224_FP32_TF_BATCHES[1], threads=[8]
     ),
     common_definitions.CpuBenchmarkConfig(
-        model=tf_models.RESNET50_3X224X224_FP32_TF_BATCHES[1], threads=[8]
+        model=tf_models.RESNET50_3X224X224_FP32_TF_BATCHES[8], threads=[8]
     ),
     common_definitions.CpuBenchmarkConfig(
         model=tf_models.RESNET50_3X224X224_FP32_TF_BATCHES[64], threads=[8]
@@ -160,7 +167,81 @@ X86_64_BENCHMARK_CONFIG_LONG = [
         model=tf_models.T5_LARGE_512_FP32_TF_BATCHES[16], threads=[8]
     ),
     common_definitions.CpuBenchmarkConfig(
+        model=tf_models.T5_LARGE_512_FP32_TF_BATCHES[24], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
         model=tf_models.T5_LARGE_512_FP32_TF_BATCHES[32], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=tf_models.EFFICIENTNETB7_FP32_TF_600X600X3XF32_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=tf_models.EFFICIENTNETB7_FP32_TF_600X600X3XF32_BATCHES[64], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=tf_models.EFFICIENTNETB7_FP32_TF_600X600X3XF32_BATCHES[128], threads=[8]
+    ),
+    # JAX Models.
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.BERT_LARGE_FP32_JAX_384XI32_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.BERT_LARGE_FP32_JAX_384XI32_BATCHES[16], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.BERT_LARGE_FP32_JAX_384XI32_BATCHES[24], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.BERT_LARGE_FP32_JAX_384XI32_BATCHES[32], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.RESNET50_FP32_JAX_3X224X224XF32_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.RESNET50_FP32_JAX_3X224X224XF32_BATCHES[8], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.RESNET50_FP32_JAX_3X224X224XF32_BATCHES[64], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.RESNET50_FP32_JAX_3X224X224XF32_BATCHES[128], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[16], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[24], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=jax_models.T5_LARGE_FP32_JAX_512XI32_BATCHES[32], threads=[8]
+    ),
+    # PyTorch Models.
+    common_definitions.CpuBenchmarkConfig(
+        model=torch_models.BERT_LARGE_384_FP32_TORCH_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=torch_models.BERT_LARGE_384_FP32_TORCH_BATCHES[16], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=torch_models.BERT_LARGE_384_FP32_TORCH_BATCHES[24], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=torch_models.BERT_LARGE_384_FP32_TORCH_BATCHES[32], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[1], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[8], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[64], threads=[8]
+    ),
+    common_definitions.CpuBenchmarkConfig(
+        model=torch_models.RESNET50_3X224X224_FP32_TORCH_BATCHES[128], threads=[8]
     ),
 ]
 

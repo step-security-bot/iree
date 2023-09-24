@@ -487,6 +487,32 @@ iree_bytecode_module(
 )
 
 iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BertLargeTFBatch16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BertLargeTFBatch24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
   NAME "iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
   SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch32.mlirbc"
   MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
@@ -500,19 +526,6 @@ iree_bytecode_module(
 )
 
 iree_bytecode_module(
-  NAME "iree-module-BertLargeTFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
-  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch64.mlirbc"
-  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
-  FLAGS
-    "--iree-hal-target-backends=llvm-cpu"
-    "--iree-input-type=stablehlo"
-    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
-    "--iree-llvmcpu-target-cpu=cascadelake"
-  FRIENDLY_NAME "BertLargeTFBatch64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
-  PUBLIC
-)
-
-iree_bytecode_module(
   NAME "iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
   SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch1.mlirbc"
   MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
@@ -522,6 +535,19 @@ iree_bytecode_module(
     "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
     "--iree-llvmcpu-target-cpu=cascadelake"
   FRIENDLY_NAME "Resnet50TFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "Resnet50TFBatch8(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
   PUBLIC
 )
 
@@ -578,6 +604,19 @@ iree_bytecode_module(
 )
 
 iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "T5LargeTFBatch24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
   NAME "iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
   SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch32.mlirbc"
   MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
@@ -587,6 +626,830 @@ iree_bytecode_module(
     "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
     "--iree-llvmcpu-target-cpu=cascadelake"
   FRIENDLY_NAME "T5LargeTFBatch32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "EfficientNetB7TFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "EfficientNetB7TFBatch64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "EfficientNetB7TFBatch128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH8(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BertLargePTBatch1(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BertLargePTBatch16(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BertLargePTBatch24(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "BertLargePTBatch32(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "Resnet50PTBatch1(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "Resnet50PTBatch8(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "Resnet50PTBatch64(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+  FRIENDLY_NAME "Resnet50PTBatch128(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BertLargeTFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BertLargeTFBatch16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BertLargeTFBatch24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BertLargeTFBatch32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "Resnet50TFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "Resnet50TFBatch8(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "Resnet50TFBatch64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "Resnet50TFBatch128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "T5LargeTFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "T5LargeTFBatch16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "T5LargeTFBatch24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "T5LargeTFBatch32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "EfficientNetB7TFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "EfficientNetB7TFBatch64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "EfficientNetB7TFBatch128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH8(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BertLargePTBatch1(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BertLargePTBatch16(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BertLargePTBatch24(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "BertLargePTBatch32(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "Resnet50PTBatch1(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "Resnet50PTBatch8(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "Resnet50PTBatch64(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+  FRIENDLY_NAME "Resnet50PTBatch128(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel]"
   PUBLIC
 )
 
@@ -2597,6 +3460,40 @@ iree_bytecode_module(
 )
 
 iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargeTFBatch16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargeTFBatch24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
   NAME "iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
   SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch32.mlirbc"
   MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
@@ -2614,23 +3511,6 @@ iree_bytecode_module(
 )
 
 iree_bytecode_module(
-  NAME "iree-module-BertLargeTFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
-  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch64.mlirbc"
-  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
-  FLAGS
-    "--iree-hal-target-backends=llvm-cpu"
-    "--iree-input-type=stablehlo"
-    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
-    "--iree-llvmcpu-target-cpu=cascadelake"
-    "--iree-vm-emit-polyglot-zip=true"
-    "--iree-llvmcpu-debug-symbols=false"
-    "--iree-scheduling-dump-statistics-format=json"
-    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
-  FRIENDLY_NAME "BertLargeTFBatch64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
-  PUBLIC
-)
-
-iree_bytecode_module(
   NAME "iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
   SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch1.mlirbc"
   MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
@@ -2644,6 +3524,23 @@ iree_bytecode_module(
     "--iree-scheduling-dump-statistics-format=json"
     "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
   FRIENDLY_NAME "Resnet50TFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50TFBatch8(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
   PUBLIC
 )
 
@@ -2716,6 +3613,23 @@ iree_bytecode_module(
 )
 
 iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5LargeTFBatch24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
   NAME "iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
   SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch32.mlirbc"
   MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
@@ -2729,6 +3643,1062 @@ iree_bytecode_module(
     "--iree-scheduling-dump-statistics-format=json"
     "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
   FRIENDLY_NAME "T5LargeTFBatch32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "EfficientNetB7TFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "EfficientNetB7TFBatch64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "EfficientNetB7TFBatch128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH8(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargePTBatch1(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargePTBatch16(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargePTBatch24(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargePTBatch32(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50PTBatch1(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50PTBatch8(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50PTBatch64(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50PTBatch128(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][default-flags,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargeTFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargeTFBatch16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargeTFBatch24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargeTFBatch32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargeTFBatch32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50TFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50TFBatch8(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50TFBatch64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50TFBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50TFBatch128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5LargeTFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5LargeTFBatch16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5LargeTFBatch24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5LargeTFBatch32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5LargeTFBatch32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "EfficientNetB7TFBatch1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "EfficientNetB7TFBatch64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_EfficientNetB7TFBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "EfficientNetB7TFBatch128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BERT_LARGE_JAX_384XI32_BATCH32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BERT_LARGE_JAX_384XI32_BATCH32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH8(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH64(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_RESNET50_FP32_JAX_3X224X224XF32_BATCH128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "RESNET50_FP32_JAX_3X224X224XF32_BATCH128(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH1(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH16(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH24(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_T5_LARGE_FP32_JAX_512XI32_BATCH32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=stablehlo"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "T5_LARGE_FP32_JAX_512XI32_BATCH32(stablehlo) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargePTBatch1(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch16.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargePTBatch16(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch24.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargePTBatch24(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_BertLargePTBatch32.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "BertLargePTBatch32(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch1.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50PTBatch1(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch8.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50PTBatch8(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch64.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50PTBatch64(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
+  PUBLIC
+)
+
+iree_bytecode_module(
+  NAME "iree-module-Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_"
+  SRC "${ROOT_ARTIFACTS_DIR}/model_Resnet50PTBatch128.mlirbc"
+  MODULE_FILE_NAME "${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/module.vmfb"
+  FLAGS
+    "--iree-hal-target-backends=llvm-cpu"
+    "--iree-input-type=none"
+    "--iree-llvmcpu-target-triple=x86_64-unknown-linux-gnu"
+    "--iree-llvmcpu-target-cpu=cascadelake"
+    "--iree-opt-data-tiling"
+    "--iree-llvmcpu-enable-microkernels"
+    "--iree-vm-emit-polyglot-zip=true"
+    "--iree-llvmcpu-debug-symbols=false"
+    "--iree-scheduling-dump-statistics-format=json"
+    "--iree-scheduling-dump-statistics-file=${ROOT_ARTIFACTS_DIR}/iree_module_Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_/scheduling_stats.json"
+  FRIENDLY_NAME "Resnet50PTBatch128(linalg) [x86_64-cascadelake-linux_gnu-llvm_cpu][experimental-flags,data-tiling,ukernel,compile-stats]"
   PUBLIC
 )
 
@@ -4690,7 +6660,9 @@ add_dependencies(iree-benchmark-import-models-large
   ${PACKAGE_NAME}_model-BertLargeTFBatch24
   ${PACKAGE_NAME}_model-BertLargeTFBatch32
   ${PACKAGE_NAME}_model-BertLargeTFBatch48
-  ${PACKAGE_NAME}_model-BertLargeTFBatch64
+  ${PACKAGE_NAME}_model-EfficientNetB7TFBatch1
+  ${PACKAGE_NAME}_model-EfficientNetB7TFBatch128
+  ${PACKAGE_NAME}_model-EfficientNetB7TFBatch64
   ${PACKAGE_NAME}_model-RESNET50_FP32_JAX_3X224X224XF32_BATCH1
   ${PACKAGE_NAME}_model-RESNET50_FP32_JAX_3X224X224XF32_BATCH128
   ${PACKAGE_NAME}_model-RESNET50_FP32_JAX_3X224X224XF32_BATCH256
@@ -4897,42 +6869,99 @@ add_dependencies(iree-benchmark-suites-comp-stats
 
 add_dependencies(iree-benchmark-suites-comp-stats-large
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH48_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch16_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch1_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch24_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch32_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch48_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch16_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch24_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch32_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch48_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
-  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH256_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch128_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch1_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch256_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch64_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch8_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch128_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch256_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch64_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch8_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch16_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch24_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch32_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
   ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_compile-stats_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_compile-stats_
 )
 
 add_dependencies(iree-benchmark-suites-cuda
@@ -5101,42 +7130,99 @@ add_dependencies(iree-benchmark-suites-default
 
 add_dependencies(iree-benchmark-suites-large
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH48_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch16_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch1_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch24_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch32_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-BertLargePTBatch48_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch16_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch24_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch32_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch48_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
-  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH256_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch128_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch1_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch256_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch64_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+(??)  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch8_linalg___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch128_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch256_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch64_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch8_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch16_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch24_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch32_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___cuda-sm_80-linux_gnu-cuda__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
 )
 
 add_dependencies(iree-benchmark-suites-riscv
@@ -5183,13 +7269,74 @@ add_dependencies(iree-benchmark-suites-x86_64
 )
 
 add_dependencies(iree-benchmark-suites-x86_64-large
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BERT_LARGE_JAX_384XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargePTBatch16_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargePTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargePTBatch24_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargePTBatch32_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
-  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-BertLargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-EfficientNetB7TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-RESNET50_FP32_JAX_3X224X224XF32_BATCH8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch128_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch1_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch64_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50PTBatch8_linalg___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch128_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch64_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-Resnet50TFBatch8_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
   ${PACKAGE_NAME}_iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5LargeTFBatch32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH16_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH1_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH24_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__default-flags_
+  ${PACKAGE_NAME}_iree-module-T5_LARGE_FP32_JAX_512XI32_BATCH32_stablehlo___x86_64-cascadelake-linux_gnu-llvm_cpu__experimental-flags_data-tiling_ukernel_
 )

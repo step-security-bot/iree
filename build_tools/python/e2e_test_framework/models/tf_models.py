@@ -128,3 +128,24 @@ T5_LARGE_512_FP32_TF_BATCHES = model_utils.generate_batch_models(
     ],
     batch_sizes=[1, 16, 24, 32, 48, 64, 512],
 )
+
+EFFICIENTNET_GCS_DIR = "https://storage.googleapis.com/iree-model-artifacts/tensorflow/tf_models_2.15.0.dev20230817_1692333975/"
+
+# Converted from https://www.tensorflow.org/api_docs/python/tf/keras/applications/efficientnet.
+EFFICIENTNETB7_FP32_TF_600X600X3XF32_BATCHES = model_utils.generate_batch_models(
+    id_template=model_utils.partial_template_substitute(
+        ID_FORMAT, model_id=unique_ids.MODEL_EFFICIENTNETB7_600X600X3_FP32_TF
+    ),
+    name_template=model_utils.partial_template_substitute(
+        NAME_FORMAT, name="EfficientNetB7TF"
+    ),
+    tags=["fp32", "cnn"],
+    source_type=common_definitions.ModelSourceType.EXPORTED_STABLEHLO_MLIR,
+    source_url_template=string.Template(
+        EFFICIENTNET_GCS_DIR
+        + "EFFICIENTNETB7_FP32_TF_600X600X3XF32_BATCH${batch_size}/stablehlo.mlirbc",
+    ),
+    entry_function="forward",
+    input_type_templates=[string.Template("${batch_size}x600x600x3xf32")],
+    batch_sizes=[1, 64, 128],
+)
