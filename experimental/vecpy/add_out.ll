@@ -15,6 +15,16 @@ define <32 x float> @_mlir_ciface_add(<32 x float> %0, <32 x float> %1) {
   ret <32 x float> %3
 }
 
+define <32 x float> @add2(<32 x float> %0) {
+  %2 = fadd <32 x float> %0, <float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00, float 2.000000e+00>
+  ret <32 x float> %2
+}
+
+define <32 x float> @_mlir_ciface_add2(<32 x float> %0) {
+  %2 = call <32 x float> @add2(<32 x float> %0)
+  ret <32 x float> %2
+}
+
 !llvm.module.flags = !{!0}
 
 !0 = !{i32 2, !"Debug Info Version", i32 3}
