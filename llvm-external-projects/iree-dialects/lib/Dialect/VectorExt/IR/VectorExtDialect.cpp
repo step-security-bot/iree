@@ -82,7 +82,7 @@ LayoutAttr LayoutAttr::project(ArrayRef<bool> projectedDims) {
   assert(projectedDims.size() == layouts.size());
   SmallVector<PerDimLayoutAttr> newLayouts;
   for (auto pair : llvm::zip(projectedDims, layouts)) {
-    if (std::get<0>(pair))
+    if (!std::get<0>(pair))
       newLayouts.push_back(std::get<1>(pair));
   }
   return LayoutAttr::get(getContext(), newLayouts);
