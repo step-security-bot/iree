@@ -78,6 +78,9 @@ LayoutAttr::getSIMTVectorShape(ArrayRef<LayoutDimension> dims) {
 // Project out the layout for the specified dimensions
 // resulting in the layout for a lower dimensional vector.
 LayoutAttr LayoutAttr::project(ArrayRef<bool> projectedDims) {
+  assert(projectedDims.size() == getLayouts().size() &&
+         "projectedDims size must match layout size");
+
   ArrayRef<PerDimLayoutAttr> layouts = getLayouts();
   assert(projectedDims.size() == layouts.size());
   SmallVector<PerDimLayoutAttr> newLayouts;
@@ -91,6 +94,9 @@ LayoutAttr LayoutAttr::project(ArrayRef<bool> projectedDims) {
 // Permute the layout according to the provided permutation
 // vector. The dimensionality of the layout remains the same.
 LayoutAttr LayoutAttr::permute(ArrayRef<unsigned> permutation) {
+  assert(permutation.size() == getLayouts().size() &&
+         "permutation size must match layout size");
+
   ArrayRef<PerDimLayoutAttr> layouts = getLayouts();
   assert(permutation.size() == layouts.size());
   SmallVector<PerDimLayoutAttr> newLayouts;
