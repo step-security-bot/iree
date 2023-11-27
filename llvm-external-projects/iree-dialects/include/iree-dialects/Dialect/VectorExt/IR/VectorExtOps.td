@@ -30,15 +30,13 @@ def IREEVectorExt_LayoutConflictResolutionOp : IREEVectorExt_PureOp<"layout_conf
   }];
   let arguments = (ins
     AnyVector:$input,
-    LayoutAttr:$sourceLayout,
-    LayoutAttr:$desiredLayout
+    BlockLayoutAttr:$sourceLayout,
+    BlockLayoutAttr:$desiredLayout
   );
   let results = (outs
     AnyVector:$output
   );
-  let extraClassDeclaration = [{
-
-  }];
+  let extraClassDeclaration = [{}];
   let assemblyFormat = "$input attr-dict `:` type($input) `->` type($output)";
   let hasVerifier = 1;
 }
