@@ -12,6 +12,8 @@ include "mlir/IR/OpBase.td"
 include "mlir/IR/AttrTypeBase.td"
 include "mlir/IR/EnumAttr.td"
 
+include "iree-dialects/Dialect/VectorExt/IR/VectorExtAttrInterfaces.td"
+
 //===----------------------------------------------------------------------===//
 // Dialect definition
 //===----------------------------------------------------------------------===//
@@ -113,7 +115,8 @@ def LayoutAttr : IREEVectorExt_Attr<"Layout"> {
   }];
 }
 
-def BlockLayoutAttr : IREEVectorExt_Attr<"BlockLayout"> {
+def BlockLayoutAttr : IREEVectorExt_Attr<"BlockLayout",
+      [ DeclareAttrInterfaceMethods<VectorLayoutInterface> ]> {
   let mnemonic = "block_layout";
   let summary = [{block vector register layout for a given vector}];
   let description = [{
@@ -127,11 +130,6 @@ def BlockLayoutAttr : IREEVectorExt_Attr<"BlockLayout"> {
   let assemblyFormat = "`<``<`$batch`>` `<`$distributed`>` `<`$thread`>``>`";
   let genVerifyDecl = 0;
   let extraClassDeclaration = [{
-    bool isValidLayout(ArrayRef<int64_t> vector) const;
-
-    BlockLayoutAttr project(ArrayRef<bool> projectedDims) const;
-    BlockLayoutAttr permute(ArrayRef<unsigned> permutation) const;
-
     void forAllBatchTiles(ArrayRef<int64_t> vectorShape, std::function<void(ArrayRef<int64_t>)> callback) const;
     void forAllDistributedTiles(std::function<void(ArrayRef<int64_t>)> callback) const;
     void forAllThreadTiles(std::function<void(ArrayRef<int64_t>)> callback) const;

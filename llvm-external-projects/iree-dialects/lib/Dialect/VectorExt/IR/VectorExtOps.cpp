@@ -10,14 +10,13 @@
 
 using namespace mlir;
 using namespace mlir::iree_compiler::IREE::VectorExt;
-namespace IREE = mlir::iree_compiler::IREE;
 
 //===----------------------------------------------------------------------===//
 // LayoutConflictResolutionOp
 //===----------------------------------------------------------------------===//
 
 LogicalResult validateLayout(Operation *op, StringRef label,
-                             BlockLayoutAttr layout,
+                             VectorLayoutInterface layout,
                              ArrayRef<int64_t> inputShape) {
   if (!layout.isValidLayout(inputShape)) {
     return op->emitError(
