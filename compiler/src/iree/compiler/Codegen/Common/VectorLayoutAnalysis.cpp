@@ -133,9 +133,11 @@ class PropagateLayout : public DataFlowAnalysis {
 public:
   explicit PropagateLayout(
       DataFlowSolver &solver,
-      DenseMap<TypedValue<VectorType>, VectorLayoutInterface> &anchors,
+      DenseMap<TypedValue<VectorType>, VectorLayoutInterface> &anchorValues,
+      DenseMap<OpOperand *, VectorLayoutInterface> &anchorOperands,
       MLIRContext *ctx)
-      : DataFlowAnalysis(solver), anchors(anchors), ctx(ctx) {}
+      : DataFlowAnalysis(solver), anchorValues(anchorValues),
+        anchorOperands(anchorOperands), ctx(ctx) {}
 
   LogicalResult initialize(Operation *root) override;
 
@@ -157,7 +159,9 @@ private:
 
   DistributionLayout *getLatticeElement(Value val);
 
-  DenseMap<TypedValue<VectorType>, VectorLayoutInterface> anchors;
+  /// Anchor values and anchor operands.
+  DenseMap<TypedValue<VectorType>, VectorLayoutInterface> anchorValues;
+  DenseMap<OpOperand *, VectorLayoutInterface> anchorOperands;
 
   MLIRContext *ctx;
 };
@@ -710,9 +714,16 @@ void enforcementTransferFunction(
 
 LogicalResult PropagateLayout::initialize(Operation *root) {
   // Set layout for anchor ops.
-  for (auto [val, layout] : anchors) {
+  for (auto [val, layout] : anchorValues) {
     DistributionLayout *latticeEl = getLatticeElement(val);
     ChangeResult changed = latticeEl->resolve(layout);
+    propagateIfChanged(latticeEl, changed);
+  }
+
+  // Set the layout for operands with possible conflicts.
+  for (auto [val, layout] : anchorOperands) {
+    DistributionLayout *latticeEl = getLatticeElement(val->get());
+    ChangeResult changed = latticeEl->resolveWithPossibleConflict(layout, *val);
     propagateIfChanged(latticeEl, changed);
   }
 
@@ -969,7 +980,8 @@ LogicalResult VectorLayoutAnalysis::run() {
   // initialization which needs the lattice to know both enforcement and
   // propagation.
   solver.load<EnforceLayout>(root->getContext());
-  solver.load<PropagateLayout>(anchors, root->getContext());
+  solver.load<PropagateLayout>(anchorValues, anchorOperands,
+                               root->getContext());
   return solver.initializeAndRun(root);
 }
 

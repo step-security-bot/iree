@@ -940,7 +940,8 @@ static void setAnchorOpsFromAttributes(VectorLayoutAnalysis &analysis,
             .getAsInteger(/*Radix=*/10, operandNum);
         assert(operandNum < op->getNumOperands() &&
                "operand number out of range");
-        analysis.setAnchor(op->getOperand(operandNum), attr.getValue());
+        analysis.setAnchorForOperand(op->getOpOperand(operandNum),
+                                     attr.getValue());
       }
       if (name.find("__vector_layout_test_anchor_result_") !=
           std::string::npos) {
@@ -948,7 +949,7 @@ static void setAnchorOpsFromAttributes(VectorLayoutAnalysis &analysis,
         name.substr(name.find_last_of("_") + 1)
             .getAsInteger(/*Radix=*/10, resultNum);
         assert(resultNum < op->getNumResults() && "result number out of range");
-        analysis.setAnchor(op->getResult(resultNum), attr.getValue());
+        analysis.setAnchorForValue(op->getResult(resultNum), attr.getValue());
       }
     }
   });
