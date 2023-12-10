@@ -317,7 +317,7 @@ SmallVector<Value> VectorDistribution::getIndices(
 
   unsigned unitLeadingDims =
       permutationMap.getNumDims() - permutationMap.getNumResults();
-  for (auto dim : permutationMap.getResults()) {
+  for (auto [i, dim] : llvm::enumerate(permutationMap.getResults())) {
     auto dimExpr = dyn_cast<AffineDimExpr>(dim);
     if (!dimExpr) {
       llvm::report_fatal_error("permutation map is not a projected "
@@ -325,13 +325,14 @@ SmallVector<Value> VectorDistribution::getIndices(
     }
     unsigned pos = dimExpr.getPosition();
     unsigned reducedPos = pos - unitLeadingDims;
+    unsigned projectedI = i + unitLeadingDims;
 
     PerDimLayoutAttr perDimLayout = layout.getDimLayout(reducedPos);
     PerDimLayoutAttr::Iterator dimIt = iterator.states[reducedPos];
     Value index = rewriter.create<affine::AffineApplyOp>(
-        loc, perDimLayout.computeSIMDIndex(dimIt), laneIds[reducedPos]);
+        loc, perDimLayout.computeSIMDIndex(dimIt), laneIds[i]);
     index = rewriter.create<arith::AddIOp>(loc, index, indices[pos]);
-    simdIndices[pos] = index;
+    simdIndices[projectedI] = index;
   }
 
   return simdIndices;
@@ -381,8 +382,10 @@ LogicalResult VectorDistribution::distributeTransferReads(
     SmallVector<Value> simdIndices =
         getIndices(rewriter, layout, iterator, transferReadOp.getIndices(),
                    transferReadOp.getPermutationMap(), loc);
+
     SmallVector<int64_t> simtIndices =
         layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
+
     auto vectorType = VectorType::get({loadElements}, elementType);
     if (loadElements == 1) {
       Value element = rewriter.create<memref::LoadOp>(loc, source, simdIndices);
