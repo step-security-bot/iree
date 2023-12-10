@@ -20,6 +20,8 @@
 #include "mlir/IR/Matchers.h"
 #include "mlir/IR/Verifier.h"
 
+#define DEBUG_TYPE "iree-codegen-llvmgpu-vector-distribution"
+
 using namespace mlir::iree_compiler::IREE::VectorExt;
 
 namespace mlir::iree_compiler {
@@ -141,6 +143,7 @@ public:
                                   analysis);
 
     // 1: Collect all operations that need to be distributed.
+    LLVM_DEBUG(llvm::dbgs() << "Step 1: Collecting operations to distribute\n");
     root->walk([&](Operation *op) {
       if (canDistribute(op, analysis)) {
         worklist.push_back(op);
@@ -149,11 +152,14 @@ public:
 
     // 2. Set the insertion point to the beginning of the root, and build the
     // thread grid.
+    LLVM_DEBUG(llvm::dbgs() << "Step 2: Getting thread grid\n");
     rewriter.setInsertionPointToStart(&root.getBody().getBlocks().front());
     threadGrid = provider->getThreadGrid(rewriter);
 
     // 3. Distribute all operations in the worklist until we reach a fixed
     // point.
+    LLVM_DEBUG(llvm::dbgs()
+               << "Step 3: Starting distributing collected operations\n");
     bool changed = true;
     while (changed) {
       changed = false;
@@ -165,10 +171,14 @@ public:
         rewriter.setInsertionPoint(op);
 
         if (provider->specializedDistribution(rewriter, op).succeeded()) {
+          LLVM_DEBUG(llvm::dbgs() << "Specialized Distribution Successful\n");
           changed = true;
           continue;
         }
 
+        LLVM_DEBUG(llvm::dbgs() << "Trying to distribute: ");
+        LLVM_DEBUG(op->print(llvm::dbgs(), OpPrintingFlags().skipRegions()));
+        LLVM_DEBUG(llvm::dbgs() << "\n");
         LogicalResult distributed =
             TypeSwitch<Operation *, LogicalResult>(op)
                 .Case<vector::TransferReadOp>([&](auto transferReadOp) {
@@ -200,22 +210,27 @@ public:
 
         // If the operation was distributed, continue with the next one.
         if (distributed.succeeded()) {
+          LLVM_DEBUG(llvm::dbgs() << "Distribution Successful\n");
           changed = true;
           continue;
         }
 
         if (OpTrait::hasElementwiseMappableTraits(op)) {
           if (distributeElementwise(rewriter, op).succeeded()) {
+            LLVM_DEBUG(llvm::dbgs() << "Distribution Successful\n");
             changed = true;
           }
           continue;
         }
+
+        LLVM_DEBUG(llvm::dbgs() << "Distribution Failed\n");
       }
     }
 
     // 4. Ideally, we should error out here if everything was not distributed.
     // Currently, I'm not adding it for debugging purposes.
     // TODO: Add a check here if something was not distributed.
+    LLVM_DEBUG(llvm::dbgs() << "Distribution Finished\n");
   }
 
 private:
