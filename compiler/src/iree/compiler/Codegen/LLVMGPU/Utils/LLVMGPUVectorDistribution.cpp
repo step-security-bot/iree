@@ -134,6 +134,8 @@ public:
     provider->setAnchorOps();
     if (failed(analysis.run()))
       return;
+    LLVM_DEBUG(llvm::dbgs() << "Layout Analysis Completed Successfully :\n");
+    LLVM_DEBUG(analysis.print(llvm::dbgs()));
   }
 
   void distribute() {
@@ -170,11 +172,10 @@ public:
 
         rewriter.setInsertionPoint(op);
 
-        if (provider->specializedDistribution(rewriter, op).succeeded()) {
-          LLVM_DEBUG(llvm::dbgs() << "Specialized Distribution Successful\n");
-          changed = true;
-          continue;
-        }
+        // if (provider->specializedDistribution(rewriter, op).succeeded()) {
+        //   LLVM_DEBUG(llvm::dbgs() << "Specialized Distribution
+        //   Successful\n"); changed = true; continue;
+        // }
 
         LLVM_DEBUG(llvm::dbgs() << "Trying to distribute: ");
         LLVM_DEBUG(op->print(llvm::dbgs(), OpPrintingFlags().skipRegions()));
