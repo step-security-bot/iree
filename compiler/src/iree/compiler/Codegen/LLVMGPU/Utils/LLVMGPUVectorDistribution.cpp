@@ -317,6 +317,7 @@ handlePermutationsAndLeadingUnitDims(RewriterBase &rewriter,
 SmallVector<Value> VectorDistribution::getIndices(
     RewriterBase &rewriter, LayoutAttr &layout, LayoutAttr::Iterator &iterator,
     SmallVector<Value> indices, AffineMap permutationMap, Location loc) {
+  SmallVector<Value> simdIndices;
 
   ArrayRef<Value> threadIds = getThreadIds();
   SmallVector<Value> laneIds;
@@ -338,21 +339,18 @@ SmallVector<Value> VectorDistribution::getIndices(
     }
   }
 
-  SmallVector<Value> simdIndices =
+  indices =
       handlePermutationsAndLeadingUnitDims(rewriter, indices, permutationMap);
 
-  unsigned unitLeadingDims =
-      permutationMap.getNumDims() - permutationMap.getNumResults();
-  for (unsigned i = unitLeadingDims; i < simdIndices.size(); ++i) {
-    PerDimLayoutAttr perDimLayout = layout.getLayouts()[i - unitLeadingDims];
-    PerDimLayoutAttr::Iterator dimIt = iterator.states[i - unitLeadingDims];
+  int i{0};
+  for (auto pair : llvm::zip_equal(layout.getLayouts(), iterator.states)) {
+    PerDimLayoutAttr perDimLayout = std::get<0>(pair);
+    PerDimLayoutAttr::Iterator iterator = std::get<1>(pair);
     Value index = rewriter.create<affine::AffineApplyOp>(
-        loc, perDimLayout.computeSIMDIndex(dimIt),
-        laneIds[i - unitLeadingDims]);
-    index = rewriter.create<arith::AddIOp>(loc, index, simdIndices[i]);
-    simdIndices[i] = index;
+        loc, perDimLayout.computeSIMDIndex(iterator), laneIds[i]);
+    index = rewriter.create<arith::AddIOp>(loc, index, indices[i++]);
+    simdIndices.push_back(index);
   }
-
   return simdIndices;
 }
 
