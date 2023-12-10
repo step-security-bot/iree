@@ -132,7 +132,6 @@ public:
     provider->setAnchorOps();
     if (failed(analysis.run()))
       return;
-    analysis.dump();
   }
 
   void distribute() {
@@ -324,6 +323,9 @@ SmallVector<Value> VectorDistribution::getIndices(
     }
   }
 
+  indices =
+      handlePermutationsAndLeadingUnitDims(rewriter, indices, permutationMap);
+
   int i{0};
   for (auto pair : llvm::zip_equal(layout.getLayouts(), iterator.states)) {
     PerDimLayoutAttr perDimLayout = std::get<0>(pair);
@@ -333,9 +335,32 @@ SmallVector<Value> VectorDistribution::getIndices(
     index = rewriter.create<arith::AddIOp>(loc, index, indices[i++]);
     simdIndices.push_back(index);
   }
-  simdIndices = handlePermutationsAndLeadingUnitDims(rewriter, simdIndices,
-                                                     permutationMap);
   return simdIndices;
+}
+
+static SmallVector<int64_t> getPermutation(AffineMap permutationMap) {
+  assert(permutationMap.isProjectedPermutation() &&
+         "permutation map should be a projected permutation.");
+
+  SmallVector<int64_t> permutation;
+  permutation.reserve(permutationMap.getNumResults());
+
+  unsigned leadingUnitDims =
+      permutationMap.getNumDims() - permutationMap.getNumResults();
+  for (AffineExpr dim : permutationMap.getResults()) {
+    // Get this dim's position in the permutation map.
+    auto dimExpr = dyn_cast<AffineDimExpr>(dim);
+    if (!dimExpr) {
+      llvm::report_fatal_error("permutation map is not a projected "
+                               "permutation.");
+    }
+
+    unsigned pos = dimExpr.getPosition();
+    assert(pos >= leadingUnitDims && "invalid permutation map");
+    pos -= leadingUnitDims;
+    permutation.push_back(pos);
+  }
+  return permutation;
 }
 
 LogicalResult VectorDistribution::distributeTransferReads(
@@ -348,14 +373,23 @@ LogicalResult VectorDistribution::distributeTransferReads(
   Location loc = transferReadOp.getLoc();
   Value vector = rewriter.create<arith::ConstantOp>(
       loc, vectorType, rewriter.getZeroAttr(vectorType));
-  LayoutAttr layout = analysis.getLayout<LayoutAttr>(result);
-  int64_t loadElements = layout.getTransferElements();
+  LayoutAttr requiredLayout = analysis.getLayout<LayoutAttr>(result);
+
+  SmallVector<int64_t> permutation =
+      getPermutation(transferReadOp.getPermutationMap());
+  LayoutAttr readLayout = cast<LayoutAttr>(requiredLayout.permute(permutation));
+
+  int64_t loadElements = readLayout.getTransferElements();
   auto loadFn = [&](LayoutAttr::Iterator &iterator) {
+    // Indices to use for the load. Note that we use **readLayout** here
+    // because we want to read from the array in the read layout.
     SmallVector<Value> simdIndices =
-        getIndices(rewriter, layout, iterator, transferReadOp.getIndices(),
+        getIndices(rewriter, readLayout, iterator, transferReadOp.getIndices(),
                    transferReadOp.getPermutationMap(), loc);
-    SmallVector<int64_t> simtIndices =
-        layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
+    // Indices to use for the insert. Note that we use **requiredLayout** here
+    // because we want to insert into the vector in the required layout.
+    SmallVector<int64_t> simtIndices = readLayout.computeSIMTIndex(
+        iterator, provider->getSIMTLabels(requiredLayout));
     auto vectorType = VectorType::get({loadElements}, elementType);
     if (loadElements == 1) {
       Value element = rewriter.create<memref::LoadOp>(loc, source, simdIndices);
@@ -372,8 +406,8 @@ LogicalResult VectorDistribution::distributeTransferReads(
   };
   DenseMap<LayoutDimension, int64_t> steps;
   steps[LayoutDimension::VECTORX] = loadElements;
-  LayoutAttr::Iterator iterator = layout.getIterator(steps);
-  layout.map(loadFn, iterator);
+  LayoutAttr::Iterator iterator = readLayout.getIterator(steps);
+  readLayout.map(loadFn, iterator);
   replaceOpWithDistributedValues(rewriter, transferReadOp, provider, vector);
   return success();
 }
@@ -521,24 +555,20 @@ LogicalResult VectorDistribution::distributeResolutions(
   TypedValue<VectorType> result = resolutionOp.getOutput();
   LayoutAttr currentLayout = cast<LayoutAttr>(resolutionOp.getSourceLayout());
   LayoutAttr targetLayout = cast<LayoutAttr>(resolutionOp.getDesiredLayout());
-  if (currentLayout.hasLaneConflictWith(targetLayout)) {
-    llvm::errs() << "lane conflict?\n";
+  if (currentLayout.hasLaneConflictWith(targetLayout))
     return distributeTripToSharedMem(rewriter, resolutionOp);
-  }
   SmallVector<int64_t> currentVecShape =
       currentLayout.getSIMTVectorShape(provider->getSIMTLabels(currentLayout));
   SmallVector<int64_t> targetVecShape =
       targetLayout.getSIMTVectorShape(provider->getSIMTLabels(targetLayout));
-  if (currentVecShape.size() != targetVecShape.size()) {
+  if (currentVecShape.size() != targetVecShape.size())
     return failure();
-  }
   auto numElements = [](ArrayRef<int64_t> vector) {
     return std::accumulate(vector.begin(), vector.end(), 1,
                            std::multiplies<int64_t>());
   };
-  if (numElements(currentVecShape) != numElements(targetVecShape)) {
+  if (numElements(currentVecShape) != numElements(targetVecShape))
     return failure();
-  }
   Type elementType = llvm::cast<VectorType>(result.getType()).getElementType();
   Value newVector =
       reshapeVector(rewriter, getDistributed(rewriter, vector, provider),
