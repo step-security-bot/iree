@@ -323,8 +323,30 @@ void LayoutAttr::map(std::function<void(LayoutAttr::Iterator &)> callback,
   } while (!iterator.next());
 }
 
+static bool isIdentity(ArrayRef<int64_t> permutation) {
+  for (int i = 0; i < permutation.size(); i++) {
+    if (permutation[i] != i)
+      return false;
+  }
+  return true;
+}
+
+static SmallVector<int64_t> getIdentityPermutation(int64_t size) {
+  SmallVector<int64_t> permutation(size);
+  for (int i = 0; i < size; i++) {
+    permutation[i] = i;
+  }
+  return permutation;
+}
+
 // Check innermost vector dimension along cols to determine this value.
-int64_t LayoutAttr::getTransferElements() const {
+int64_t LayoutAttr::getTransferElements(ArrayRef<int64_t> permutation) const {
+  if (!isIdentity(permutation)) {
+    LayoutAttr permuted = llvm::cast<LayoutAttr>(permute(permutation));
+    return permuted.getTransferElements(
+        getIdentityPermutation(permutation.size()));
+  }
+
   PerDimLayoutAttr colAttr = getDimLayout(getLayouts().size() - 1);
   return getInnermostVectorShape(colAttr.getLabels(), colAttr.getShapes());
 }

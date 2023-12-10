@@ -140,7 +140,7 @@ def LayoutAttr : IREEVectorExt_Attr<"Layout",
     SmallVector<int64_t> computeIteratorProjectedSIMTIndex(Iterator &iterator,
                                           ArrayRef<LayoutDimension> labels);
     void map(std::function<void(Iterator &)>, Iterator &);
-    int64_t getTransferElements() const;
+    int64_t getTransferElements(ArrayRef<int64_t> permutation) const;
     int64_t getBatchDim(int64_t dim);
     bool hasLaneConflictWith(const LayoutAttr &other);
     std::optional<int64_t> getShape(const LayoutDimension &dim) const;

@@ -172,10 +172,11 @@ public:
 
         rewriter.setInsertionPoint(op);
 
-        // if (provider->specializedDistribution(rewriter, op).succeeded()) {
-        //   LLVM_DEBUG(llvm::dbgs() << "Specialized Distribution
-        //   Successful\n"); changed = true; continue;
-        // }
+        if (provider->specializedDistribution(rewriter, op).succeeded()) {
+          LLVM_DEBUG(llvm::dbgs() << "Specialized Distribution Successful\n");
+          changed = true;
+          continue;
+        }
 
         LLVM_DEBUG(llvm::dbgs() << "Trying to distribute: ");
         LLVM_DEBUG(op->print(llvm::dbgs(), OpPrintingFlags().skipRegions()));
@@ -287,38 +288,9 @@ private:
 
 } // namespace
 
-static SmallVector<Value>
-handlePermutationsAndLeadingUnitDims(RewriterBase &rewriter,
-                                     SmallVector<Value> &indices,
-                                     AffineMap permutationMap) {
-  SmallVector<Value> newIndices(permutationMap.getNumDims());
-  // Not all dims are used in the permutation map.
-  int unitLeadingDims =
-      permutationMap.getNumDims() - permutationMap.getNumResults();
-  int laneDim = 0;
-  for (AffineExpr expr : permutationMap.getResults()) {
-    auto dimExpr = dyn_cast<AffineDimExpr>(expr);
-    if (!dimExpr) {
-      llvm::report_fatal_error("invalid permutation map");
-    }
-    unsigned pos = dimExpr.getPosition();
-    assert(pos >= unitLeadingDims && "invalid permutation map");
-    newIndices[pos] = indices[laneDim++];
-  }
-  // TODO: Fix unknown loc here.
-  for (unsigned i = 0; i < unitLeadingDims; ++i) {
-    newIndices[i] =
-        rewriter.create<arith::ConstantIndexOp>(rewriter.getUnknownLoc(), 0);
-  }
-
-  return newIndices;
-}
-
 SmallVector<Value> VectorDistribution::getIndices(
     RewriterBase &rewriter, LayoutAttr &layout, LayoutAttr::Iterator &iterator,
     SmallVector<Value> indices, AffineMap permutationMap, Location loc) {
-  SmallVector<Value> simdIndices;
-
   ArrayRef<Value> threadIds = getThreadIds();
   SmallVector<Value> laneIds;
   for (PerDimLayoutAttr dimLayout : layout.getLayouts()) {
@@ -339,18 +311,57 @@ SmallVector<Value> VectorDistribution::getIndices(
     }
   }
 
-  int i{0};
-  for (auto pair : llvm::zip_equal(layout.getLayouts(), iterator.states)) {
-    PerDimLayoutAttr perDimLayout = std::get<0>(pair);
-    PerDimLayoutAttr::Iterator iterator = std::get<1>(pair);
+  // Initialize the SIMD indices with the original indices to capture the
+  // unit dims.
+  SmallVector<Value> simdIndices = indices;
+
+  unsigned unitLeadingDims =
+      permutationMap.getNumDims() - permutationMap.getNumResults();
+  for (auto dim : permutationMap.getResults()) {
+    auto dimExpr = dyn_cast<AffineDimExpr>(dim);
+    if (!dimExpr) {
+      llvm::report_fatal_error("permutation map is not a projected "
+                               "permutation.");
+    }
+    unsigned pos = dimExpr.getPosition();
+    unsigned reducedPos = pos - unitLeadingDims;
+
+    PerDimLayoutAttr perDimLayout = layout.getDimLayout(reducedPos);
+    PerDimLayoutAttr::Iterator dimIt = iterator.states[reducedPos];
     Value index = rewriter.create<affine::AffineApplyOp>(
-        loc, perDimLayout.computeSIMDIndex(iterator), laneIds[i]);
-    index = rewriter.create<arith::AddIOp>(loc, index, indices[i++]);
-    simdIndices.push_back(index);
+        loc, perDimLayout.computeSIMDIndex(dimIt), laneIds[reducedPos]);
+    index = rewriter.create<arith::AddIOp>(loc, index, indices[pos]);
+    simdIndices[pos] = index;
   }
-  simdIndices = handlePermutationsAndLeadingUnitDims(rewriter, simdIndices,
-                                                     permutationMap);
+
   return simdIndices;
+}
+
+/// Given a projected permutation, get a reduced permutation, i.e. without
+/// the projected dimensions.
+static SmallVector<int64_t> getReducedPermutation(AffineMap permutationMap) {
+  assert(permutationMap.isProjectedPermutation() &&
+         "permutation map should be a projected permutation.");
+
+  SmallVector<int64_t> permutation;
+  permutation.reserve(permutationMap.getNumResults());
+
+  unsigned leadingUnitDims =
+      permutationMap.getNumDims() - permutationMap.getNumResults();
+  for (AffineExpr dim : permutationMap.getResults()) {
+    // Get this dim's position in the permutation map.
+    auto dimExpr = dyn_cast<AffineDimExpr>(dim);
+    if (!dimExpr) {
+      llvm::report_fatal_error("permutation map is not a projected "
+                               "permutation.");
+    }
+
+    unsigned pos = dimExpr.getPosition();
+    assert(pos >= leadingUnitDims && "invalid permutation map");
+    pos -= leadingUnitDims;
+    permutation.push_back(pos);
+  }
+  return permutation;
 }
 
 LogicalResult VectorDistribution::distributeTransferReads(
@@ -364,7 +375,8 @@ LogicalResult VectorDistribution::distributeTransferReads(
   Value vector = rewriter.create<arith::ConstantOp>(
       loc, vectorType, rewriter.getZeroAttr(vectorType));
   LayoutAttr layout = analysis.getLayout<LayoutAttr>(result);
-  int64_t loadElements = layout.getTransferElements();
+  int64_t loadElements = layout.getTransferElements(
+      getReducedPermutation(transferReadOp.getPermutationMap()));
   auto loadFn = [&](LayoutAttr::Iterator &iterator) {
     SmallVector<Value> simdIndices =
         getIndices(rewriter, layout, iterator, transferReadOp.getIndices(),
@@ -399,20 +411,20 @@ LogicalResult VectorDistribution::distributeTransferWrites(
   Value source = transferWriteOp.getSource();
   LayoutAttr layout = analysis.getLayout<LayoutAttr>(vector);
   Location loc = transferWriteOp.getLoc();
-  int64_t storeElements = layout.getTransferElements();
+  int64_t storeElements = layout.getTransferElements(
+      getReducedPermutation(transferWriteOp.getPermutationMap()));
   auto storeFn = [&](LayoutAttr::Iterator &iterator) {
     SmallVector<Value> simdIndices =
         getIndices(rewriter, layout, iterator, transferWriteOp.getIndices(),
                    transferWriteOp.getPermutationMap(), loc);
+
     SmallVector<int64_t> simtIndices =
         layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
+
     if (storeElements == 1) {
       Value result = rewriter.create<vector::ExtractOp>(
           loc, getDistributed(rewriter, vector, provider), simtIndices);
-      rewriter.create<memref::StoreOp>(
-          loc, result, source,
-          getIndices(rewriter, layout, iterator, transferWriteOp.getIndices(),
-                     transferWriteOp.getPermutationMap(), loc));
+      rewriter.create<memref::StoreOp>(loc, result, source, simdIndices);
     } else {
       SmallVector<int64_t> strides(simtIndices.size(), 1);
       SmallVector<int64_t> shapes(simtIndices.size(), 1);
