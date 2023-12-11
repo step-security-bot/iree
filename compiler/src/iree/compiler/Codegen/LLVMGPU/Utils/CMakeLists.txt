@@ -20,6 +20,7 @@ iree_cc_library(
     "LLVMGPULayoutAnalysisAndDistribution.cpp"
     "LLVMGPUUtils.cpp"
     "LLVMGPUVectorDistribution.cpp"
+    "PrepareVectorForChainedMFMA.cpp"
     "VectorLayoutProvider.cpp"
   DEPS
     LLVMSupport

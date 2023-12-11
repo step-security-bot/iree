@@ -726,4 +726,57 @@ def FoldExtFIntoContractionOp : Op<Transform_Dialect,
   let assemblyFormat = "attr-dict";
 }
 
+def ApplyPrepareVectorForChainedMFMAPatternsOp : Op<Transform_Dialect,
+    "apply_patterns.iree.prepare_vector_for_chained_mfma",
+    [DeclareOpInterfaceMethods<PatternDescriptorOpInterface>,
+     ReportTrackingListenerFailuresOpTrait]> {
+  let description = [{
+    Patterns required to get chained MFMA operations like flash attention
+    working.
+  }];
+
+  let arguments = (ins);
+  let cppNamespace = "mlir::iree_compiler::IREE::transform_dialect";
+  let assemblyFormat = "attr-dict";
+}
+
+def ApplyPropagateTransposePatternsOp : Op<Transform_Dialect,
+    "apply_patterns.iree.propagate_transpose",
+    [DeclareOpInterfaceMethods<PatternDescriptorOpInterface>,
+     ReportTrackingListenerFailuresOpTrait]> {
+  let description = [{
+    Patterns required to propagate transposes.
+  }];
+
+  let arguments = (ins);
+  let cppNamespace = "mlir::iree_compiler::IREE::transform_dialect";
+  let assemblyFormat = "attr-dict";
+}
+
+def ApplyFoldTransposeContractPatternsOp : Op<Transform_Dialect,
+    "apply_patterns.iree.fold_transpose_contract",
+    [DeclareOpInterfaceMethods<PatternDescriptorOpInterface>,
+     ReportTrackingListenerFailuresOpTrait]> {
+  let description = [{
+    Patterns required to propagate transposes.
+  }];
+
+  let arguments = (ins);
+  let cppNamespace = "mlir::iree_compiler::IREE::transform_dialect";
+  let assemblyFormat = "attr-dict";
+}
+
+def ApplyTransferWritePatternsOp : Op<Transform_Dialect,
+    "apply_patterns.iree.apply_transfer_write_patterns",
+    [DeclareOpInterfaceMethods<PatternDescriptorOpInterface>,
+     ReportTrackingListenerFailuresOpTrait]> {
+  let description = [{
+    Patterns required to propagate transposes.
+  }];
+
+  let arguments = (ins);
+  let cppNamespace = "mlir::iree_compiler::IREE::transform_dialect";
+  let assemblyFormat = "attr-dict";
+}
+
 #endif // IREE_COMPILER_CODEGEN_LLVMGPU_TRANSFORMEXTENSIONS_LLVMGPUEXTENSIONS

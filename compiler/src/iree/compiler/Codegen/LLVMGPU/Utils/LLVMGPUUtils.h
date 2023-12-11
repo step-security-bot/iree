@@ -67,6 +67,11 @@ void reorderTranspose(RewriterBase &rewriter, func::FuncOp funcOp);
 /// from the previous alias group before starting a new one.
 void packSharedMemoryAlloc(func::FuncOp funcOp);
 
+void populatePrepareVectorForChainedMFMAPatterns(RewritePatternSet &patterns);
+void populateTransposePropagationPatterns(RewritePatternSet &patterns);
+void populateFoldTransposeContractPatterns(RewritePatternSet &patterns);
+void populateTransferWritePatterns(RewritePatternSet &patterns);
+
 } // namespace mlir::iree_compiler
 
 #endif

@@ -1516,5 +1516,25 @@ void transform_dialect::FoldExtFIntoContractionOp::populatePatterns(
   mlir::vector::populateFoldArithExtensionPatterns(patterns);
 }
 
+void transform_dialect::ApplyPrepareVectorForChainedMFMAPatternsOp::populatePatterns(
+    RewritePatternSet &patterns) {
+  populatePrepareVectorForChainedMFMAPatterns(patterns);
+}
+
+void transform_dialect::ApplyPropagateTransposePatternsOp::populatePatterns(
+    RewritePatternSet &patterns) {
+  populateTransposePropagationPatterns(patterns);
+}
+
+void transform_dialect::ApplyFoldTransposeContractPatternsOp::populatePatterns(
+    RewritePatternSet &patterns) {
+  populateFoldTransposeContractPatterns(patterns);
+}
+
+void transform_dialect::ApplyTransferWritePatternsOp::populatePatterns(
+    RewritePatternSet &patterns) {
+  populateTransferWritePatterns(patterns);
+}
+
 #define GET_OP_CLASSES
 #include "iree/compiler/Codegen/LLVMGPU/TransformExtensions/LLVMGPUExtensionsOps.cpp.inc"
