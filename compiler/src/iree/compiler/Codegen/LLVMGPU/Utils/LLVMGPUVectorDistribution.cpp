@@ -172,15 +172,16 @@ public:
 
         rewriter.setInsertionPoint(op);
 
+        LLVM_DEBUG(llvm::dbgs() << "Trying to distribute: ");
+        LLVM_DEBUG(op->print(llvm::dbgs(), OpPrintingFlags().skipRegions()));
+        LLVM_DEBUG(llvm::dbgs() << "\n");
+
         if (provider->specializedDistribution(rewriter, op).succeeded()) {
           LLVM_DEBUG(llvm::dbgs() << "Specialized Distribution Successful\n");
           changed = true;
           continue;
         }
 
-        LLVM_DEBUG(llvm::dbgs() << "Trying to distribute: ");
-        LLVM_DEBUG(op->print(llvm::dbgs(), OpPrintingFlags().skipRegions()));
-        LLVM_DEBUG(llvm::dbgs() << "\n");
         LogicalResult distributed =
             TypeSwitch<Operation *, LogicalResult>(op)
                 .Case<vector::TransferReadOp>([&](auto transferReadOp) {
