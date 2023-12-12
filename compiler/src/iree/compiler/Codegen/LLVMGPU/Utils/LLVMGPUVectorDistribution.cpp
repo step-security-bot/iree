@@ -802,10 +802,25 @@ VectorDistribution::distributeBroadcasts(RewriterBase &rewriter,
       break;
     }
   }
-  if (!transposeOp)
-    return failure();
 
-  TypedValue<VectorType> result = transposeOp.getResult();
+  // For broadcast + transpose, reduction dimension = 1.
+  // For broadcast, reduction dimension = 0.
+  int64_t reductionDim;
+  int64_t parallelDim;
+  TypedValue<VectorType> result;
+  Operation *opToReplace;
+  if (!transposeOp) {
+    result = broadcastOp.getResult();
+    reductionDim = 0;
+    parallelDim = 1;
+    opToReplace = broadcastOp;
+  } else {
+    result = transposeOp.getResult();
+    reductionDim = 1;
+    parallelDim = 0;
+    opToReplace = transposeOp;
+  }
+
   TypedValue<VectorType> source =
       cast<TypedValue<VectorType>>(broadcastOp.getSource());
   auto layout = analysis.getLayout<LayoutAttr>(result);
@@ -815,10 +830,7 @@ VectorDistribution::distributeBroadcasts(RewriterBase &rewriter,
   Location loc = broadcastOp.getLoc();
   Value broadcastedVector = rewriter.create<arith::ConstantOp>(
       loc, vectorType, rewriter.getZeroAttr(vectorType));
-  // Since this is a broadcast + transpose, reduction dimension = 1.
-  // For just a broadcast, reduction dimension = 0.
-  int64_t reductionDim = 1;
-  int64_t parallelDim = 0;
+
   auto broadcastFn = [&](LayoutAttr::Iterator &iterator) {
     SmallVector<int64_t> parallelSimtIndices =
         layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
@@ -842,7 +854,7 @@ VectorDistribution::distributeBroadcasts(RewriterBase &rewriter,
   };
   LayoutAttr::Iterator parallelIterator = layout.getDimIterator(parallelDim);
   layout.map(broadcastFn, parallelIterator);
-  replaceOpWithDistributedValues(rewriter, transposeOp, provider,
+  replaceOpWithDistributedValues(rewriter, opToReplace, provider,
                                  broadcastedVector);
   return success();
 }
