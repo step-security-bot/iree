@@ -55,7 +55,8 @@ static PerDimLayoutAttr createPerDimLayout(MLIRContext *ctx,
 LayoutAttr
 AMDCDNAGPULayoutProvider::getCanonicalMFMALayout(TypedValue<VectorType> value,
                                                  ContractMatrixType matrixType,
-                                                 int64_t numElements) {
+                                                 int64_t numElements,
+                                                 SmallVector<int64_t> permutation) {
   MLIRContext *ctx = root->getContext();
 
   // Get MMA matrix info.
@@ -90,20 +91,28 @@ AMDCDNAGPULayoutProvider::getCanonicalMFMALayout(TypedValue<VectorType> value,
   }
 
   // Set layout based on matrix type.
+  LayoutAttr layout;
   switch (matrixType) {
   case ContractMatrixType::A:
-    return LayoutAttr::get(
+    layout = LayoutAttr::get(
         ctx, {rowLayout(LayoutDimension::BATCHX, batchRow),
               colLayout(LayoutDimension::BATCHY, batchCol, numElements)});
+    break;
   case ContractMatrixType::B:
-    return LayoutAttr::get(
+    layout = LayoutAttr::get(
         ctx, {colLayout(LayoutDimension::BATCHX, batchRow, numElements),
               rowLayout(LayoutDimension::BATCHY, batchCol)});
+    break;
   default:
-    return LayoutAttr::get(ctx,
+    layout = LayoutAttr::get(ctx,
                            {colLayout(LayoutDimension::BATCHX, batchRow, 4),
                             rowLayout(LayoutDimension::BATCHY, batchCol)});
   }
+
+  if (!permutation.empty()) {
+    layout = cast<LayoutAttr>(layout.permute(permutation));
+  }
+  return layout;
 }
 
 bool AMDCDNAGPULayoutProvider::hasCanonicalShape(ContractMatrixType matrixType,
@@ -129,23 +138,51 @@ bool AMDCDNAGPULayoutProvider::hasCanonicalShape(ContractMatrixType matrixType,
     return false;
   }
 }
+
+static SmallVector<int64_t> getPermutation(MLIRContext *ctx, AffineMap inputMap, ContractMatrixType matrixType) {
+  AffineExpr d0, d1, d2;
+  bindDims(ctx, d0, d1, d2);
+  SmallVector<AffineMap> validMaps;
+  switch (matrixType) {
+    case ContractMatrixType::A:
+    case ContractMatrixType::B:
+      validMaps.push_back(AffineMap::get(3, 0, {d0, d2}, ctx));
+      validMaps.push_back(AffineMap::get(3, 0, {d1, d2}, ctx));
+      break;
+    default:
+      validMaps.push_back(AffineMap::get(3, 0, {d0, d1}, ctx));
+      validMaps.push_back(AffineMap::get(3, 0, {d1, d0}, ctx));
+  }
+  for (AffineMap map : validMaps) {
+    if (inputMap == map)
+      return SmallVector<int64_t>{0, 1};
+  }
+  return SmallVector<int64_t>{1, 0};
+}
+
 void AMDCDNAGPULayoutProvider::setAnchorOps() {
   root->walk([&](Operation *op) {
     TypeSwitch<Operation *, void>(op)
         .Case<vector::ContractionOp>([&](vector::ContractionOp contractOp) {
+          AffineMap mapA = contractOp.getIndexingMapsArray()[0];
+          MLIRContext *ctx = contractOp.getContext();
           LayoutAttr layoutA = getCanonicalMFMALayout(contractOp.getLhs(),
-                                                      ContractMatrixType::A, 4);
+                                                      ContractMatrixType::A, 4,
+                                                      getPermutation(ctx, mapA, ContractMatrixType::A));
           analysis.setAnchorForOperand(contractOp->getOpOperand(0), layoutA);
+          AffineMap mapB = contractOp.getIndexingMapsArray()[1];
           LayoutAttr layoutB = getCanonicalMFMALayout(contractOp.getRhs(),
-                                                      ContractMatrixType::B, 4);
+                                                      ContractMatrixType::B, 4,
+                                                      getPermutation(ctx, mapB, ContractMatrixType::B));
           analysis.setAnchorForOperand(contractOp->getOpOperand(1), layoutB);
           // Do not allow scalar result.
           if (isa<VectorType>(contractOp.getAccType()) &&
               isa<VectorType>(contractOp.getResultType())) {
             auto acc = cast<TypedValue<VectorType>>(contractOp.getAcc());
             auto result = cast<TypedValue<VectorType>>(contractOp.getResult());
+            AffineMap mapC = contractOp.getIndexingMapsArray()[2];
             LayoutAttr layoutC =
-                getCanonicalMFMALayout(acc, ContractMatrixType::C, 1);
+                getCanonicalMFMALayout(acc, ContractMatrixType::C, 1, getPermutation(ctx, mapC, ContractMatrixType::C));
             analysis.setAnchorForOperand(contractOp->getOpOperand(2), layoutC);
             analysis.setAnchorForValue(result, layoutC);
           }

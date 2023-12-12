@@ -132,7 +132,8 @@ public:
 
   IREE::VectorExt::LayoutAttr
   getCanonicalMFMALayout(TypedValue<VectorType> value,
-                         ContractMatrixType matrixType, int64_t numElements);
+                         ContractMatrixType matrixType, int64_t numElements,
+                         SmallVector<int64_t> permutation = {});
 
   bool hasCanonicalShape(ContractMatrixType matrixType,
                          ArrayRef<int64_t> shape);

@@ -42,21 +42,11 @@ struct FoldTransposeContract : public OpRewritePattern<vector::ContractionOp> {
     auto indexingMaps = contractOp.getIndexingMapsArray();
     using MapList = ArrayRef<ArrayRef<AffineExpr>>;
     auto infer = [](MapList m) { return AffineMap::inferFromExprList(m); };
-    SmallVector<AffineMap> newIndexingMaps = infer({{k, m}, {k, n}, {m, n}});
-    VectorType oldResultType = cast<VectorType>(lhsDefOp.getResult().getType());
-    Type elementType = oldResultType.getElementType();
-    ArrayRef<int64_t> transposedShape = oldResultType.getShape();
-    SmallVector<int64_t> permutation{1, 0};
-    SmallVector<int64_t> newShape(transposedShape.size(), 0);
-    for (auto val : llvm::enumerate(permutation)) {
-      newShape[val.index()] = transposedShape[val.value()];
-    }
-    VectorType resultType = VectorType::get(newShape, elementType);
-    rewriter.setInsertionPoint(contractOp);
-    Value newLhs = rewriter.create<vector::TransferReadOp>(lhsDefOp.getLoc(),
-        resultType, lhsDefOp.getSource(), lhsDefOp.getIndices());
+    SmallVector<AffineMap> newIndexingMaps = infer({{m, k}, {k, n}, {m, n}});
+    if (newIndexingMaps == indexingMaps)
+        return failure();
     Value newResult = rewriter.create<vector::ContractionOp>(contractOp.getLoc(),
-        newLhs, rhsDefOp.getVector(), contractOp.getAcc(),
+        lhs, rhsDefOp.getVector(), contractOp.getAcc(),
         rewriter.getAffineMapArrayAttr(newIndexingMaps),
         contractOp.getIteratorTypesAttr());
     rewriter.replaceOp(contractOp, newResult);

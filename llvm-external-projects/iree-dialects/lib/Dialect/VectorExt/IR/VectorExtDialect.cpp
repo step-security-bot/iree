@@ -430,9 +430,25 @@ VectorLayoutInterface LayoutAttr::permute(ArrayRef<int64_t> permutation) const {
   ArrayRef<PerDimLayoutAttr> layouts = getLayouts();
   assert(permutation.size() == layouts.size());
   SmallVector<PerDimLayoutAttr> newLayouts;
-  for (unsigned index : permutation) {
-    assert(index >= 0 && index < layouts.size());
-    newLayouts.push_back(layouts[index]);
+  for (auto [index, permutedIndex] : llvm::enumerate(permutation)) {
+    assert(permutedIndex >= 0 && permutedIndex < layouts.size());
+    SmallVector<LayoutDimensionAttr> labels;
+    SmallVector<int64_t> shapes;
+    // Retain original batch dimension
+    for (auto [label, shape] : llvm::zip(layouts[index].getLabels(), layouts[index].getShapes())) {
+      if (isBatch(label.getValue())) {
+        labels.push_back(label);
+        shapes.push_back(shape);
+        break;
+      }
+    }
+    // Only permute the lane and vector dimensions
+    for (auto [label, shape] : llvm::zip(layouts[permutedIndex].getLabels(), layouts[permutedIndex].getShapes())) {
+      if (isBatch(label.getValue())) continue;
+      labels.push_back(label);
+      shapes.push_back(shape);
+    }
+    newLayouts.push_back(PerDimLayoutAttr::get(getContext(), labels, shapes));
   }
   return LayoutAttr::get(getContext(), newLayouts);
 }
