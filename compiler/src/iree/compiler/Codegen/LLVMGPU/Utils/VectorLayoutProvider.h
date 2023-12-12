@@ -20,7 +20,7 @@ namespace iree_compiler {
 enum class ContractMatrixType { A, B, C, D };
 
 // Adding support for just these contract types for now
-enum class ContractType { MMT, MTM, MM };
+enum class ContractType { MMT, MTM, MM, MTMT };
 
 class LayoutProvider {
 public:
@@ -122,7 +122,8 @@ public:
   virtual LogicalResult specializedDistribution(RewriterBase &rewriter,
                                                 Operation *op) override;
 
-  SmallVector<int64_t> getContractIndices(ContractMatrixType matrixType, int i,
+  SmallVector<int64_t> getContractIndices(ContractType contractType,
+                                          ContractMatrixType matrixType, int i,
                                           int j);
 
   Value computeMMA(Value a, Value b, Value c, Location loc,

@@ -222,7 +222,8 @@ AMDCDNAGPULayoutProvider::getDistributedShape(TypedValue<VectorType> value) {
 }
 
 SmallVector<int64_t>
-AMDCDNAGPULayoutProvider::getContractIndices(ContractMatrixType matrixType,
+AMDCDNAGPULayoutProvider::getContractIndices(ContractType contractType,
+                                             ContractMatrixType matrixType,
                                              int i, int j) {
   if (matrixType == ContractMatrixType::A) {
     switch (contractType) {
@@ -230,6 +231,7 @@ AMDCDNAGPULayoutProvider::getContractIndices(ContractMatrixType matrixType,
     case ContractType::MMT:
       return SmallVector<int64_t>{i, j};
     case ContractType::MTM:
+    case ContractType::MTMT:
       return SmallVector<int64_t>{j, i};
     }
   }
@@ -240,6 +242,7 @@ AMDCDNAGPULayoutProvider::getContractIndices(ContractMatrixType matrixType,
     case ContractType::MTM:
       return SmallVector<int64_t>{i, j};
     case ContractType::MMT:
+    case ContractType::MTMT:
       return SmallVector<int64_t>{j, i};
     }
   }
@@ -265,6 +268,27 @@ int64_t AMDCDNAGPULayoutProvider::getKDimension(int64_t rowBatch,
   return colBatch;
 }
 
+static ContractType inferContractType(MLIRContext *ctx, SmallVector<AffineMap> &indexingMaps) {
+  SmallVector<bool> operandsTransposed(3, false);
+  AffineExpr d0, d1, d2;
+  bindDims(ctx, d0, d1, d2);
+  for (int i = 0; i < indexingMaps.size(); i++) {
+    if ((i == 0) || (i == 1)) {
+      auto validMap = AffineMap::get(3, 0, {d0, d2}, ctx);
+      auto validMapT = AffineMap::get(3, 0, {d1, d2}, ctx);
+      if ((indexingMaps[i] != validMap) && (indexingMaps[i] != validMapT))
+        operandsTransposed[i] = true;
+    }
+  }
+  if (!operandsTransposed[0] && !operandsTransposed[1])
+    return ContractType::MMT;
+  if (operandsTransposed[0] && !operandsTransposed[1])
+    return ContractType::MTMT;
+  if (!operandsTransposed[0] && operandsTransposed[1])
+    return ContractType::MM;
+  return ContractType::MTM;
+}
+
 static LogicalResult
 distributeContractionsToMFMA(RewriterBase &rewriter,
                              AMDCDNAGPULayoutProvider *provider,
@@ -288,6 +312,9 @@ distributeContractionsToMFMA(RewriterBase &rewriter,
       VectorType::get(provider->getDistributedShape(result), elementType);
   Value vector = rewriter.create<arith::ConstantOp>(
       loc, vectorType, rewriter.getZeroAttr(vectorType));
+  // Determine contraction type from indexing maps
+  SmallVector<AffineMap> indexingMaps = contractOp.getIndexingMapsArray();
+  ContractType contractType = inferContractType(contractOp.getContext(), indexingMaps);
   auto contractFn = [&](LayoutAttr::Iterator &iterator) {
     SmallVector<int64_t> simtIndices = layout.computeIteratorProjectedSIMTIndex(
         iterator, provider->getSIMTLabels(layout));
@@ -296,11 +323,11 @@ distributeContractionsToMFMA(RewriterBase &rewriter,
     for (int k = 0; k < K; k++) {
       Value aMatrix = rewriter.create<vector::ExtractOp>(
           loc, getDistributed(rewriter, lhs, provider),
-          provider->getContractIndices(ContractMatrixType::A, simtIndices[0],
-                                       k));
+          provider->getContractIndices(contractType, ContractMatrixType::A,
+                                       simtIndices[0], k));
       Value bMatrix = rewriter.create<vector::ExtractOp>(
           loc, getDistributed(rewriter, rhs, provider),
-          provider->getContractIndices(ContractMatrixType::B, k,
+          provider->getContractIndices(contractType, ContractMatrixType::B, k,
                                        simtIndices[1]));
       dMatrix = provider->computeMMA(aMatrix, bMatrix, dMatrix, loc, rewriter);
     }
