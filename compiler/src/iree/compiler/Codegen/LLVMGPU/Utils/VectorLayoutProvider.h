@@ -174,6 +174,8 @@ private:
   SmallVector<IREE::VectorExt::LayoutDimension> simtLabels{
       IREE::VectorExt::LayoutDimension::BATCHX,
       IREE::VectorExt::LayoutDimension::BATCHY,
+      IREE::VectorExt::LayoutDimension::VECTORZ,
+      IREE::VectorExt::LayoutDimension::VECTORY,
       IREE::VectorExt::LayoutDimension::VECTORX};
 };
 

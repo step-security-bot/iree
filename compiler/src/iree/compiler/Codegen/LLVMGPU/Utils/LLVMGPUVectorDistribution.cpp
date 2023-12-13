@@ -553,7 +553,6 @@ LogicalResult VectorDistribution::distributeResolutions(
   LayoutAttr currentLayout = cast<LayoutAttr>(resolutionOp.getSourceLayout());
   LayoutAttr targetLayout = cast<LayoutAttr>(resolutionOp.getDesiredLayout());
   if (currentLayout.hasLaneConflictWith(targetLayout)) {
-    llvm::errs() << "lane conflict?\n";
     return distributeTripToSharedMem(rewriter, resolutionOp);
   }
   SmallVector<int64_t> currentVecShape =
@@ -713,11 +712,8 @@ LogicalResult VectorDistribution::distributeReductions(
     }
 
     auto reduceLocalFn = [&](LayoutAttr::Iterator &iterator) {
-      SmallVector<int64_t> reductionSimtIndices =
+      SmallVector<int64_t> indices =
           layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
-      SmallVector<int64_t> indices;
-      for (auto [a, b] : llvm::zip(parallelSimtIndices, reductionSimtIndices))
-        indices.push_back(a + b);
       Value x = rewriter.create<vector::ExtractOp>(
           loc, getDistributed(rewriter, source, provider), indices);
       if (bitWidth == 32) {
@@ -736,7 +732,7 @@ LogicalResult VectorDistribution::distributeReductions(
     };
 
     LayoutAttr::Iterator reductionIterator =
-        layout.getDimIterator(reductionDim);
+        layout.getPartialIterator(reductionDim, iterator);
     layout.map(reduceLocalFn, reductionIterator);
 
     auto reduceGlobalFn = [&]() {
@@ -831,25 +827,28 @@ VectorDistribution::distributeBroadcasts(RewriterBase &rewriter,
   Value broadcastedVector = rewriter.create<arith::ConstantOp>(
       loc, vectorType, rewriter.getZeroAttr(vectorType));
 
-  auto broadcastFn = [&](LayoutAttr::Iterator &iterator) {
+  auto broadcastFn = [&](LayoutAttr::Iterator &parIterator) {
     SmallVector<int64_t> parallelSimtIndices =
-        layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
+        layout.computeSIMTIndex(parIterator, provider->getSIMTLabels(layout));
     auto projectedIndices = layout.projectSIMTVector(
         provider->getSIMTLabels(layout), parallelSimtIndices, reductionDim);
     Value value = rewriter.create<vector::ExtractOp>(
         loc, getDistributed(rewriter, source, provider), projectedIndices);
 
-    auto broadcastValue = [&](LayoutAttr::Iterator &iterator) {
-      SmallVector<int64_t> reductionSimtIndices =
-          layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
-      SmallVector<int64_t> indices;
-      for (auto [a, b] : llvm::zip(parallelSimtIndices, reductionSimtIndices))
-        indices.push_back(a + b);
+    auto broadcastValue = [&](LayoutAttr::Iterator &redIterator) {
+      SmallVector<int64_t> indices =
+          layout.computeSIMTIndex(redIterator, provider->getSIMTLabels(layout));
+
       broadcastedVector = rewriter.create<vector::InsertOp>(
           loc, value, broadcastedVector, indices);
     };
+
+    // Mark parallel dims to have a step of their size, because we iterate over
+    // them once only.
+    DenseMap<LayoutDimension, int64_t> steps;
+
     LayoutAttr::Iterator reductionIterator =
-        layout.getDimIterator(reductionDim);
+        layout.getPartialIterator(reductionDim, parIterator);
     layout.map(broadcastValue, reductionIterator);
   };
   LayoutAttr::Iterator parallelIterator = layout.getDimIterator(parallelDim);

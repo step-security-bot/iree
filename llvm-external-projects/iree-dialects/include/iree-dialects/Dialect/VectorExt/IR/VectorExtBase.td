@@ -135,6 +135,7 @@ def LayoutAttr : IREEVectorExt_Attr<"Layout",
     Iterator getIterator(DenseMap<LayoutDimension, int64_t> &steps);
     Iterator getBatchIterator();
     Iterator getDimIterator(int64_t dim);
+    Iterator getPartialIterator(int64_t dim, LayoutAttr::Iterator parallelIterator);
     SmallVector<int64_t> computeSIMTIndex(Iterator &iterator,
                                           ArrayRef<LayoutDimension> labels);
     SmallVector<int64_t> computeIteratorProjectedSIMTIndex(Iterator &iterator,

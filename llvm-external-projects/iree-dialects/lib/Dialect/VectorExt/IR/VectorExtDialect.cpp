@@ -122,6 +122,10 @@ static bool isBatch(LayoutDimension dim) {
 
 // Returns true if iterator is at the end and false otherwise.
 bool PerDimLayoutAttr::DimensionIterator::next() {
+  if (step == 0) {
+    return true;
+  }
+
   current += step;
   bool done = current >= end;
   if (done)
@@ -210,19 +214,12 @@ LayoutAttr::computeSIMTIndex(LayoutAttr::Iterator &iterator,
                              ArrayRef<LayoutDimension> labels) {
   SmallVector<int64_t> offset(labels.size(), 0);
   for (int i = 0; i < labels.size(); i++) {
-    int64_t stride{1};
-    for (auto pair : llvm::zip(getLayouts(), iterator.states)) {
-      PerDimLayoutAttr layout = std::get<0>(pair);
-      PerDimLayoutAttr::Iterator iterator = std::get<1>(pair);
-      for (auto [nameAttr, size] :
-           llvm::zip(llvm::reverse(layout.getLabels()),
-                     llvm::reverse(layout.getShapes()))) {
-        LayoutDimension name = nameAttr.getValue();
-        if ((name == labels[i]) && (iterator.state.contains(name))) {
-          offset[i] = iterator.state[name].current * stride + offset[i];
-          stride = size;
-        }
+    for (PerDimLayoutAttr::Iterator dimIt : iterator.states) {
+      if (!dimIt.state.contains(labels[i])) {
+        continue;
       }
+      PerDimLayoutAttr::DimensionIterator it = dimIt.state[labels[i]];
+      offset[i] = it.current;
     }
   }
   return offset;
@@ -275,6 +272,42 @@ LayoutAttr::Iterator LayoutAttr::getDimIterator(int64_t dim) {
       iterator.states.push_back(layout.getIterator(steps));
     }
   }
+  return iterator;
+}
+
+LayoutAttr::Iterator
+LayoutAttr::getPartialIterator(int64_t dim,
+                               LayoutAttr::Iterator parallelIterator) {
+  LayoutAttr::Iterator iterator;
+  DenseMap<LayoutDimension, int64_t> steps;
+
+  // Any dimension other than this dim, mark their step as 0.
+  for (auto tuple : llvm::enumerate(getLayouts())) {
+    int64_t index = tuple.index();
+    PerDimLayoutAttr layout = tuple.value();
+    if (index != dim) {
+      for (auto [name, shape] :
+           llvm::zip(layout.getLabels(), layout.getShapes())) {
+        steps[name.getValue()] = 0;
+      }
+    }
+  }
+
+  // Get layout iterator with these steps.
+  iterator = getIterator(steps);
+
+  // Set the current value of the iterator to the current value of the
+  // parallel iterator.
+  for (auto &partialDimIt : iterator.states) {
+    for (auto &parDimIt : parallelIterator.states) {
+      for (auto [name, shape] : parDimIt.state) {
+        if (partialDimIt.state.contains(name)) {
+          partialDimIt.state[name].current = shape.current;
+        }
+      }
+    }
+  }
+
   return iterator;
 }
 
@@ -435,7 +468,8 @@ VectorLayoutInterface LayoutAttr::permute(ArrayRef<int64_t> permutation) const {
     SmallVector<LayoutDimensionAttr> labels;
     SmallVector<int64_t> shapes;
     // Retain original batch dimension
-    for (auto [label, shape] : llvm::zip(layouts[index].getLabels(), layouts[index].getShapes())) {
+    for (auto [label, shape] :
+         llvm::zip(layouts[index].getLabels(), layouts[index].getShapes())) {
       if (isBatch(label.getValue())) {
         labels.push_back(label);
         shapes.push_back(shape);
@@ -443,8 +477,10 @@ VectorLayoutInterface LayoutAttr::permute(ArrayRef<int64_t> permutation) const {
       }
     }
     // Only permute the lane and vector dimensions
-    for (auto [label, shape] : llvm::zip(layouts[permutedIndex].getLabels(), layouts[permutedIndex].getShapes())) {
-      if (isBatch(label.getValue())) continue;
+    for (auto [label, shape] : llvm::zip(layouts[permutedIndex].getLabels(),
+                                         layouts[permutedIndex].getShapes())) {
+      if (isBatch(label.getValue()))
+        continue;
       labels.push_back(label);
       shapes.push_back(shape);
     }
