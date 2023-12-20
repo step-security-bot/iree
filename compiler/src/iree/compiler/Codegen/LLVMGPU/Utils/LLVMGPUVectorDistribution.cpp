@@ -332,7 +332,7 @@ SmallVector<Value> VectorDistribution::getIndices(
     PerDimLayoutAttr::Iterator dimIt = iterator.states[reducedPos];
     Value index = rewriter.create<affine::AffineApplyOp>(
         loc, perDimLayout.computeSIMDIndex(dimIt), laneIds[reducedPos]);
-    index = rewriter.create<arith::AddIOp>(loc, index, indices[pos]);
+    index = rewriter.create<arith::AddIOp>(loc, index, simdIndices[projectedI]);
     simdIndices[projectedI] = index;
   }
 
