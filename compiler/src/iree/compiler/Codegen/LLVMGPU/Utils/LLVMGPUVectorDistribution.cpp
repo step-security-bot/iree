@@ -728,7 +728,7 @@ LogicalResult VectorDistribution::distributeReductions(
       }
       result = !result ? tmp
                        : makeArithReduction(rewriter, loc, combiningKind,
-                                            result, tmp, mask);
+                                            result, tmp, nullptr, mask);
     };
 
     LayoutAttr::Iterator reductionIterator =
@@ -745,23 +745,24 @@ LogicalResult VectorDistribution::distributeReductions(
             unpackToVector(loc, rewriter, shuffleOp.getShuffleResult(),
                            result.getType().cast<VectorType>());
         result = makeArithReduction(rewriter, loc, combiningKind, unpacked,
-                                    result, mask);
+                                    result, nullptr, mask);
       }
 
       // Convert to f16 or f32
       if (bitWidth == 32) {
         Value v0 = rewriter.create<vector::ExtractOp>(loc, result,
                                                       SmallVector<int64_t>{0});
-        result =
-            makeArithReduction(rewriter, loc, combiningKind, v0, mEmpty, mask);
+        result = makeArithReduction(rewriter, loc, combiningKind, v0, mEmpty,
+                                    nullptr, mask);
       } else {
         Value v0 = rewriter.create<vector::ExtractOp>(loc, result,
                                                       SmallVector<int64_t>{0});
         Value v1 = rewriter.create<vector::ExtractOp>(loc, result,
                                                       SmallVector<int64_t>{1});
-        result = makeArithReduction(rewriter, loc, combiningKind, v0, v1, mask);
+        result = makeArithReduction(rewriter, loc, combiningKind, v0, v1,
+                                    nullptr, mask);
         result = makeArithReduction(rewriter, loc, combiningKind, result,
-                                    mEmpty, mask);
+                                    mEmpty, nullptr, mask);
       }
     };
     reduceGlobalFn();
