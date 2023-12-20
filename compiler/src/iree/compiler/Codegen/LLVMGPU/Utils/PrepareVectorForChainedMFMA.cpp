@@ -32,7 +32,7 @@ struct FoldTransposeContract : public OpRewritePattern<vector::ContractionOp> {
     auto rhs = contractOp.getRhs();
     vector::TransposeOp rhsDefOp = rhs.getDefiningOp<vector::TransposeOp>();
     vector::TransferReadOp lhsDefOp = lhs.getDefiningOp<vector::TransferReadOp>();
-    if (!lhsDefOp && !rhsDefOp)
+    if (!lhsDefOp || !rhsDefOp)
       return failure();
     AffineMap permutationMap = lhsDefOp.getPermutationMap();
     if (permutationMap.isIdentity())
