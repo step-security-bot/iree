@@ -1102,27 +1102,3 @@ void VectorLayoutAnalysis::cloneLayoutInformationToNewValue(
   // TODO: Use resolve here please.
   newLayout->setInnerLayout(layout);
 }
-
-void VectorLayoutAnalysis::print(raw_ostream &os) {
-  // Annotate each operation with the layout of it's result.
-  root->walk([&](Operation *op) {
-    if (op->getNumResults() == 0) {
-      return;
-    }
-
-    for (auto [index, result] : llvm::enumerate(op->getResults())) {
-      if (!isa<VectorType>(result.getType())) {
-        continue;
-      }
-
-      Attribute layout = getLayout<Attribute>(result);
-      if (!layout) {
-        continue;
-      }
-
-      op->setAttr("layout_result_" + std::to_string(index), layout);
-    }
-  });
-
-  root->dump();
-}
