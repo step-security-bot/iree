@@ -782,12 +782,14 @@ LogicalResult PropagateLayout::initialize(Operation *root) {
     propagateIfChanged(latticeEl, changed);
   }
 
-  root->walk([&](Operation *traversed) { visitOperation(traversed); });
+  root->walk([&](Operation *traversed) { (void)visit(traversed); });
 
   return success();
 }
 
 LogicalResult PropagateLayout::visit(ProgramPoint point) {
+  LLVM_DEBUG(llvm::dbgs() << "Visiting Propagation for : " << point << "\n");
+
   if (Operation *op = dyn_cast_or_null<Operation *>(point)) {
     visitOperation(op);
     return success();
@@ -875,6 +877,9 @@ void PropagateLayout::visitRegionSuccessors(RegionBranchOpInterface branch,
     // Propagate the layouts.
     for (auto [forwardedLattice, inputLattice] :
          llvm::zip(forwardedLattices, inputLattices)) {
+      if (inputLattice->hasLayout()) {
+        continue;
+      }
       ChangeResult changed = inputLattice->resolve(forwardedLattice);
       propagateIfChanged(inputLattice, changed);
     }
@@ -896,7 +901,7 @@ DistributionLayout *PropagateLayout::getLatticeElement(Value val) {
 /// ==========================================================================
 
 LogicalResult EnforceLayout::initialize(Operation *root) {
-  root->walk([&](Operation *traversed) { visitOperation(traversed); });
+  root->walk([&](Operation *traversed) { (void)visit(traversed); });
   return success();
 }
 
