@@ -59,6 +59,8 @@ void distributeVectors(RewriterBase &rewriter, func::FuncOp funcOp);
 /// Function to reorder transposes and elementwise ops.
 void reorderTranspose(RewriterBase &rewriter, func::FuncOp funcOp);
 
+void prefetchLoads(RewriterBase &rewriter, func::FuncOp funcOp);
+
 /// Look for allocs in shared memory space with overlapping liveness,
 /// group them, and then pack all the allocations in each group into one i8
 /// alloc.

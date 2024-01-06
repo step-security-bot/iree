@@ -914,4 +914,145 @@ LogicalResult VectorDistribution::distributeTripToSharedMem(
   return success();
 }
 
+void static prefetchLoadsInForLoop(RewriterBase &rewriter, scf::ForOp forOp) {
+  // Find all vector.transfer_reads in the loop body.
+  SmallVector<vector::TransferReadOp> loadOps;
+  forOp.getBody()->walk([&](Operation *op) {
+    if (auto loadOp = dyn_cast<vector::TransferReadOp>(op)) {
+      loadOps.push_back(loadOp);
+    }
+  });
+
+  int numPrefetched = loadOps.size();
+
+  // Create a IR Mapping.
+  IRMapping irMapping;
+
+  // Map the loop induction variable to to lower bound of the loop.
+  irMapping.map(forOp.getInductionVar(), forOp.getLowerBound());
+
+  // Clone the load ops and map the indices to the loop induction variable.
+  rewriter.setInsertionPoint(forOp);
+  SmallVector<Value> prefetch0;
+  for (vector::TransferReadOp loadOp : loadOps) {
+    Operation *newOp = rewriter.clone(*loadOp, irMapping);
+    prefetch0.push_back(newOp->getResult(0));
+  }
+
+  // Add prefetch0 to loop iter_args. Also replace init args usage inside the
+  // loop.
+  auto maybeNewFor =
+      forOp.replaceWithAdditionalIterOperands(rewriter, prefetch0, false);
+  scf::ForOp newForOp = cast<scf::ForOp>(*maybeNewFor);
+
+  // Refresh the load ops since a new forOp was created.
+  loadOps.clear();
+  newForOp.getBody()->walk([&](Operation *op) {
+    if (auto loadOp = dyn_cast<vector::TransferReadOp>(op)) {
+      loadOps.push_back(loadOp);
+    }
+  });
+
+  // newFor.upper_bound = newFor.upper_bound - newFor.step
+  rewriter.setInsertionPoint(newForOp);
+  Value newUpperBound = rewriter.create<arith::SubIOp>(
+      newForOp.getLoc(), newForOp.getUpperBound(), newForOp.getStep());
+  newForOp.getUpperBoundMutable().assign(newUpperBound);
+
+  // Move inside the loop now.
+  rewriter.setInsertionPointToStart(newForOp.getBody());
+
+  Value ivPlusOne = rewriter.create<arith::AddIOp>(
+      newForOp.getLoc(), newForOp.getInductionVar(), newForOp.getStep());
+
+  // Create an ir mapping from iv -> iv + 1
+  IRMapping irMappingLoop;
+  irMappingLoop.map(newForOp.getInductionVar(), ivPlusOne);
+
+  // Get the last prefetch1.size() yield values and replace them with
+  // loadOps.
+  MutableArrayRef<OpOperand> yields =
+      newForOp.getYieldedValuesMutable().take_back(numPrefetched);
+  for (auto [newPrefetched, oldPrefetched] : llvm::zip_equal(loadOps, yields)) {
+    oldPrefetched.set(newPrefetched);
+  }
+
+  // Replace all uses of the loadOps with last numPrefetched iter_args except
+  // the yield operation.
+  ArrayRef<BlockArgument> prefetchIterArgs =
+      newForOp.getRegionIterArgs().take_back(numPrefetched);
+  for (auto [load, iterArg] : llvm::zip_equal(loadOps, prefetchIterArgs)) {
+    rewriter.replaceAllUsesExcept(load.getResult(), iterArg,
+                                  newForOp.getBody()->getTerminator());
+  }
+
+  // Replace the loadOps with new loadOps with the new irMapping.
+  for (vector::TransferReadOp loadOp : loadOps) {
+    rewriter.setInsertionPoint(loadOp);
+    Operation *mappedLoadOp = rewriter.clone(*loadOp, irMappingLoop);
+    rewriter.replaceOp(loadOp, mappedLoadOp);
+  }
+
+  // Generate the final loop iteration without the loadOps.
+  rewriter.setInsertionPointAfter(newForOp);
+  IRMapping irMappingFinal;
+  // Map iv -> newForOp.upperBound + step
+  irMappingFinal.map(newForOp.getInductionVar(),
+                     rewriter.create<arith::AddIOp>(newForOp.getLoc(),
+                                                    newForOp.getUpperBound(),
+                                                    newForOp.getStep()));
+
+  // Map the iter_args to newFor return values.
+  for (auto [iterArg, yield] :
+       llvm::zip_equal(newForOp.getRegionIterArgs(), newForOp.getResults())) {
+    irMappingFinal.map(iterArg, yield);
+  }
+
+  // Save all uses of the newForOp to replace after this cloning.
+  SmallVector<OpOperand *> uses;
+  for (Value res : newForOp.getResults()) {
+    for (OpOperand &use : res.getUses()) {
+      uses.push_back(&use);
+    }
+  }
+
+  // Clone the loop body with the new irMapping but without the loadOps.
+  for (Operation &op : newForOp.getBody()->getOperations()) {
+    if (isa<vector::TransferReadOp>(op)) {
+      continue;
+    }
+
+    // Do not clone the yield operation, but add a mapping for the newfor
+    // results to the yield operands.
+    if (isa<scf::YieldOp>(op)) {
+      for (auto [result, operand] :
+           llvm::zip_equal(newForOp.getResults(), op.getOperands())) {
+        irMappingFinal.map(result, irMappingFinal.lookupOrNull(operand));
+      }
+      break;
+    }
+
+    // Map as we clone.
+    Operation *newOp = rewriter.clone(op, irMappingFinal);
+    for (auto [oldResult, newResult] :
+         llvm::zip_equal(op.getResults(), newOp->getResults())) {
+      irMappingFinal.map(oldResult, newResult);
+    }
+  }
+
+  // Replace all uses of the newForOp with irMappingFinal.
+  for (OpOperand *use : uses) {
+    use->assign(irMappingFinal.lookup(use->get()));
+  }
+}
+
+void prefetchLoads(RewriterBase &rewriter, func::FuncOp funcOp) {
+  // Find all scf.for loop in funcOp.
+  SmallVector<scf::ForOp> forOps;
+  funcOp.walk([&](scf::ForOp forOp) { forOps.push_back(forOp); });
+  for (scf::ForOp forOp : forOps) {
+    prefetchLoadsInForLoop(rewriter, forOp);
+  }
+}
+
 } // namespace mlir::iree_compiler

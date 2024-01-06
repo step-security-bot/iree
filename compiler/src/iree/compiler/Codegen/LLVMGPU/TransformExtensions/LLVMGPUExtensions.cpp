@@ -877,6 +877,19 @@ transform_dialect::SIMTVectorDistributionOp::applyToOne(
 }
 
 //===---------------------------------------------------------------------===//
+// PrefetchLoadsOp.
+//===---------------------------------------------------------------------===//
+DiagnosedSilenceableFailure
+transform_dialect::PrefetchLoadsOp::applyToOne(
+    transform::TransformRewriter &rewriter, func::FuncOp target,
+    transform::ApplyToEachResultList &results,
+    transform::TransformState &state) {
+  iree_compiler::prefetchLoads(rewriter, cast<func::FuncOp>(target));
+  results.push_back(target);
+  return DiagnosedSilenceableFailure::success();
+}
+
+//===---------------------------------------------------------------------===//
 // ReorderTransposeOp
 //===---------------------------------------------------------------------===//
 DiagnosedSilenceableFailure transform_dialect::ReorderTransposeOp::applyToOne(
