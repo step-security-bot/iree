@@ -920,7 +920,9 @@ void static prefetchLoadsInForLoop(RewriterBase &rewriter, scf::ForOp forOp) {
   forOp.getBody()->walk([&](Operation *op) {
     if (auto loadOp = dyn_cast<vector::TransferReadOp>(op)) {
       loadOps.push_back(loadOp);
+      return WalkResult::interrupt();
     }
+    return WalkResult::advance();
   });
 
   int numPrefetched = loadOps.size();
@@ -950,8 +952,16 @@ void static prefetchLoadsInForLoop(RewriterBase &rewriter, scf::ForOp forOp) {
   newForOp.getBody()->walk([&](Operation *op) {
     if (auto loadOp = dyn_cast<vector::TransferReadOp>(op)) {
       loadOps.push_back(loadOp);
+      return WalkResult::interrupt();
     }
+    return WalkResult::advance();
   });
+
+  // Move the load ops after their first use to reduce register pressure.
+  for (vector::TransferReadOp loadOp : loadOps) {
+    Operation *firstUser = loadOp.getResult().use_begin()->getOwner();
+    loadOp->moveAfter(firstUser);
+  }
 
   // newFor.upper_bound = newFor.upper_bound - newFor.step
   rewriter.setInsertionPoint(newForOp);
@@ -1018,7 +1028,8 @@ void static prefetchLoadsInForLoop(RewriterBase &rewriter, scf::ForOp forOp) {
 
   // Clone the loop body with the new irMapping but without the loadOps.
   for (Operation &op : newForOp.getBody()->getOperations()) {
-    if (isa<vector::TransferReadOp>(op)) {
+    // Check if loadOps contains the current op.
+    if (llvm::is_contained(loadOps, &op)) {
       continue;
     }
 
