@@ -1007,11 +1007,8 @@ void static prefetchLoadsInForLoop(RewriterBase &rewriter, scf::ForOp forOp) {
   // Generate the final loop iteration without the loadOps.
   rewriter.setInsertionPointAfter(newForOp);
   IRMapping irMappingFinal;
-  // Map iv -> newForOp.upperBound + step
-  irMappingFinal.map(newForOp.getInductionVar(),
-                     rewriter.create<arith::AddIOp>(newForOp.getLoc(),
-                                                    newForOp.getUpperBound(),
-                                                    newForOp.getStep()));
+  // Map iv -> newForOp.upperBound
+  irMappingFinal.map(newForOp.getInductionVar(), newForOp.getUpperBound());
 
   // Map the iter_args to newFor return values.
   for (auto [iterArg, yield] :
