@@ -997,10 +997,11 @@ void static prefetchLoadsInForLoop(RewriterBase &rewriter, scf::ForOp forOp) {
   }
 
   // Replace the loadOps with new loadOps with the new irMapping.
-  for (vector::TransferReadOp loadOp : loadOps) {
+  for (vector::TransferReadOp &loadOp : loadOps) {
     rewriter.setInsertionPoint(loadOp);
     Operation *mappedLoadOp = rewriter.clone(*loadOp, irMappingLoop);
     rewriter.replaceOp(loadOp, mappedLoadOp);
+    loadOp = cast<vector::TransferReadOp>(mappedLoadOp);
   }
 
   // Generate the final loop iteration without the loadOps.
