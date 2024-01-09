@@ -345,9 +345,9 @@ distributeContractionsToMFMA(RewriterBase &rewriter,
   SmallVector<AffineMap> indexingMaps = contractOp.getIndexingMapsArray();
   ContractType contractType =
       inferContractType(contractOp.getContext(), indexingMaps);
-  auto contractFn = [&](LayoutAttr::Iterator &iterator) {
-    SmallVector<int64_t> simtIndices = layout.computeIteratorProjectedSIMTIndex(
-        iterator, provider->getSIMTLabels(layout));
+  auto contractFn = [&](const LayoutIterator::State &state) {
+    SmallVector<int64_t> simtIndices = state.computeIteratorProjectedSIMTIndex(
+        provider->getSIMTLabels(layout));
     Value dMatrix = rewriter.create<vector::ExtractOp>(
         loc, getDistributed(rewriter, acc, provider), simtIndices);
     for (int k = 0; k < K; k++) {
@@ -364,8 +364,10 @@ distributeContractionsToMFMA(RewriterBase &rewriter,
     vector =
         rewriter.create<vector::InsertOp>(loc, dMatrix, vector, simtIndices);
   };
-  LayoutAttr::Iterator iterator = layout.getBatchIterator();
-  layout.map(contractFn, iterator);
+  DenseMap<LayoutDimension, int64_t> strides;
+  LayoutIterator iterator(layout, strides);
+  LayoutIterator batchIterator = iterator.getBatchIterator();
+  batchIterator.apply(contractFn);
   replaceOpWithDistributedValues(rewriter, contractOp, provider, vector);
   return success();
 }

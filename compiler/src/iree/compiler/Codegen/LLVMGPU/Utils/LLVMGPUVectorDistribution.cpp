@@ -275,7 +275,7 @@ private:
                                        Type elementType);
 
   SmallVector<Value> getIndices(RewriterBase &rewriter, LayoutAttr &layout,
-                                LayoutAttr::Iterator &iterator,
+                                const LayoutIterator::State &state,
                                 SmallVector<Value> indices,
                                 AffineMap permutationMap, Location loc);
 
@@ -289,9 +289,11 @@ private:
 
 } // namespace
 
-SmallVector<Value> VectorDistribution::getIndices(
-    RewriterBase &rewriter, LayoutAttr &layout, LayoutAttr::Iterator &iterator,
-    SmallVector<Value> indices, AffineMap permutationMap, Location loc) {
+SmallVector<Value>
+VectorDistribution::getIndices(RewriterBase &rewriter, LayoutAttr &layout,
+                               const LayoutIterator::State &state,
+                               SmallVector<Value> indices,
+                               AffineMap permutationMap, Location loc) {
   ArrayRef<Value> threadIds = getThreadIds();
   SmallVector<Value> laneIds;
   for (PerDimLayoutAttr dimLayout : layout.getLayouts()) {
@@ -329,9 +331,10 @@ SmallVector<Value> VectorDistribution::getIndices(
     unsigned projectedI = i + unitLeadingDims;
 
     PerDimLayoutAttr perDimLayout = layout.getDimLayout(reducedPos);
-    PerDimLayoutAttr::Iterator dimIt = iterator.states[reducedPos];
+    LayoutIterator::State projectedState = state.getProjectedState(reducedPos);
     Value index = rewriter.create<affine::AffineApplyOp>(
-        loc, perDimLayout.computeSIMDIndex(dimIt), laneIds[reducedPos]);
+        loc, computeSIMDIndex(projectedState, perDimLayout),
+        laneIds[reducedPos]);
     index = rewriter.create<arith::AddIOp>(loc, index, simdIndices[projectedI]);
     simdIndices[projectedI] = index;
   }
@@ -379,13 +382,13 @@ LogicalResult VectorDistribution::distributeTransferReads(
   LayoutAttr layout = analysis.getLayout<LayoutAttr>(result);
   int64_t loadElements = layout.getTransferElements(
       getReducedPermutation(transferReadOp.getPermutationMap()));
-  auto loadFn = [&](LayoutAttr::Iterator &iterator) {
+  auto loadFn = [&](const LayoutIterator::State &state) {
     SmallVector<Value> simdIndices =
-        getIndices(rewriter, layout, iterator, transferReadOp.getIndices(),
+        getIndices(rewriter, layout, state, transferReadOp.getIndices(),
                    transferReadOp.getPermutationMap(), loc);
 
     SmallVector<int64_t> simtIndices =
-        layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
+        state.computeSIMTIndex(provider->getSIMTLabels(layout));
 
     auto vectorType = VectorType::get({loadElements}, elementType);
     if (loadElements == 1) {
@@ -403,8 +406,8 @@ LogicalResult VectorDistribution::distributeTransferReads(
   };
   DenseMap<LayoutDimension, int64_t> steps;
   steps[LayoutDimension::VECTORX] = loadElements;
-  LayoutAttr::Iterator iterator = layout.getIterator(steps);
-  layout.map(loadFn, iterator);
+  LayoutIterator iterator(layout, steps);
+  iterator.apply(loadFn);
   replaceOpWithDistributedValues(rewriter, transferReadOp, provider, vector);
   return success();
 }
@@ -417,13 +420,13 @@ LogicalResult VectorDistribution::distributeTransferWrites(
   Location loc = transferWriteOp.getLoc();
   int64_t storeElements = layout.getTransferElements(
       getReducedPermutation(transferWriteOp.getPermutationMap()));
-  auto storeFn = [&](LayoutAttr::Iterator &iterator) {
+  auto storeFn = [&](const LayoutIterator::State &state) {
     SmallVector<Value> simdIndices =
-        getIndices(rewriter, layout, iterator, transferWriteOp.getIndices(),
+        getIndices(rewriter, layout, state, transferWriteOp.getIndices(),
                    transferWriteOp.getPermutationMap(), loc);
 
     SmallVector<int64_t> simtIndices =
-        layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
+        state.computeSIMTIndex(provider->getSIMTLabels(layout));
 
     if (storeElements == 1) {
       Value result = rewriter.create<vector::ExtractOp>(
@@ -445,8 +448,8 @@ LogicalResult VectorDistribution::distributeTransferWrites(
   // TODO: This is wrong. We should be using the innermost dimension for
   // calculating this step instead.
   steps[LayoutDimension::VECTORX] = storeElements;
-  LayoutAttr::Iterator iterator = layout.getIterator(steps);
-  layout.map(storeFn, iterator);
+  LayoutIterator iterator(layout, steps);
+  iterator.apply(storeFn);
   replaceOpWithDistributedValues(rewriter, transferWriteOp, provider,
                                  ValueRange());
   return success();
@@ -527,21 +530,23 @@ TypedValue<VectorType> VectorDistribution::reshapeVector(
   DenseMap<LayoutDimension, int64_t> steps;
   LayoutDimension vecDim = provider->getInnerMostVecDim();
   steps[vecDim] = step;
-  auto srcIterator = currentLayout.getIterator(steps);
-  auto targetIterator = targetLayout.getIterator(steps);
-  do {
-    auto srcOffset = currentLayout.computeSIMTIndex(
-        srcIterator, provider->getSIMTLabels(currentLayout));
+  LayoutIterator srcIterator(currentLayout, steps);
+  LayoutIterator targetIterator(targetLayout, steps);
+  for (;
+       !srcIterator.iterationComplete() && !targetIterator.iterationComplete();
+       ++srcIterator, ++targetIterator) {
+    auto srcOffset = srcIterator.getState().computeSIMTIndex(
+        provider->getSIMTLabels(currentLayout));
     SmallVector<int64_t> sliceSize(srcOffset.size(), 1);
     SmallVector<int64_t> sliceStride(srcOffset.size(), 1);
     sliceSize[sliceSize.size() - 1] = step;
     Value slice = rewriter.create<vector::ExtractStridedSliceOp>(
         loc, src, srcOffset, sliceSize, sliceStride);
-    auto targetOffset = targetLayout.computeSIMTIndex(
-        targetIterator, provider->getSIMTLabels(targetLayout));
+    auto targetOffset = targetIterator.getState().computeSIMTIndex(
+        provider->getSIMTLabels(targetLayout));
     newVector = rewriter.create<vector::InsertStridedSliceOp>(
         loc, slice, newVector, targetOffset, sliceStride);
-  } while (!srcIterator.next() && !targetIterator.next());
+  }
   return newVector;
 }
 
@@ -694,9 +699,9 @@ LogicalResult VectorDistribution::distributeReductions(
   Value storeVec = rewriter.create<arith::ConstantOp>(
       loc, storeVectorType, rewriter.getZeroAttr(storeVectorType));
 
-  auto reduceFn = [&](LayoutAttr::Iterator &iterator) {
+  auto reduceFn = [&](const LayoutIterator::State &state) {
     SmallVector<int64_t> parallelSimtIndices =
-        layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
+        state.computeSIMTIndex(provider->getSIMTLabels(layout));
     auto projectedIndices = layout.projectSIMTVector(
         provider->getSIMTLabels(layout), parallelSimtIndices, reductionDim);
     Value mEmpty = rewriter.create<vector::ExtractOp>(
@@ -711,9 +716,9 @@ LogicalResult VectorDistribution::distributeReductions(
           loc, rewriter.getZeroAttr(VectorType::get({2}, elementType)));
     }
 
-    auto reduceLocalFn = [&](LayoutAttr::Iterator &iterator) {
+    auto reduceLocalFn = [&](const LayoutIterator::State &state) {
       SmallVector<int64_t> indices =
-          layout.computeSIMTIndex(iterator, provider->getSIMTLabels(layout));
+          state.computeSIMTIndex(provider->getSIMTLabels(layout));
       Value x = rewriter.create<vector::ExtractOp>(
           loc, getDistributed(rewriter, source, provider), indices);
       if (bitWidth == 32) {
@@ -731,9 +736,9 @@ LogicalResult VectorDistribution::distributeReductions(
                                             result, tmp, nullptr, mask);
     };
 
-    LayoutAttr::Iterator reductionIterator =
-        layout.getPartialIterator(reductionDim, iterator);
-    layout.map(reduceLocalFn, reductionIterator);
+    LayoutIterator reductionIterator(layout, reductionDim);
+    reductionIterator.maybeFreezeAndConcatenate(state);
+    reductionIterator.apply(reduceLocalFn);
 
     auto reduceGlobalFn = [&]() {
       uint32_t size{32};
@@ -766,13 +771,12 @@ LogicalResult VectorDistribution::distributeReductions(
       }
     };
     reduceGlobalFn();
-    reductionIterator = layout.getDimIterator(reductionDim);
     storeVec = rewriter.create<vector::InsertOp>(loc, result, storeVec,
                                                  projectedIndices);
   };
 
-  LayoutAttr::Iterator parallelIterator = layout.getDimIterator(parallelDim);
-  layout.map(reduceFn, parallelIterator);
+  LayoutIterator parallelIterator(layout, parallelDim);
+  parallelIterator.apply(reduceFn);
   replaceOpWithDistributedValues(rewriter, reductionOp, provider, storeVec);
   return success();
 }
@@ -828,17 +832,17 @@ VectorDistribution::distributeBroadcasts(RewriterBase &rewriter,
   Value broadcastedVector = rewriter.create<arith::ConstantOp>(
       loc, vectorType, rewriter.getZeroAttr(vectorType));
 
-  auto broadcastFn = [&](LayoutAttr::Iterator &parIterator) {
+  auto broadcastFn = [&](const LayoutIterator::State &state) {
     SmallVector<int64_t> parallelSimtIndices =
-        layout.computeSIMTIndex(parIterator, provider->getSIMTLabels(layout));
+        state.computeSIMTIndex(provider->getSIMTLabels(layout));
     auto projectedIndices = layout.projectSIMTVector(
         provider->getSIMTLabels(layout), parallelSimtIndices, reductionDim);
     Value value = rewriter.create<vector::ExtractOp>(
         loc, getDistributed(rewriter, source, provider), projectedIndices);
 
-    auto broadcastValue = [&](LayoutAttr::Iterator &redIterator) {
+    auto broadcastValue = [&](const LayoutIterator::State &state) {
       SmallVector<int64_t> indices =
-          layout.computeSIMTIndex(redIterator, provider->getSIMTLabels(layout));
+          state.computeSIMTIndex(provider->getSIMTLabels(layout));
 
       broadcastedVector = rewriter.create<vector::InsertOp>(
           loc, value, broadcastedVector, indices);
@@ -846,14 +850,12 @@ VectorDistribution::distributeBroadcasts(RewriterBase &rewriter,
 
     // Mark parallel dims to have a step of their size, because we iterate over
     // them once only.
-    DenseMap<LayoutDimension, int64_t> steps;
-
-    LayoutAttr::Iterator reductionIterator =
-        layout.getPartialIterator(reductionDim, parIterator);
-    layout.map(broadcastValue, reductionIterator);
+    LayoutIterator reductionIterator(layout, reductionDim);
+    reductionIterator.maybeFreezeAndConcatenate(state);
+    reductionIterator.apply(broadcastValue);
   };
-  LayoutAttr::Iterator parallelIterator = layout.getDimIterator(parallelDim);
-  layout.map(broadcastFn, parallelIterator);
+  LayoutIterator parallelIterator(layout, parallelDim);
+  parallelIterator.apply(broadcastFn);
   replaceOpWithDistributedValues(rewriter, opToReplace, provider,
                                  broadcastedVector);
   return success();
