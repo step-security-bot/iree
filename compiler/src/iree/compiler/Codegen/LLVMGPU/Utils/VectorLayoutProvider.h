@@ -78,14 +78,13 @@ public:
   // Format is INPUTTYPE_MxNxK_OUTPUTTYPE.
   enum class MFMAType {
     F16_16x16x16_F32,
+    F16_32x32x8_F32,
   };
   // Default format for MFMA is MMT.
   // The mfmaType is a parameter that can be tuned.
   AMDCDNAGPULayoutProvider(VectorLayoutAnalysis &analysis, Operation *root,
-                           MFMAType mfmaType = MFMAType::F16_16x16x16_F32,
-                           ContractType contractType = ContractType::MMT)
-      : LayoutProvider(analysis, root), mfmaType(mfmaType),
-        contractType(contractType) {}
+                           MFMAType mfmaType = MFMAType::F16_16x16x16_F32)
+      : LayoutProvider(analysis, root), mfmaType(mfmaType) {}
 
   virtual void setAnchorOps() override;
 
@@ -129,11 +128,12 @@ public:
   Value computeMMA(Value a, Value b, Value c, Location loc,
                    OpBuilder &rewriter);
 
-  int64_t getKDimension(int64_t M, int64_t K);
+  int64_t getKDimension(int64_t M, int64_t K, ContractType contractType);
 
   IREE::VectorExt::LayoutAttr
   getCanonicalMFMALayout(TypedValue<VectorType> value,
                          ContractMatrixType matrixType, int64_t numElements,
+                         ContractType contractType,
                          SmallVector<int64_t> permutation = {});
 
   bool hasCanonicalShape(ContractMatrixType matrixType,
@@ -153,23 +153,31 @@ public:
   }
 
   SmallVector<Value> getThreadGrid(RewriterBase &rewriter) override {
-    // We want a grid of 4 X 16, delinearized over the theadX.
+    int64_t numThreads{0};
+    switch (mfmaType) {
+      case MFMAType::F16_16x16x16_F32:
+        numThreads = 16;
+        break;
+      case MFMAType::F16_32x32x8_F32:
+        numThreads = 32;
+        break;
+    }
+    // We want a grid of 4 X N, delinearized over the theadX.
     SmallVector<Value> threadGrid(2);
     Value threadX =
         rewriter.create<gpu::ThreadIdOp>(root->getLoc(), gpu::Dimension::x);
-    // threadGrid[0] = threadX % 16
-    Value const16 = rewriter.create<arith::ConstantIndexOp>(root->getLoc(), 16);
+    // threadGrid[0] = threadX % N
+    Value constThreads = rewriter.create<arith::ConstantIndexOp>(root->getLoc(), numThreads);
     threadGrid[0] =
-        rewriter.create<arith::RemUIOp>(root->getLoc(), threadX, const16);
-    // threadGrid[1] = threadX / 16
+        rewriter.create<arith::RemUIOp>(root->getLoc(), threadX, constThreads);
+    // threadGrid[1] = threadX / N
     threadGrid[1] =
-        rewriter.create<arith::DivUIOp>(root->getLoc(), threadX, const16);
+        rewriter.create<arith::DivUIOp>(root->getLoc(), threadX, constThreads);
     return threadGrid;
   }
 
 private:
   MFMAType mfmaType;
-  ContractType contractType;
   SmallVector<IREE::VectorExt::LayoutDimension> simtLabels{
       IREE::VectorExt::LayoutDimension::BATCHX,
       IREE::VectorExt::LayoutDimension::BATCHY,

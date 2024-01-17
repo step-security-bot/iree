@@ -77,8 +77,8 @@ void LayoutIterator::initialize(const PerDimLayoutAttr &attr,
     if (isLaneDimension(dim))
       continue;
     int64_t stride = strides.contains(dim) ? strides[dim] : 1;
-    ranges[dim] = DimensionalRange(0, shape, stride);
-    state.iterators[dim] = ranges[dim].begin();
+    state.ranges[dim] = DimensionalRange(0, shape, stride);
+    state.iterators[dim] = state.ranges[dim].begin();
     maxIterations *= shape / stride;
     if (simdIndex) {
       int64_t index = simdIndex.value();
@@ -160,8 +160,8 @@ LayoutIterator &LayoutIterator::operator++() {
     if (frozenDimensions.contains(dim))
       continue;
     ++it;
-    if (it == ranges[dim].end()) {
-      it = ranges[dim].begin();
+    if (it == state.ranges[dim].end()) {
+      it = state.ranges[dim].begin();
       continue;
     }
     break;

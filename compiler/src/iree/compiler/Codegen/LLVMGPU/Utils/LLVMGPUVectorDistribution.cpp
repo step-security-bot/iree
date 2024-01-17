@@ -702,10 +702,8 @@ LogicalResult VectorDistribution::distributeReductions(
   auto reduceFn = [&](const LayoutIterator::State &state) {
     SmallVector<int64_t> parallelSimtIndices =
         state.computeSIMTIndex(provider->getSIMTLabels(layout));
-    auto projectedIndices = layout.projectSIMTVector(
-        provider->getSIMTLabels(layout), parallelSimtIndices, reductionDim);
     Value mEmpty = rewriter.create<vector::ExtractOp>(
-        loc, getDistributed(rewriter, acc, provider), projectedIndices);
+        loc, getDistributed(rewriter, acc, provider), parallelSimtIndices);
     int count{0};
     Value tmp, result, mask;
     if (bitWidth == 32) {
@@ -772,7 +770,7 @@ LogicalResult VectorDistribution::distributeReductions(
     };
     reduceGlobalFn();
     storeVec = rewriter.create<vector::InsertOp>(loc, result, storeVec,
-                                                 projectedIndices);
+                                                 parallelSimtIndices);
   };
 
   LayoutIterator parallelIterator(layout, parallelDim);
@@ -835,10 +833,8 @@ VectorDistribution::distributeBroadcasts(RewriterBase &rewriter,
   auto broadcastFn = [&](const LayoutIterator::State &state) {
     SmallVector<int64_t> parallelSimtIndices =
         state.computeSIMTIndex(provider->getSIMTLabels(layout));
-    auto projectedIndices = layout.projectSIMTVector(
-        provider->getSIMTLabels(layout), parallelSimtIndices, reductionDim);
     Value value = rewriter.create<vector::ExtractOp>(
-        loc, getDistributed(rewriter, source, provider), projectedIndices);
+        loc, getDistributed(rewriter, source, provider), parallelSimtIndices);
 
     auto broadcastValue = [&](const LayoutIterator::State &state) {
       SmallVector<int64_t> indices =

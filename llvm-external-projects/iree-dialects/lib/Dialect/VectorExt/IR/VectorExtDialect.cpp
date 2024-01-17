@@ -73,18 +73,28 @@ std::optional<int64_t> LayoutAttr::getShape(const LayoutDimension &dim) const {
 }
 
 // Get the SIMT Vector shape in the order specified by dims. If no dims are
-// specified, then return an empty vector.
+// specified, then return an empty vector. Group vector dims.
 SmallVector<int64_t>
 LayoutAttr::getSIMTVectorShape(ArrayRef<LayoutDimension> dims) const {
   SmallVector<int64_t> simtVectorShape;
+  int64_t vectorShape{1};
+  bool hasVectorShape{false};
   for (LayoutDimension dim : dims) {
     ArrayRef<PerDimLayoutAttr> layouts = getLayouts();
     for (PerDimLayoutAttr layout : layouts) {
       if (!layout.contains(dim))
         continue;
-      simtVectorShape.push_back(layout.getShape(dim).value());
+      int64_t shape = layout.getShape(dim).value();
+      if (isVector(dim)) {
+        vectorShape *= shape;
+        hasVectorShape = true;
+        continue;
+      }
+      simtVectorShape.push_back(shape);
     }
   }
+  if (hasVectorShape)
+    simtVectorShape.push_back(vectorShape);
   return simtVectorShape;
 }
 
@@ -147,16 +157,42 @@ AffineExpr computeSIMDIndex(const LayoutIterator::State &state,
 
 // Get the offset into the SIMT vector corresponding to the incoming iterator.
 // The returned offsets will always be the same shape as the labels array.
+// Groups vector dimensions together. Assumes last dimension is vector dimension.
 SmallVector<int64_t> LayoutIterator::State::computeSIMTIndex(
     ArrayRef<LayoutDimension> labels) const {
-  SmallVector<int64_t> offset(labels.size(), 0);
+  // Offset will always be 1 or 2 batch dimensions and one vector dimension
+  SmallVector<int64_t> offset;
+  // Do batch dimensions
   for (int i = 0; i < labels.size(); i++) {
     for (auto [name, it] : iterators) {
       if (name != labels[i])
         continue;
-      offset[i] = it.getPosition();
+      if (!isBatch(name)) {
+        continue;
+      }
+      offset.push_back(it.getPosition());
     }
   }
+  // Construct vector index. Since vector indices are grouped,
+  // they need to be scaled appropriately.
+  int64_t vecOffset{0};
+  bool hasVecOffset{false};
+  for (auto label : labels) {
+    if (!isVector(label)) continue;
+    for (auto [name, it] : iterators) {
+      if (name != label) continue;
+      if (name == LayoutDimension::VECTORY) {
+        vecOffset += it.getPosition() * (ranges.lookup(LayoutDimension::VECTORX).stop);
+        hasVecOffset = true;
+      }
+      if (name == LayoutDimension::VECTORX) {
+        vecOffset += it.getPosition();
+        hasVecOffset = true;
+      }
+    }
+  }
+  if (hasVecOffset)
+    offset.push_back(vecOffset);
   return offset;
 }
 
@@ -164,6 +200,7 @@ SmallVector<int64_t> LayoutIterator::State::computeSIMTIndex(
 // The offsets are projected onto the iterator. For example, if we have a vector
 // mapping (batchx, batchy, vecx) and the iterator is (batchx, batchy), then
 // we return an vector containing the offsets for (batchx, batchy).
+// Groups vector dimensions together.
 SmallVector<int64_t> LayoutIterator::State::computeIteratorProjectedSIMTIndex(
     ArrayRef<LayoutDimension> labels) const {
   SmallVector<int64_t> indices = computeSIMTIndex(labels);
@@ -188,7 +225,7 @@ int64_t LayoutAttr::getBatchDim(int64_t dim) {
 }
 
 static bool isIdentity(ArrayRef<int64_t> permutation) {
-  for (int i = 0; i < permutation.size(); i++) {
+ for (int i = 0; i < permutation.size(); i++) {
     if (permutation[i] != i)
       return false;
   }

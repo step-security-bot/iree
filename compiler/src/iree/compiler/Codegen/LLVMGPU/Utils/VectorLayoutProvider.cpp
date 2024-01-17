@@ -20,6 +20,8 @@ getCanonicalDims(AMDCDNAGPULayoutProvider::MFMAType type) {
   switch (type) {
   case AMDCDNAGPULayoutProvider::MFMAType::F16_16x16x16_F32:
     return {16, 16, 16};
+  case AMDCDNAGPULayoutProvider::MFMAType::F16_32x32x8_F32:
+    return {32, 32, 8};
   default:
     return {0, 0, 0};
   }
@@ -55,7 +57,8 @@ static PerDimLayoutAttr createPerDimLayout(MLIRContext *ctx,
 
 LayoutAttr AMDCDNAGPULayoutProvider::getCanonicalMFMALayout(
     TypedValue<VectorType> value, ContractMatrixType matrixType,
-    int64_t numElements, SmallVector<int64_t> permutation) {
+    int64_t numElements, ContractType contractType,
+    SmallVector<int64_t> permutation) {
   MLIRContext *ctx = root->getContext();
 
   // Get MMA matrix info.
@@ -72,15 +75,26 @@ LayoutAttr AMDCDNAGPULayoutProvider::getCanonicalMFMALayout(
 
   auto rowLayout = [&](LayoutDimension batchDim,
                        int64_t batch) -> PerDimLayoutAttr {
+    if (mfmaType == AMDCDNAGPULayoutProvider::MFMAType::F16_32x32x8_F32)
+      return createPerDimLayout(ctx, {batchDim, LayoutDimension::LANEX},
+                              {batch, 32});
     return createPerDimLayout(ctx, {batchDim, LayoutDimension::LANEX},
-                              {batch, 16});
+                            {batch, 16});
   };
 
   auto colLayout = [&](LayoutDimension batchDim, int64_t batch,
                        int64_t numElements) -> PerDimLayoutAttr {
-    return createPerDimLayout(
+    if (mfmaType == AMDCDNAGPULayoutProvider::MFMAType::F16_32x32x8_F32) {
+      if ((matrixType == ContractMatrixType::C) || (matrixType == ContractMatrixType::D))
+        return createPerDimLayout(ctx, {batchDim, LayoutDimension::VECTORY, LayoutDimension::LANEY, LayoutDimension::VECTORX},
+                              {batch, 4, 2, numElements});
+      return createPerDimLayout(
         ctx, {batchDim, LayoutDimension::LANEY, LayoutDimension::VECTORX},
-        {batch, 4, numElements});
+        {batch, 2, numElements});
+    }
+    return createPerDimLayout(
+      ctx, {batchDim, LayoutDimension::LANEY, LayoutDimension::VECTORX},
+      {batch, 4, numElements});
   };
 
   // For MMT contract, the layout of B is same as layout of A.
@@ -121,6 +135,11 @@ bool AMDCDNAGPULayoutProvider::hasCanonicalShape(ContractMatrixType matrixType,
   case AMDCDNAGPULayoutProvider::MFMAType::F16_16x16x16_F32:
     Ashape = Bshape = Cshape = {16, 16};
     break;
+  case AMDCDNAGPULayoutProvider::MFMAType::F16_32x32x8_F32:
+    Ashape = {32, 8};
+    Bshape = {8, 32};
+    Cshape = {32, 32};
+    break;
   default:
     return false;
   }
@@ -139,15 +158,22 @@ bool AMDCDNAGPULayoutProvider::hasCanonicalShape(ContractMatrixType matrixType,
 }
 
 static SmallVector<int64_t> getPermutation(MLIRContext *ctx, AffineMap inputMap,
-                                           ContractMatrixType matrixType) {
+                                           ContractMatrixType matrixType,
+                                           ContractType contractType) {
   AffineExpr d0, d1, d2;
   bindDims(ctx, d0, d1, d2);
   SmallVector<AffineMap> validMaps;
   switch (matrixType) {
   case ContractMatrixType::A:
   case ContractMatrixType::B:
-    validMaps.push_back(AffineMap::get(3, 0, {d0, d2}, ctx));
-    validMaps.push_back(AffineMap::get(3, 0, {d1, d2}, ctx));
+    if (contractType == ContractType::MMT) {
+      validMaps.push_back(AffineMap::get(3, 0, {d0, d2}, ctx));
+      validMaps.push_back(AffineMap::get(3, 0, {d1, d2}, ctx));
+    } else {
+      // Contract Type MM
+      validMaps.push_back(AffineMap::get(3, 0, {d0, d2}, ctx));
+      validMaps.push_back(AffineMap::get(3, 0, {d2, d1}, ctx));
+    }
     break;
   default:
     validMaps.push_back(AffineMap::get(3, 0, {d0, d1}, ctx));
@@ -160,20 +186,45 @@ static SmallVector<int64_t> getPermutation(MLIRContext *ctx, AffineMap inputMap,
   return SmallVector<int64_t>{1, 0};
 }
 
+static ContractType inferContractType(MLIRContext *ctx,
+                                      SmallVector<AffineMap> &indexingMaps) {
+  SmallVector<bool> operandsTransposed(3, false);
+  AffineExpr d0, d1, d2;
+  bindDims(ctx, d0, d1, d2);
+  for (int i = 0; i < indexingMaps.size(); i++) {
+    if ((i == 0) || (i == 1)) {
+      auto validMap = AffineMap::get(3, 0, {d0, d2}, ctx);
+      auto validMapT = AffineMap::get(3, 0, {d1, d2}, ctx);
+      if ((indexingMaps[i] != validMap) && (indexingMaps[i] != validMapT))
+        operandsTransposed[i] = true;
+    }
+  }
+  if (!operandsTransposed[0] && !operandsTransposed[1])
+    return ContractType::MMT;
+  if (operandsTransposed[0] && !operandsTransposed[1])
+    return ContractType::MTMT;
+  if (!operandsTransposed[0] && operandsTransposed[1])
+    return ContractType::MM;
+  return ContractType::MTM;
+}
+
+
 void AMDCDNAGPULayoutProvider::setAnchorOps() {
   root->walk([&](Operation *op) {
+    MLIRContext *ctx = op->getContext();
     TypeSwitch<Operation *, void>(op)
         .Case<vector::ContractionOp>([&](vector::ContractionOp contractOp) {
           AffineMap mapA = contractOp.getIndexingMapsArray()[0];
-          MLIRContext *ctx = contractOp.getContext();
+          SmallVector<AffineMap> indexingMaps(contractOp.getIndexingMapsArray());
+          ContractType contractType = inferContractType(ctx, indexingMaps);
           LayoutAttr layoutA = getCanonicalMFMALayout(
               contractOp.getLhs(), ContractMatrixType::A, 4,
-              getPermutation(ctx, mapA, ContractMatrixType::A));
+              contractType, getPermutation(ctx, mapA, ContractMatrixType::A, contractType));
           analysis.setAnchorForOperand(contractOp->getOpOperand(0), layoutA);
           AffineMap mapB = contractOp.getIndexingMapsArray()[1];
           LayoutAttr layoutB = getCanonicalMFMALayout(
               contractOp.getRhs(), ContractMatrixType::B, 4,
-              getPermutation(ctx, mapB, ContractMatrixType::B));
+              contractType, getPermutation(ctx, mapB, ContractMatrixType::B, contractType));
           analysis.setAnchorForOperand(contractOp->getOpOperand(1), layoutB);
           // Do not allow scalar result.
           if (isa<VectorType>(contractOp.getAccType()) &&
@@ -183,7 +234,7 @@ void AMDCDNAGPULayoutProvider::setAnchorOps() {
             AffineMap mapC = contractOp.getIndexingMapsArray()[2];
             LayoutAttr layoutC = getCanonicalMFMALayout(
                 acc, ContractMatrixType::C, 1,
-                getPermutation(ctx, mapC, ContractMatrixType::C));
+                contractType, getPermutation(ctx, mapC, ContractMatrixType::C, contractType));
             analysis.setAnchorForOperand(contractOp->getOpOperand(2), layoutC);
             analysis.setAnchorForValue(result, layoutC);
           }
@@ -225,16 +276,18 @@ void AMDCDNAGPULayoutProvider::setAnchorOps() {
               if (hasCanonicalShape(ContractMatrixType::A, lhsShape) ||
                   hasCanonicalShape(ContractMatrixType::B, rhsShape))
                 return;
+              SmallVector<AffineMap> indexingMaps(contractOp.getIndexingMapsArray());
+              ContractType contractType = inferContractType(ctx, indexingMaps);
               if (vector == contractOp.getLhs()) {
                 vector = transferReadOp.getVector();
                 LayoutAttr layoutLhs =
-                    getCanonicalMFMALayout(vector, ContractMatrixType::A, 8);
+                    getCanonicalMFMALayout(vector, ContractMatrixType::A, 8, contractType);
                 analysis.setAnchorForValue(vector, layoutLhs);
               }
               if (vector == contractOp.getRhs()) {
                 vector = transferReadOp.getVector();
                 LayoutAttr layoutRhs =
-                    getCanonicalMFMALayout(vector, ContractMatrixType::B, 8);
+                    getCanonicalMFMALayout(vector, ContractMatrixType::B, 8, contractType);
                 analysis.setAnchorForValue(vector, layoutRhs);
               }
               break;
@@ -282,6 +335,9 @@ Value AMDCDNAGPULayoutProvider::computeMMA(Value a, Value b, Value c,
   uint32_t m, n, k, blks;
   if (mfmaType == AMDCDNAGPULayoutProvider::MFMAType::F16_16x16x16_F32) {
     m = n = k = 16;
+  } else if (mfmaType == AMDCDNAGPULayoutProvider::MFMAType::F16_32x32x8_F32) {
+    m = n = 32;
+    k = 8;
   }
   blks = 1;
   return rewriter.create<amdgpu::MFMAOp>(loc, c.getType(), m, n, k, blks, a, b,
@@ -289,34 +345,14 @@ Value AMDCDNAGPULayoutProvider::computeMMA(Value a, Value b, Value c,
 }
 
 int64_t AMDCDNAGPULayoutProvider::getKDimension(int64_t rowBatch,
-                                                int64_t colBatch) {
+                                                int64_t colBatch,
+                                                ContractType contractType) {
   if (contractType == ContractType::MTM) {
     return rowBatch;
   }
   return colBatch;
 }
 
-static ContractType inferContractType(MLIRContext *ctx,
-                                      SmallVector<AffineMap> &indexingMaps) {
-  SmallVector<bool> operandsTransposed(3, false);
-  AffineExpr d0, d1, d2;
-  bindDims(ctx, d0, d1, d2);
-  for (int i = 0; i < indexingMaps.size(); i++) {
-    if ((i == 0) || (i == 1)) {
-      auto validMap = AffineMap::get(3, 0, {d0, d2}, ctx);
-      auto validMapT = AffineMap::get(3, 0, {d1, d2}, ctx);
-      if ((indexingMaps[i] != validMap) && (indexingMaps[i] != validMapT))
-        operandsTransposed[i] = true;
-    }
-  }
-  if (!operandsTransposed[0] && !operandsTransposed[1])
-    return ContractType::MMT;
-  if (operandsTransposed[0] && !operandsTransposed[1])
-    return ContractType::MTMT;
-  if (!operandsTransposed[0] && operandsTransposed[1])
-    return ContractType::MM;
-  return ContractType::MTM;
-}
 
 static LogicalResult
 distributeContractionsToMFMA(RewriterBase &rewriter,
@@ -334,17 +370,17 @@ distributeContractionsToMFMA(RewriterBase &rewriter,
       cast<TypedValue<VectorType>>(contractOp.getResult());
   LayoutAttr layout = analysis.getLayout<LayoutAttr>(result);
   LayoutAttr lhsLayout = analysis.getLayout<LayoutAttr>(lhs);
-  int K = provider->getKDimension(lhsLayout.getBatchDim(0),
-                                  lhsLayout.getBatchDim(1));
   Type elementType = llvm::cast<ShapedType>(acc.getType()).getElementType();
-  auto vectorType =
-      VectorType::get(provider->getDistributedShape(result), elementType);
+  SmallVector<int64_t> vectorShape = provider->getDistributedShape(result);
+  auto vectorType = VectorType::get(vectorShape, elementType);
   Value vector = rewriter.create<arith::ConstantOp>(
       loc, vectorType, rewriter.getZeroAttr(vectorType));
   // Determine contraction type from indexing maps
   SmallVector<AffineMap> indexingMaps = contractOp.getIndexingMapsArray();
   ContractType contractType =
       inferContractType(contractOp.getContext(), indexingMaps);
+  int K = provider->getKDimension(lhsLayout.getBatchDim(0),
+                                  lhsLayout.getBatchDim(1), contractType);
   auto contractFn = [&](const LayoutIterator::State &state) {
     SmallVector<int64_t> simtIndices = state.computeIteratorProjectedSIMTIndex(
         provider->getSIMTLabels(layout));

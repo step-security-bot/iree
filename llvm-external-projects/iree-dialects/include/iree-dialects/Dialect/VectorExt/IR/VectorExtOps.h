@@ -98,6 +98,7 @@ public:
     State getProjectedState(int64_t simdIndex) const;
     llvm::MapVector<LayoutDimension, DimensionalIterator> iterators;
     DenseMap<int64_t, DenseSet<LayoutDimension>> simdToLayoutDim;
+    llvm::MapVector<LayoutDimension, DimensionalRange> ranges;
   };
   void maybeFreezeAndConcatenate(const LayoutIterator::State &frozenState);
   LayoutIterator(LayoutAttr &attr);
@@ -119,7 +120,6 @@ private:
                   DenseMap<LayoutDimension, int64_t> strides,
                   std::optional<int64_t> dim);
   State state;
-  llvm::MapVector<LayoutDimension, DimensionalRange> ranges;
   DenseSet<LayoutDimension> frozenDimensions;
   int64_t iterations{0};
   int64_t maxIterations{1};
