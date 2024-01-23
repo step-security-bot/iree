@@ -111,6 +111,8 @@ LayoutIterator LayoutIterator::getBatchIterator() const {
   LayoutIterator projectedIterator = *this;
   for (auto [dim, it] : state.iterators) {
     if (!isBatch(dim)) {
+      DimensionalRange range = state.ranges.lookup(dim);
+      projectedIterator.maxIterations /= (range.stop / range.step);
       projectedIterator.erase(dim);
     }
   }
