@@ -34,9 +34,6 @@ struct FoldTransposeContract : public OpRewritePattern<vector::ContractionOp> {
     vector::TransferReadOp lhsDefOp = lhs.getDefiningOp<vector::TransferReadOp>();
     if (!lhsDefOp || !rhsDefOp)
       return failure();
-    AffineMap permutationMap = lhsDefOp.getPermutationMap();
-    if (permutationMap.isIdentity())
-      return failure();
     AffineExpr m, n, k;
     bindDims(rewriter.getContext(), m, n, k);
     auto indexingMaps = contractOp.getIndexingMapsArray();
