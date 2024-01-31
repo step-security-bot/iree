@@ -74,6 +74,8 @@ void populateTransposePropagationPatterns(RewritePatternSet &patterns);
 void populateFoldTransposeContractPatterns(RewritePatternSet &patterns);
 void populateTransferWritePatterns(RewritePatternSet &patterns);
 
+void optimizeSharedMemoryReadsAndWrites(func::FuncOp funcOp);
+
 } // namespace mlir::iree_compiler
 
 #endif

@@ -22,8 +22,10 @@ iree_cc_library(
     "LLVMGPUVectorDistribution.cpp"
     "PrepareVectorForChainedMFMA.cpp"
     "VectorLayoutProvider.cpp"
+    "LLVMGPUOptimizeSharedMemoryReadsWrites.cpp"
   DEPS
     LLVMSupport
+    MLIRAMDGPUDialect
     MLIRAffineDialect
     MLIRArithDialect
     MLIRFuncDialect
