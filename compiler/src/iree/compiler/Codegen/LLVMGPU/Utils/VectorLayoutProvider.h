@@ -83,7 +83,7 @@ public:
   // Default format for MFMA is MMT.
   // The mfmaType is a parameter that can be tuned.
   AMDCDNAGPULayoutProvider(VectorLayoutAnalysis &analysis, Operation *root,
-                           MFMAType mfmaType = MFMAType::F16_16x16x16_F32)
+                           MFMAType mfmaType = MFMAType::F16_32x32x8_F32)
       : LayoutProvider(analysis, root), mfmaType(mfmaType) {}
 
   virtual void setAnchorOps() override;
