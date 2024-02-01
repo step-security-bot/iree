@@ -62,6 +62,7 @@ iree_compiler_cc_library(
         "LLVMGPUTileAndDistribute.cpp",
         "LLVMGPUVectorLowering.cpp",
         "LLVMGPUVectorToGPU.cpp",
+        "LLVMGPUPrefetching.cpp",
         "Passes.cpp",
         "Verifiers.cpp",
     ],

@@ -119,6 +119,9 @@ verifyGPUMatmulPipeline(Operation *op,
                         IREE::Codegen::TranslationInfoAttr translationInfo,
                         ArrayRef<int64_t> workgroupSize);
 
+FailureOr<scf::ForOp> prefetchSharedMemoryCopy(RewriterBase &rewriter,
+                                               scf::ForOp forOp);
+
 //----------------------------------------------------------------------------//
 // Register LLVMGPU Passes
 //----------------------------------------------------------------------------//

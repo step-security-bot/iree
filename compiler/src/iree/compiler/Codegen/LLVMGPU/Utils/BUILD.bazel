@@ -18,6 +18,7 @@ iree_compiler_cc_library(
     name = "Utils",
     srcs = [
         "LLVMGPULayoutAnalysisAndDistribution.cpp",
+        "LLVMGPUOptimizeSharedMemoryReadsWrites.cpp",
         "LLVMGPUUtils.cpp",
         "LLVMGPUVectorDistribution.cpp",
         "PrepareVectorForChainedMFMA.cpp",

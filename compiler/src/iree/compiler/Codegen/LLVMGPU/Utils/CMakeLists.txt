@@ -18,14 +18,13 @@ iree_cc_library(
     "VectorLayoutProvider.h"
   SRCS
     "LLVMGPULayoutAnalysisAndDistribution.cpp"
+    "LLVMGPUOptimizeSharedMemoryReadsWrites.cpp"
     "LLVMGPUUtils.cpp"
     "LLVMGPUVectorDistribution.cpp"
     "PrepareVectorForChainedMFMA.cpp"
     "VectorLayoutProvider.cpp"
-    "LLVMGPUOptimizeSharedMemoryReadsWrites.cpp"
   DEPS
     LLVMSupport
-    MLIRAMDGPUDialect
     MLIRAffineDialect
     MLIRArithDialect
     MLIRFuncDialect

@@ -9,6 +9,7 @@
 #include "iree-dialects/Dialect/LinalgTransform/SimplePatternRewriter.h"
 #include "iree-dialects/Dialect/LinalgTransform/StructuredTransformOpsExt.h"
 #include "iree/compiler/Codegen/Common/GPU/Passes.h"
+#include "iree/compiler/Codegen/LLVMGPU/Passes.h"
 #include "iree/compiler/Codegen/LLVMGPU/Utils/LLVMGPUUtils.h"
 #include "iree/compiler/Codegen/Utils/GPUUtils.h"
 #include "iree/compiler/Codegen/Utils/Utils.h"
@@ -812,6 +813,27 @@ transform_dialect::PipelineSharedMemoryCopiesOp::applyToOne(
 }
 
 //===----------------------------------------------------------------------===//
+// PrefetchSharedMemoryCopiesOp
+//===----------------------------------------------------------------------===//
+
+DiagnosedSilenceableFailure
+transform_dialect::PrefetchSharedMemoryCopiesOp::applyToOne(
+    transform::TransformRewriter &rewriter, scf::ForOp forOp,
+    transform::ApplyToEachResultList &results,
+    transform::TransformState &state) {
+
+  FailureOr<scf::ForOp> pipelinedFor =
+      iree_compiler::prefetchSharedMemoryCopy(rewriter, forOp);
+
+  if (failed(pipelinedFor)) {
+    results.push_back(forOp);
+    return DiagnosedSilenceableFailure::success();
+  }
+  results.push_back(pipelinedFor.value());
+  return DiagnosedSilenceableFailure::success();
+}
+
+//===----------------------------------------------------------------------===//
 // SynchronizeLoopOp
 //===----------------------------------------------------------------------===//
 
@@ -879,8 +901,7 @@ transform_dialect::SIMTVectorDistributionOp::applyToOne(
 //===---------------------------------------------------------------------===//
 // PrefetchLoadsOp.
 //===---------------------------------------------------------------------===//
-DiagnosedSilenceableFailure
-transform_dialect::PrefetchLoadsOp::applyToOne(
+DiagnosedSilenceableFailure transform_dialect::PrefetchLoadsOp::applyToOne(
     transform::TransformRewriter &rewriter, func::FuncOp target,
     transform::ApplyToEachResultList &results,
     transform::TransformState &state) {
@@ -1525,12 +1546,12 @@ void transform_dialect::PackSharedMemoryAllocOp::getEffects(
 }
 
 void transform_dialect::FoldExtFIntoContractionOp::populatePatterns(
-  RewritePatternSet &patterns) {
+    RewritePatternSet &patterns) {
   mlir::vector::populateFoldArithExtensionPatterns(patterns);
 }
 
-void transform_dialect::ApplyPrepareVectorForChainedMFMAPatternsOp::populatePatterns(
-    RewritePatternSet &patterns) {
+void transform_dialect::ApplyPrepareVectorForChainedMFMAPatternsOp::
+    populatePatterns(RewritePatternSet &patterns) {
   populatePrepareVectorForChainedMFMAPatterns(patterns);
 }
 
@@ -1567,7 +1588,6 @@ void transform_dialect::OptimizeSharedMemoryReadsAndWritesOp::getEffects(
   transform::onlyReadsHandle(getTarget(), effects);
   transform::modifiesPayload(effects);
 }
-
 
 #define GET_OP_CLASSES
 #include "iree/compiler/Codegen/LLVMGPU/TransformExtensions/LLVMGPUExtensionsOps.cpp.inc"

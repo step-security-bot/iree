@@ -412,6 +412,44 @@ def PipelineSharedMemoryCopiesOp : Op<
       TransformOpInterface,
       ReportTrackingListenerFailuresOpTrait]> {
   let description = [{
+
+    #### Return modes
+    This transform consumes the scf.for handle and produces a result handle
+    which points to a) the new scf.for loop generated (success case) or b) the
+    existing scf.for loop (failure case).
+  }];
+
+  let arguments = (
+      ins TransformHandleTypeInterface:$for_op,
+          I64Attr:$depth,
+          UnitAttr:$peel_epilogue,
+          UnitAttr:$use_mma_sync);
+  let results = (outs TransformHandleTypeInterface:$result);
+
+  let cppNamespace = "mlir::iree_compiler::IREE::transform_dialect";
+
+  let assemblyFormat = [{
+    $for_op
+    attr-dict
+    `:` functional-type(operands, results)}];
+
+  let extraClassDeclaration = [{
+    ::mlir::DiagnosedSilenceableFailure applyToOne(
+        ::mlir::transform::TransformRewriter &rewriter,
+        ::mlir::scf::ForOp forOp,
+        ::mlir::transform::ApplyToEachResultList &results,
+        ::mlir::transform::TransformState &state);
+  }];
+}
+
+def PrefetchSharedMemoryCopiesOp : Op<
+    Transform_Dialect, "iree.prefetch_shared_memory_copies", [
+      FunctionalStyleTransformOpTrait,
+      MemoryEffectsOpInterface,
+      TransformEachOpTrait,
+      TransformOpInterface,
+      ReportTrackingListenerFailuresOpTrait]> {
+  let description = [{
     This applies software pipelining to a given scf.for loop. The pipelining
     strategy will look for a copy to shared memory and pipeline it to overlap
     it with the rest of the loop.
@@ -428,11 +466,7 @@ def PipelineSharedMemoryCopiesOp : Op<
     existing scf.for loop (failure case).
   }];
 
-  let arguments = (
-      ins TransformHandleTypeInterface:$for_op,
-          I64Attr:$depth,
-          UnitAttr:$peel_epilogue,
-          UnitAttr:$use_mma_sync);
+  let arguments = (ins TransformHandleTypeInterface:$for_op);
   let results = (outs TransformHandleTypeInterface:$result);
 
   let cppNamespace = "mlir::iree_compiler::IREE::transform_dialect";
