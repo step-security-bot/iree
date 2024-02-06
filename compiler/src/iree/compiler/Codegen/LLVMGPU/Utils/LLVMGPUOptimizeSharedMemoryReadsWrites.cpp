@@ -17,10 +17,10 @@
 namespace mlir::iree_compiler {
 
 /// The size of a shared memory line according to AMD.
-constexpr int64_t kSharedMemoryLineSizeBytes = 256;
+constexpr int64_t kSharedMemoryLineSizeBytes = 128;
 /// We optimize for 64bit accesses, but this can be made an argument in the
 /// future.
-constexpr int64_t kDefaultVectorSizeBits = 256;
+constexpr int64_t kDefaultVectorSizeBits = 128;
 
 static Operation::operand_range getIndices(Operation *op) {
   if (auto loadOp = dyn_cast<memref::LoadOp>(op))
