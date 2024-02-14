@@ -27,6 +27,9 @@ env:
   WORKFLOW_NAME: CI
   BENCHMARK_LABEL_PREFIX: 'benchmarks:'
 
+permissions:
+  contents: read
+
 jobs:
   # Precondition check is a separate step because we can't put the concurrency
   # constraint on it; otherwise the irrelevant labeling events will cancel the

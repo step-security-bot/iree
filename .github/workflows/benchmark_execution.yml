@@ -50,6 +50,9 @@ env:
   BENCHMARK_CONFIG: ${{ inputs.e2e-test-artifacts-dir }}/execution-benchmark-config.json
   BENCHMARK_CONFIG_GCS_ARTIFACT: ${{ inputs.e2e-test-artifacts-gcs-artifact-dir }}/execution-benchmark-config.json
 
+permissions:
+  contents: read
+
 jobs:
   generate_matrix:
     runs-on:

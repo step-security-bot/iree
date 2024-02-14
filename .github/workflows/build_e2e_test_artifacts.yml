@@ -73,6 +73,9 @@ env:
   # context isn't available there.
   GCS_DIR: gs://iree-github-actions-${{ github.event_name == 'pull_request' && 'presubmit' || 'postsubmit' }}-artifacts/${{ github.run_id }}/${{ github.run_attempt }}
 
+permissions:
+  contents: read
+
 jobs:
   build_e2e_test_artifacts:
     runs-on:

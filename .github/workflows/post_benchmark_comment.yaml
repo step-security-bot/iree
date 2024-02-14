@@ -16,6 +16,9 @@ env:
   PR_CI_RUN_ID: ${{ github.event.workflow_run.id }}
   PR_CI_RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
 
+permissions:
+  contents: read
+
 jobs:
   post_comment:
     # Only run the workflow if it's triggered from a pull request.
