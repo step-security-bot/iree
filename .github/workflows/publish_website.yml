@@ -26,9 +26,14 @@ on:
   release:
     types: [published, unpublished]
 
+permissions:
+  contents: read
+
 jobs:
   publish_website:
     # Note: a clean build of `iree-tblgen` takes ~5 minutes on standard runners.
+    permissions:
+      contents: write  # for mkdocs gh-deploy to publish docs
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout out repository
